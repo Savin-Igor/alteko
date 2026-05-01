@@ -18,6 +18,8 @@
 Как платформа работает для пользователей.
 
 - [overview.md](product/overview.md) — полный путь пользователя, карта модулей, целевые аудитории
+- [mvp.md](product/mvp.md) — скоуп MVP, минимальные требования, критерии выхода, идея маркетплейса
+- [design.md](product/design.md) — UX-принципы, ключевые экраны (text wireframes), сценарии и состояния
 - [module-audit.md](product/module-audit.md) — парсинг расходов, бенчмаркинг, обнаружение аномалий
 - [module-renovation.md](product/module-renovation.md) — ИИ-прогноз, калькулятор Altum, электронное голосование, генерация документов
 - [module-marketplace.md](product/module-marketplace.md) — верификация подрядчиков, тендеры, рейтинги
