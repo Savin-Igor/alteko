@@ -59,17 +59,22 @@
         {
           "n": "1",
           "title": "Atrodiet savu māju",
-          "desc": "Ievadiet adresi — parādīsim ēkas datus no VZD reģistra: sēriju, gadu, energoklasi."
+          "desc": "Ievadiet adresi — parādīsim datus no VZD reģistra: sēriju, celtniecības gadu, energoklasi."
         },
         {
           "n": "2",
           "title": "Augšupielādējiet rēķinu",
-          "desc": "PDF no jūsu apsaimniekotāja. MI analizēs dokumentu un sagatavos atskaiti."
+          "desc": "PDF no apsaimniekotāja. MI analizēs dokumentu un salīdzinās izdevumus pa kategorijām."
         },
         {
           "n": "3",
           "title": "Saņemiet atskaiti",
-          "desc": "Parādīsim, par kurām pozīcijām un par cik procentiem jūsu māja pārsniedz normu — eiro izteiksmē gadā."
+          "desc": "Pārmaksa katrai pozīcijai procentos un eiro — ar salīdzinājumu pret normu jūsu sērijai un rajonam."
+        },
+        {
+          "n": "4",
+          "title": "Aprēķiniet renovāciju",
+          "desc": "Ietaupījums pēc renovācijas, Altum subsīdija līdz 49% un atmaksāšanās laiks — balstoties uz jūsu mājas datiem."
         }
       ],
       "cta": "Sākt pārbaudi",
@@ -112,6 +117,17 @@
       ],
       "cta": "Atvērt paneli →",
       "ctaNote": "Nepieciešama reģistrācija"
+    },
+    "contractors": {
+      "tagline": "Darbuzņēmējiem",
+      "heading": "Priekšatlasīti pasūtītāji — bez aukstajiem zvaniem",
+      "bullets": [
+        "Mājas, kurās jau savāktas īpašnieku balsis un apstiprināts budžets",
+        "Izsoles filtrētas pēc mājas tipa, sērijas un darbu apjoma",
+        "Reitings aug ar katru veiksmīgi paveiktu projektu",
+        "Komisija tikai pie darījuma noslēgšanas — 1–2%"
+      ],
+      "cta": "Reģistrēties tirgū →"
     },
     "trust": {
       "heading": "Datu avoti",
