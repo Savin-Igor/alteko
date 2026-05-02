@@ -197,6 +197,202 @@
       "copyright": "© 2025 ALTEKO"
     }
   },
+  "components": {
+    "siteHeader": {
+      "openMenu": "Открыть меню",
+      "closeMenu": "Закрыть меню"
+    },
+    "fileDropzone": {
+      "uploadFile": "Загрузить файл",
+      "wrongType": "Нужен {accept}-файл.",
+      "tooLarge": "Файл слишком большой. Максимум — {size} МБ.",
+      "fileSize": "{size} КБ · нажмите, чтобы заменить",
+      "dropOrClick": "Перетащите PDF или нажмите для выбора",
+      "supports": "Поддерживается: PDF до {size} МБ"
+    },
+    "addressSearch": {
+      "cityLabel": "Город",
+      "cityPlaceholder": "Город / посёлок",
+      "streetLabel": "Улица и номер дома",
+      "streetPlaceholderActive": "Улица и номер дома",
+      "streetPlaceholderInactive": "Сначала выберите город",
+      "addressNotFound": "Адрес не найден. Проверьте улицу и номер."
+    },
+    "addressAutocomplete": {
+      "label": "Адрес дома",
+      "placeholder": "Введите адрес вашего дома",
+      "notFound": "Адрес не найден. Проверьте написание."
+    },
+    "pageHeader": {
+      "back": "Назад",
+      "boardPanel": "Панель правления"
+    },
+    "categoryRow": {
+      "perM2": "€{value}/м²"
+    }
+  },
+  "voting": {
+    "campaignNotFound": "Кампания не найдена.",
+    "backHome": "На главную",
+    "deadlinePrefix": "До ",
+    "votedLabel": "Проголосовали:",
+    "votedCount": "{voted} из {total}",
+    "totalUnknown": "?",
+    "shareLabel": "За: {yes}% · Нужно: {required}%",
+    "yesLabel": "За",
+    "noLabel": "Против",
+    "abstainLabel": "Воздерж.",
+    "thresholdReached": "Решение принято — необходимый порог достигнут. Протокол сформирован.",
+    "cancelled": "Голосование завершено. Порог не набран.",
+    "yourVote": "Ваш голос",
+    "errorRequest": "Ошибка запроса",
+    "errorConnection": "Ошибка соединения",
+    "signWith": "Подпишите с помощью:",
+    "personalCodeLabel": "Персональный код",
+    "personalCodePlaceholder": "XXXXXX-XXXXX",
+    "back": "Назад",
+    "continue": "Продолжить",
+    "smartIdLoading": "Отправляем запрос в Smart-ID...",
+    "smartIdConfirm": "Откройте приложение Smart-ID и подтвердите:",
+    "waitingConfirm": "Ожидаем подтверждения...",
+    "smartIdTimeout": "Smart-ID не ответил за 90 секунд. Попробуйте снова.",
+    "identityConfirmed": "Личность подтверждена. Выберите решение:",
+    "voteYes": "Поддерживаю реновацию",
+    "voteNo": "Против",
+    "voteAbstain": "Воздерживаюсь",
+    "voteRecorded": "Голос записан",
+    "yourDecision": "Ваше решение:",
+    "decisionYes": "За реновацию",
+    "decisionNo": "Против",
+    "decisionAbstain": "Воздержался",
+    "signedNote": "Данные подписаны электронной подписью"
+  },
+  "contractors": {
+    "specializations": [
+      "Утепление фасада",
+      "Замена окон",
+      "Кровельные работы",
+      "Замена системы отопления",
+      "Вентиляция",
+      "Подвал и фундамент",
+      "Комплексная реновация"
+    ],
+    "districts": [
+      "Рига", "Юрмала", "Елгава", "Даугавпилс", "Резекне",
+      "Лиепая", "Вентспилс", "Валмиера", "Екабпилс"
+    ],
+    "applicationSent": "Заявка отправлена",
+    "verifiedMessage": "Компания верифицирована в Lursoft. Заявка на рассмотрении у администратора ALTEKO — ответ в течение 2 рабочих дней.",
+    "unverifiedMessage": "Заявка принята. Мы свяжемся с вами в течение 2 рабочих дней для проверки данных.",
+    "applicationId": "ID заявки: {id}",
+    "backHome": "На главную",
+    "valuePropTitle": "Получайте тендеры от готовых домов",
+    "valuePropDesc": "Дома с ≥50% голосов собственников ищут подрядчика. Без холодных звонков — только входящие запросы по вашей специализации.",
+    "lursoftVerification": "Верификация через Lursoft",
+    "commission": "Комиссия 1,5% с контракта",
+    "verifiedClients": "Только проверенные клиенты",
+    "companyName": "Название компании",
+    "regNumber": "Регистрационный номер",
+    "checkedVia": "Проверяется через ",
+    "specializationLabel": "Специализация",
+    "selectAtLeastOne": "Выберите хотя бы одну специализацию",
+    "coverageLabel": "Географическое покрытие",
+    "agreementText": "Согласен с условиями комиссионного соглашения ALTEKO — 1,5% от стоимости подписанного договора с клиентом",
+    "errorRegister": "Ошибка регистрации",
+    "errorConnection": "Ошибка соединения. Попробуйте снова.",
+    "checkingLursoft": "Проверяем в Lursoft...",
+    "submitButton": "Подать заявку"
+  },
+  "share": {
+    "linkExpired": "Ссылка устарела или дом не найден.",
+    "findHome": "Найти свой дом",
+    "neighborShared": "Ваш сосед поделился результатом",
+    "noDataYet": "Пока никто не загружал счёт по этому дому",
+    "beFirst": "Станьте первым — узнаете, как ваш дом сравнивается с нормой",
+    "normalLabel": "Дом тратит в норме",
+    "normalDesc": "Детальный разбор по категориям — в полном отчёте",
+    "overpayLabel": "Переплата за отопление:",
+    "comparedTo": "к норме для похожих домов",
+    "uploadCta": "Загрузить свой счёт — бесплатно →",
+    "ctaNote": "Бесплатно · 30 секунд",
+    "differentBuilding": "Живёте в другом доме?",
+    "findYour": "Найдите свой →",
+    "seriesPrefix": "Серия {series}",
+    "yearSuffix": "{year} г.",
+    "classLabel": "Класс {class}"
+  },
+  "dashboard": {
+    "tabs": {
+      "myBuildings": "Мои дома",
+      "projects": "Проекты",
+      "voting": "Голосование"
+    },
+    "main": {
+      "heading": "Мои дома",
+      "emptyTitle": "Нет данных по домам",
+      "emptyDescription": "Загрузите первый счёт, чтобы начать мониторинг расходов.",
+      "emptyAction": "Найти дом и загрузить счёт",
+      "seriesPrefix": "Серия {series}",
+      "classLabel": "Класс {class}",
+      "reportsCount": "{count} отч.",
+      "latestHeating": "Отопление (последний период)",
+      "perM2": "€{value}/м²",
+      "trendLabel": "Тренд отопления, €/м²:",
+      "buildingCard": "Карточка дома",
+      "votingLink": "Голосование"
+    },
+    "voting": {
+      "heading": "Голосование собственников",
+      "step1Title": "Шаг 1. Список собственников",
+      "step1Hint": "CSV-файл: квартира;площадь_м2;доля_%;zemesgramata_ref (опционально)",
+      "selectCsv": "Выберите CSV-файл",
+      "csvFromZG": "Получить из Zemesgrāmata",
+      "uploadOwners": "Загрузить список собственников",
+      "uploadingButton": "Загружаем...",
+      "csvSizeLabel": "{size} КБ",
+      "extractFrom": "Выписка из ",
+      "orManualCsv": " или ручной CSV от правления",
+      "step2Title": "Шаг 2. Создать кампанию",
+      "voteTitleLabel": "Вопрос голосования",
+      "voteTitlePlaceholder": "Реновация здания 2025 года",
+      "deadlineLabel": "Срок голосования (необязательно)",
+      "createButton": "Открыть голосование",
+      "creating": "Создаём...",
+      "afterCreate": "После создания жильцы получают ссылку для голосования через Smart-ID или eParaksts. Требуется ≥50% голосов «за».",
+      "campaignsHeading": "Кампании",
+      "openCampaign": "Открыть →",
+      "yesShare": "За: {percent}%",
+      "campaignCreatedSuccess": "Голосование создано. Ссылка для жильцов: {link}",
+      "uploadedSuccess": "Загружено {upserted} из {total} собственников",
+      "errorCreate": "Ошибка создания",
+      "errorUpload": "Ошибка загрузки",
+      "errorConnection": "Ошибка соединения",
+      "campaignStatus": {
+        "DRAFT": "Черновик",
+        "ACTIVE": "Активно",
+        "COMPLETED": "Завершено",
+        "CANCELLED": "Отменено"
+      }
+    },
+    "tenders": {
+      "heading": "Проекты реновации",
+      "emptyTitle": "Проектов пока нет",
+      "emptyDescription": "Проекты появляются автоматически, когда голосование набирает ≥50% голосов «за».",
+      "emptyAction": "Запустить голосование",
+      "lursoftVerified": "Lursoft верифицирован",
+      "noContractor": "Подрядчик ещё не выбран",
+      "contractValue": "Сумма контракта:",
+      "commission": "Комиссия ALTEKO:",
+      "campaignYesShare": "Голосование «за»: {percent}%",
+      "status": {
+        "INITIATED": "Создан",
+        "VOTING": "Голосование",
+        "CONTRACTED": "Контракт",
+        "IN_PROGRESS": "В работе",
+        "COMPLETED": "Завершён"
+      }
+    }
+  },
   "audit": {
     "categories": {
       "HEATING": "Отопление",

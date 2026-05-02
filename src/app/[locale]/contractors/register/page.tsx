@@ -1,24 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 import { InfoBanner } from '@/components/ui'
-import Link from 'next/link'
-
-const SPECIALIZATIONS = [
-  'Утепление фасада',
-  'Замена окон',
-  'Кровельные работы',
-  'Замена системы отопления',
-  'Вентиляция',
-  'Подвал и фундамент',
-  'Комплексная реновация',
-]
-
-const DISTRICTS = [
-  'Рига', 'Юрмала', 'Елгава', 'Даугавпилс', 'Резекне',
-  'Лиепая', 'Вентспилс', 'Валмиера', 'Екабпилс',
-]
 
 function TagButton({
   label,
@@ -45,6 +31,10 @@ function TagButton({
 }
 
 export default function ContractorRegisterPage() {
+  const t = useTranslations('contractors')
+  const specializations = t.raw('specializations') as string[]
+  const districts = t.raw('districts') as string[]
+
   const [companyName, setCompanyName] = useState('')
   const [regNumber, setRegNumber] = useState('')
   const [specs, setSpecs] = useState<string[]>([])
@@ -79,9 +69,9 @@ export default function ContractorRegisterPage() {
       })
       const data = await res.json()
       if (res.ok) setResult({ id: data.contractorId, verified: data.luroftVerified })
-      else setError(data.error ?? 'Ошибка регистрации')
+      else setError(data.error ?? t('errorRegister'))
     } catch {
-      setError('Ошибка соединения. Попробуйте снова.')
+      setError(t('errorConnection'))
     } finally {
       setLoading(false)
     }
@@ -97,15 +87,13 @@ export default function ContractorRegisterPage() {
               <path d="M5 14l6 6L23 8" stroke="#16A34A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
-          <h1 className="text-xl font-bold text-gray-900">Заявка отправлена</h1>
+          <h1 className="text-xl font-bold text-gray-900">{t('applicationSent')}</h1>
           <p className="text-gray-500 leading-relaxed">
-            {result.verified
-              ? 'Компания верифицирована в Lursoft. Заявка на рассмотрении у администратора ALTEKO — ответ в течение 2 рабочих дней.'
-              : 'Заявка принята. Мы свяжемся с вами в течение 2 рабочих дней для проверки данных.'}
+            {result.verified ? t('verifiedMessage') : t('unverifiedMessage')}
           </p>
-          <p className="text-xs text-gray-400">ID заявки: {result.id}</p>
+          <p className="text-xs text-gray-400">{t('applicationId', { id: result.id })}</p>
           <Link href="/" className="btn-secondary inline-block w-auto px-8 mt-2">
-            На главную
+            {t('backHome')}
           </Link>
         </main>
       </div>
@@ -116,28 +104,26 @@ export default function ContractorRegisterPage() {
     <div className="min-h-screen flex flex-col">
       <SiteHeader />
 
-      {/* Value prop */}
       <section className="px-4 py-8 bg-primary-light border-b border-blue-100">
         <div className="max-w-md mx-auto">
           <h1 className="text-xl font-bold text-gray-900 mb-2">
-            Получайте тендеры от готовых домов
+            {t('valuePropTitle')}
           </h1>
           <p className="text-sm text-gray-600 leading-relaxed">
-            Дома с ≥50% голосов собственников ищут подрядчика.
-            Без холодных звонков — только входящие запросы по вашей специализации.
+            {t('valuePropDesc')}
           </p>
           <div className="flex gap-4 mt-4 text-xs text-gray-600">
             <span className="flex items-center gap-1">
               <span className="status-dot-success" />
-              Верификация через Lursoft
+              {t('lursoftVerification')}
             </span>
             <span className="flex items-center gap-1">
               <span className="status-dot-success" />
-              Комиссия 1,5% с контракта
+              {t('commission')}
             </span>
             <span className="flex items-center gap-1">
               <span className="status-dot-success" />
-              Только проверенные клиенты
+              {t('verifiedClients')}
             </span>
           </div>
         </div>
@@ -145,10 +131,9 @@ export default function ContractorRegisterPage() {
 
       <main className="flex-1 px-4 py-6 max-w-md mx-auto w-full">
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Company name */}
           <div>
             <label htmlFor="company-name" className="text-sm font-medium text-gray-700 block mb-1">
-              Название компании
+              {t('companyName')}
             </label>
             <input
               id="company-name"
@@ -161,10 +146,9 @@ export default function ContractorRegisterPage() {
             />
           </div>
 
-          {/* Reg number */}
           <div>
             <label htmlFor="reg-number" className="text-sm font-medium text-gray-700 block mb-1">
-              Регистрационный номер
+              {t('regNumber')}
             </label>
             <input
               id="reg-number"
@@ -176,41 +160,38 @@ export default function ContractorRegisterPage() {
               className="input-field"
             />
             <p className="text-xs text-gray-400 mt-1">
-              Проверяется через{' '}
+              {t('checkedVia')}
               <a href="https://www.lursoft.lv" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                 Lursoft
               </a>
             </p>
           </div>
 
-          {/* Specializations */}
           <div>
             <label className="text-sm font-medium text-gray-700 block mb-2">
-              Специализация{specs.length > 0 && <span className="text-primary ml-1">({specs.length})</span>}
+              {t('specializationLabel')}{specs.length > 0 && <span className="text-primary ml-1">({specs.length})</span>}
             </label>
             <div className="flex flex-wrap gap-2">
-              {SPECIALIZATIONS.map((s) => (
+              {specializations.map((s) => (
                 <TagButton key={s} label={s} active={specs.includes(s)} onToggle={() => toggleSpec(s)} />
               ))}
             </div>
             {specs.length === 0 && (
-              <p className="text-xs text-gray-400 mt-2">Выберите хотя бы одну специализацию</p>
+              <p className="text-xs text-gray-400 mt-2">{t('selectAtLeastOne')}</p>
             )}
           </div>
 
-          {/* Coverage */}
           <div>
             <label className="text-sm font-medium text-gray-700 block mb-2">
-              Географическое покрытие{coverage.length > 0 && <span className="text-primary ml-1">({coverage.length})</span>}
+              {t('coverageLabel')}{coverage.length > 0 && <span className="text-primary ml-1">({coverage.length})</span>}
             </label>
             <div className="flex flex-wrap gap-2">
-              {DISTRICTS.map((d) => (
+              {districts.map((d) => (
                 <TagButton key={d} label={d} active={coverage.includes(d)} onToggle={() => toggleCoverage(d)} />
               ))}
             </div>
           </div>
 
-          {/* Agreement */}
           <label className="flex items-start gap-3 cursor-pointer">
             <input
               type="checkbox"
@@ -219,8 +200,7 @@ export default function ContractorRegisterPage() {
               className="mt-1 w-4 h-4 flex-shrink-0"
             />
             <span className="text-sm text-gray-600 leading-relaxed">
-              Согласен с условиями комиссионного соглашения ALTEKO —
-              1,5% от стоимости подписанного договора с клиентом
+              {t('agreementText')}
             </span>
           </label>
 
@@ -234,9 +214,9 @@ export default function ContractorRegisterPage() {
             {loading ? (
               <span className="flex items-center justify-center gap-2">
                 <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Проверяем в Lursoft...
+                {t('checkingLursoft')}
               </span>
-            ) : 'Подать заявку'}
+            ) : t('submitButton')}
           </button>
         </form>
       </main>

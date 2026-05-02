@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 interface FileDropzoneProps {
   onFile: (file: File) => void
@@ -19,15 +20,16 @@ export function FileDropzone({
   hint,
   onError,
 }: FileDropzoneProps) {
+  const t = useTranslations('components.fileDropzone')
   const inputRef = useRef<HTMLInputElement>(null)
   const [dragOver, setDragOver] = useState(false)
 
   function validate(f: File): string | null {
     if (accept && !f.type.startsWith(accept.replace('/*', ''))) {
-      return `Нужен ${accept.includes('pdf') ? 'PDF' : accept}-файл.`
+      return t('wrongType', { accept: accept.includes('pdf') ? 'PDF' : accept })
     }
     if (f.size > maxSizeMB * 1024 * 1024) {
-      return `Файл слишком большой. Максимум — ${maxSizeMB} МБ.`
+      return t('tooLarge', { size: maxSizeMB })
     }
     return null
   }
@@ -52,7 +54,7 @@ export function FileDropzone({
     <div
       role="button"
       tabIndex={0}
-      aria-label="Загрузить файл"
+      aria-label={t('uploadFile')}
       onClick={() => inputRef.current?.click()}
       onKeyDown={(e) => e.key === 'Enter' && inputRef.current?.click()}
       onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
@@ -73,13 +75,13 @@ export function FileDropzone({
       {file ? (
         <div>
           <p className="text-sm font-medium text-gray-900">{file.name}</p>
-          <p className="text-xs text-gray-400 mt-1">{(file.size / 1024).toFixed(0)} КБ · нажмите, чтобы заменить</p>
+          <p className="text-xs text-gray-400 mt-1">{t('fileSize', { size: (file.size / 1024).toFixed(0) })}</p>
         </div>
       ) : (
         <div>
-          <p className="text-sm font-medium text-gray-700">Перетащите PDF или нажмите для выбора</p>
+          <p className="text-sm font-medium text-gray-700">{t('dropOrClick')}</p>
           <p className="text-xs text-gray-400 mt-1">
-            {hint ?? `Поддерживается: PDF до ${maxSizeMB} МБ`}
+            {hint ?? t('supports', { size: maxSizeMB })}
           </p>
         </div>
       )}

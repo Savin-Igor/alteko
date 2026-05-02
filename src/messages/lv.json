@@ -197,6 +197,202 @@
       "copyright": "© 2025 ALTEKO"
     }
   },
+  "components": {
+    "siteHeader": {
+      "openMenu": "Atvērt izvēlni",
+      "closeMenu": "Aizvērt izvēlni"
+    },
+    "fileDropzone": {
+      "uploadFile": "Augšupielādēt failu",
+      "wrongType": "Nepieciešams {accept} fails.",
+      "tooLarge": "Fails ir pārāk liels. Maksimums — {size} MB.",
+      "fileSize": "{size} KB · noklikšķiniet, lai aizstātu",
+      "dropOrClick": "Velciet PDF vai noklikšķiniet, lai izvēlētos",
+      "supports": "Atbalstīts: PDF līdz {size} MB"
+    },
+    "addressSearch": {
+      "cityLabel": "Pilsēta",
+      "cityPlaceholder": "Pilsēta / ciems",
+      "streetLabel": "Iela un mājas numurs",
+      "streetPlaceholderActive": "Iela un mājas numurs",
+      "streetPlaceholderInactive": "Vispirms izvēlieties pilsētu",
+      "addressNotFound": "Adrese nav atrasta. Pārbaudiet ielas nosaukumu."
+    },
+    "addressAutocomplete": {
+      "label": "Mājas adrese",
+      "placeholder": "Ievadiet jūsu mājas adresi",
+      "notFound": "Adrese nav atrasta. Pārbaudiet pareizrakstību."
+    },
+    "pageHeader": {
+      "back": "Atpakaļ",
+      "boardPanel": "Valdes panelis"
+    },
+    "categoryRow": {
+      "perM2": "€{value}/m²"
+    }
+  },
+  "voting": {
+    "campaignNotFound": "Kampaņa nav atrasta.",
+    "backHome": "Uz sākumu",
+    "deadlinePrefix": "Līdz ",
+    "votedLabel": "Nobalsojuši:",
+    "votedCount": "{voted} no {total}",
+    "totalUnknown": "?",
+    "shareLabel": "Par: {yes}% · Vajag: {required}%",
+    "yesLabel": "Par",
+    "noLabel": "Pret",
+    "abstainLabel": "Atturas",
+    "thresholdReached": "Lēmums pieņemts — sasniegts nepieciešamais slieksnis. Protokols sagatavots.",
+    "cancelled": "Balsošana pabeigta. Slieksnis nav sasniegts.",
+    "yourVote": "Jūsu balss",
+    "errorRequest": "Pieprasījuma kļūda",
+    "errorConnection": "Savienojuma kļūda",
+    "signWith": "Parakstiet ar:",
+    "personalCodeLabel": "Personas kods",
+    "personalCodePlaceholder": "XXXXXX-XXXXX",
+    "back": "Atpakaļ",
+    "continue": "Turpināt",
+    "smartIdLoading": "Sūtām pieprasījumu uz Smart-ID...",
+    "smartIdConfirm": "Atveriet Smart-ID lietotni un apstipriniet:",
+    "waitingConfirm": "Gaidām apstiprinājumu...",
+    "smartIdTimeout": "Smart-ID neatbildēja 90 sekunžu laikā. Mēģiniet vēlreiz.",
+    "identityConfirmed": "Identitāte apstiprināta. Izvēlieties lēmumu:",
+    "voteYes": "Atbalstu renovāciju",
+    "voteNo": "Pret",
+    "voteAbstain": "Atturos",
+    "voteRecorded": "Balss reģistrēta",
+    "yourDecision": "Jūsu lēmums:",
+    "decisionYes": "Par renovāciju",
+    "decisionNo": "Pret",
+    "decisionAbstain": "Atturējās",
+    "signedNote": "Dati parakstīti ar elektronisko parakstu"
+  },
+  "contractors": {
+    "specializations": [
+      "Fasādes siltināšana",
+      "Logu nomaiņa",
+      "Jumta darbi",
+      "Apkures sistēmas nomaiņa",
+      "Ventilācija",
+      "Pagrabs un pamati",
+      "Kompleksa renovācija"
+    ],
+    "districts": [
+      "Rīga", "Jūrmala", "Jelgava", "Daugavpils", "Rēzekne",
+      "Liepāja", "Ventspils", "Valmiera", "Jēkabpils"
+    ],
+    "applicationSent": "Pieteikums nosūtīts",
+    "verifiedMessage": "Uzņēmums verificēts Lursoft. Pieteikums tiek izskatīts ALTEKO administratoram — atbilde 2 darbdienu laikā.",
+    "unverifiedMessage": "Pieteikums saņemts. Mēs sazināsimies ar jums 2 darbdienu laikā, lai pārbaudītu datus.",
+    "applicationId": "Pieteikuma ID: {id}",
+    "backHome": "Uz sākumu",
+    "valuePropTitle": "Saņemiet konkursus no gatavām mājām",
+    "valuePropDesc": "Mājas ar ≥50% īpašnieku balsīm meklē darbuzņēmēju. Nekādu auksto zvanu — tikai ienākoši pieprasījumi pēc jūsu specializācijas.",
+    "lursoftVerification": "Verifikācija ar Lursoft",
+    "commission": "Komisija 1,5% no līguma",
+    "verifiedClients": "Tikai pārbaudīti klienti",
+    "companyName": "Uzņēmuma nosaukums",
+    "regNumber": "Reģistrācijas numurs",
+    "checkedVia": "Tiek pārbaudīts ar ",
+    "specializationLabel": "Specializācija",
+    "selectAtLeastOne": "Izvēlieties vismaz vienu specializāciju",
+    "coverageLabel": "Ģeogrāfiskais pārklājums",
+    "agreementText": "Piekrītu ALTEKO komisijas līguma nosacījumiem — 1,5% no parakstītā līguma summas ar klientu",
+    "errorRegister": "Reģistrācijas kļūda",
+    "errorConnection": "Savienojuma kļūda. Mēģiniet vēlreiz.",
+    "checkingLursoft": "Pārbaudām Lursoft...",
+    "submitButton": "Iesniegt pieteikumu"
+  },
+  "share": {
+    "linkExpired": "Saite ir novecojusi vai māja nav atrasta.",
+    "findHome": "Atrast savu māju",
+    "neighborShared": "Jūsu kaimiņš dalījās ar rezultātu",
+    "noDataYet": "Vēl neviens nav augšupielādējis rēķinu par šo māju",
+    "beFirst": "Esiet pirmais — uzziniet, kā jūsu māja salīdzinās ar normu",
+    "normalLabel": "Māja tērē normas robežās",
+    "normalDesc": "Detalizēta kategoriju analīze — pilnajā atskaitē",
+    "overpayLabel": "Pārmaksa par apkuri:",
+    "comparedTo": "salīdzinājumā ar normu līdzīgām mājām",
+    "uploadCta": "Augšupielādēt savu rēķinu — bez maksas →",
+    "ctaNote": "Bez maksas · 30 sekundes",
+    "differentBuilding": "Dzīvojat citā mājā?",
+    "findYour": "Atrodiet savu →",
+    "seriesPrefix": "Sērija {series}",
+    "yearSuffix": "{year}. g.",
+    "classLabel": "Klase {class}"
+  },
+  "dashboard": {
+    "tabs": {
+      "myBuildings": "Manas mājas",
+      "projects": "Projekti",
+      "voting": "Balsošana"
+    },
+    "main": {
+      "heading": "Manas mājas",
+      "emptyTitle": "Nav datu par mājām",
+      "emptyDescription": "Augšupielādējiet pirmo rēķinu, lai sāktu izdevumu uzraudzību.",
+      "emptyAction": "Atrast māju un augšupielādēt rēķinu",
+      "seriesPrefix": "Sērija {series}",
+      "classLabel": "Klase {class}",
+      "reportsCount": "{count} atsk.",
+      "latestHeating": "Apkure (pēdējais periods)",
+      "perM2": "€{value}/m²",
+      "trendLabel": "Apkures tendence, €/m²:",
+      "buildingCard": "Mājas kartīte",
+      "votingLink": "Balsošana"
+    },
+    "voting": {
+      "heading": "Īpašnieku balsošana",
+      "step1Title": "1. solis. Īpašnieku saraksts",
+      "step1Hint": "CSV fails: dzīvoklis;platība_m2;daļa_%;zemesgramata_ref (pēc izvēles)",
+      "selectCsv": "Izvēlieties CSV failu",
+      "csvFromZG": "Saņemiet no Zemesgrāmata",
+      "uploadOwners": "Augšupielādēt īpašnieku sarakstu",
+      "uploadingButton": "Augšupielādējam...",
+      "csvSizeLabel": "{size} KB",
+      "extractFrom": "Izraksts no ",
+      "orManualCsv": " vai apsaimniekotāja manuālais CSV",
+      "step2Title": "2. solis. Izveidot kampaņu",
+      "voteTitleLabel": "Balsošanas jautājums",
+      "voteTitlePlaceholder": "Ēkas renovācija 2025. gadā",
+      "deadlineLabel": "Balsošanas termiņš (pēc izvēles)",
+      "createButton": "Atvērt balsošanu",
+      "creating": "Izveidojam...",
+      "afterCreate": "Pēc izveides īpašnieki saņem saiti balsošanai ar Smart-ID vai eParaksts. Nepieciešami ≥50% «par» balsu.",
+      "campaignsHeading": "Kampaņas",
+      "openCampaign": "Atvērt →",
+      "yesShare": "Par: {percent}%",
+      "campaignCreatedSuccess": "Balsošana izveidota. Saite iedzīvotājiem: {link}",
+      "uploadedSuccess": "Augšupielādēti {upserted} no {total} īpašniekiem",
+      "errorCreate": "Izveides kļūda",
+      "errorUpload": "Augšupielādes kļūda",
+      "errorConnection": "Savienojuma kļūda",
+      "campaignStatus": {
+        "DRAFT": "Melnraksts",
+        "ACTIVE": "Aktīva",
+        "COMPLETED": "Pabeigta",
+        "CANCELLED": "Atcelta"
+      }
+    },
+    "tenders": {
+      "heading": "Renovācijas projekti",
+      "emptyTitle": "Projektu vēl nav",
+      "emptyDescription": "Projekti parādās automātiski, kad balsošana sasniedz ≥50% «par» balsu.",
+      "emptyAction": "Sākt balsošanu",
+      "lursoftVerified": "Lursoft pārbaudīts",
+      "noContractor": "Darbuzņēmējs vēl nav izvēlēts",
+      "contractValue": "Līguma summa:",
+      "commission": "ALTEKO komisija:",
+      "campaignYesShare": "Balsojums «par»: {percent}%",
+      "status": {
+        "INITIATED": "Izveidots",
+        "VOTING": "Balsošana",
+        "CONTRACTED": "Līgums",
+        "IN_PROGRESS": "Izpildē",
+        "COMPLETED": "Pabeigts"
+      }
+    }
+  },
   "audit": {
     "categories": {
       "HEATING": "Apkure",
