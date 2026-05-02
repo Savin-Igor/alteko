@@ -1,0 +1,44 @@
+{
+  "name": "alteko",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:generate": "prisma generate",
+    "db:studio": "prisma studio",
+    "sync:vzd": "tsx scripts/sync-vzd.ts",
+    "sync:bvkb": "tsx scripts/sync-bvkb.ts",
+    "seed:benchmarks": "tsx scripts/seed-benchmarks.ts"
+  },
+  "dependencies": {
+    "next": "14.2.29",
+    "@auth/prisma-adapter": "^2.7.4",
+    "@aws-sdk/client-s3": "^3.782.0",
+    "@aws-sdk/s3-request-presigner": "^3.782.0",
+    "@prisma/client": "^5.22.0",
+    "@t3-oss/env-nextjs": "^0.10.1",
+    "next-auth": "^5.0.0-beta.25",
+    "openai": "^4.91.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.30",
+    "@types/react": "^18.3.20",
+    "@types/react-dom": "^18.3.5",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "14.2.29",
+    "postcss": "^8.5.3",
+    "prisma": "^5.22.0",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3"
+  }
+}

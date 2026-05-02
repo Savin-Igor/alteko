@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: alteko_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/alteko_test
+      NEXTAUTH_SECRET: test-secret-min-32-chars-long-here
+      NEXTAUTH_URL: http://localhost:3000
+      OPENAI_API_KEY: sk-test
+      S3_ENDPOINT: https://s3.amazonaws.com
+      S3_REGION: eu-central-1
+      S3_BUCKET: alteko-test
+      S3_ACCESS_KEY_ID: test
+      S3_SECRET_ACCESS_KEY: test
+      JANA_SETA_API_URL: https://api.kartes.lv
+      JANA_SETA_API_KEY: test
+      LVM_GEOSERVER_URL: https://lvmgeo.lvm.lv/geoserver/wfs
+      SKIP_ENV_VALIDATION: "true"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Run migrations
+        run: npx prisma migrate deploy
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
