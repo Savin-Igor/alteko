@@ -47,7 +47,7 @@ prisma/
 
 Все LLM-вызовы делаются из API Routes Next.js с использованием OpenAI SDK (TypeScript):
 - Парсинг документов: PDF → base64 → GPT-4o vision → структурированный JSON
-- Шаблоны промптов хранятся в `src/lib/prompts/`
+- Системный и пользовательский промпт инлайн в `src/lib/llm.ts`
 
 ```ts
 // Пример: route парсинга расходов
@@ -129,11 +129,11 @@ alteko/
 │   │       └── voting/
 │   ├── lib/
 │   │   ├── prisma.ts           ← синглтон Prisma client
-│   │   ├── llm.ts              ← абстракция LLM-клиента
+│   │   ├── llm.ts              ← абстракция LLM-клиента (промпт инлайн)
 │   │   ├── s3.ts               ← S3-клиент
 │   │   ├── calculator/         ← тепловая модель, расчёт субсидии
 │   │   ├── benchmarks/         ← логика обнаружения аномалий
-│   │   └── prompts/            ← шаблоны LLM-промптов
+│   │   └── stubs.ts            ← заглушки для разработки без внешних API
 │   ├── components/             ← React-компоненты
 │   └── types/                  ← общие TypeScript-типы
 ├── .github/

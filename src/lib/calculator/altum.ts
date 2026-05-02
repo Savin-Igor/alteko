@@ -1,8 +1,10 @@
 // Altum subsidy calculator for building renovation.
-// Verified facts (altum.lv, fi-compass.eu, December 2024):
+// Verified facts (altum.lv, fi-compass.eu case study November 2024):
 //   - Maximum subsidy: up to 49–50% of eligible renovation costs
-//   - Eligible cost range: typically €200–500k for multi-apartment buildings
-//   - Co-financing requirement: minimum 50% from building owners
+//   - Renovation cost per m²: €109–294/m² in completed projects; MoE 2015 ex-ante used €150/m²
+//     Adjusted for ~50% construction inflation 2015→2024: typical range €130–300/m²
+//   - Total cost per building: avg ~€500k across 624 projects (fi-compass Nov 2024)
+//   - Co-financing requirement: minimum 51% from building owners
 // Note: Altum program parameters change — these values are configurable below.
 
 export interface AltumInput {
@@ -23,8 +25,8 @@ export interface AltumResult {
 const ALTUM_PARAMS = {
   maxSubsidyPercent: 0.49,        // up to 49% of eligible costs [VERIFIED altum.lv 2024]
   minOwnerPercent: 0.51,          // owners must fund at least 51%
-  costPerM2Low: 200,              // € estimated renovation cost per m² (lower bound)
-  costPerM2High: 400,             // € estimated renovation cost per m² (upper bound)
+  costPerM2Low: 130,              // € estimated renovation cost per m² (lower bound, large buildings)
+  costPerM2High: 300,             // € estimated renovation cost per m² (upper bound, small buildings)
 }
 
 export function calculateAltumSubsidy(
