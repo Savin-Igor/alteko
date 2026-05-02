@@ -79,7 +79,7 @@ export default async function BlogArticlePage({ params }: Props) {
             {isLv ? 'Pārbaudiet savas mājas izdevumus tūlīt' : 'Проверьте расходы вашего дома прямо сейчас'}
           </p>
           <p className="text-sm text-gray-500">
-            {isLv ? 'Bez maksas. Bez reģistrācijas. 30 sekundes.' : 'Бесплатно. Без регистрации. Результат за 30 секунд.'}
+            {isLv ? 'Bez maksas. 30 sekundes.' : 'Бесплатно. Результат за 30 секунд.'}
           </p>
           <Link href="/#hero" className="btn-primary inline-block w-auto px-8">
             {isLv ? 'Atrast savu māju →' : 'Найти свой дом →'}

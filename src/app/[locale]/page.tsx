@@ -108,7 +108,7 @@ export default function HomePage() {
           <p className="text-gray-500 mb-8 leading-relaxed">
             Загрузите PDF-счёт — ИИ сравнит расходы вашего дома
             с нормой по серии, площади и кварталу.
-            Бесплатно. Без регистрации.
+            Бесплатно.
           </p>
 
           <div className="space-y-3 text-left">
@@ -143,8 +143,6 @@ export default function HomePage() {
 
           <div className="flex items-center justify-center gap-4 mt-5 text-xs text-gray-400">
             <span>Бесплатно</span>
-            <span>·</span>
-            <span>Без регистрации</span>
             <span>·</span>
             <span>624 дома уже проверили</span>
           </div>

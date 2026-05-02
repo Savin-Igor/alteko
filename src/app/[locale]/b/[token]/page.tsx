@@ -112,7 +112,7 @@ export default async function SharePage({ params }: Props) {
             Загрузить свой счёт — бесплатно →
           </Link>
           <p className="text-center text-xs text-gray-400">
-            Бесплатно · Без регистрации · 30 секунд
+            Бесплатно · 30 секунд
           </p>
         </div>
 

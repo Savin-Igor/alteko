@@ -145,7 +145,7 @@ export default function RenovationMarketingPage() {
           <Link href="/" className="btn-primary block">
             Найти свой дом и загрузить счёт →
           </Link>
-          <p className="text-xs text-gray-400">Бесплатно · Без регистрации · 30 секунд</p>
+          <p className="text-xs text-gray-400">Бесплатно · 30 секунд</p>
         </div>
       </section>
 
