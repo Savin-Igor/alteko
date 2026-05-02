@@ -80,6 +80,23 @@ export default async function BuildingPage({ params, searchParams }: Props) {
                 </p>
               </div>
 
+              <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                {building.district && (
+                  <>
+                    <dt className="text-gray-500">Район</dt>
+                    <dd className="text-gray-900 font-medium">{building.district}</dd>
+                  </>
+                )}
+                {building.totalAreaM2 && (
+                  <>
+                    <dt className="text-gray-500">Общая площадь</dt>
+                    <dd className="text-gray-900 font-medium">{Number(building.totalAreaM2).toLocaleString('ru')} м²</dd>
+                  </>
+                )}
+                <dt className="text-gray-500">Кадастровый №</dt>
+                <dd className="text-gray-900 font-mono text-xs">{building.cadastralCode}</dd>
+              </dl>
+
               {building.energyClass && (
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Энергоэффективность:</p>

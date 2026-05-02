@@ -23,7 +23,7 @@ export function AddressAutocomplete({ onSelect, placeholder }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
 
   const search = useCallback(async (q: string) => {
-    if (q.trim().length < 2) {
+    if (q.trim().length < 3) {
       setSuggestions([])
       setOpen(false)
       return
@@ -100,7 +100,7 @@ export function AddressAutocomplete({ onSelect, placeholder }: Props) {
         </ul>
       )}
 
-      {open && !loading && suggestions.length === 0 && query.trim().length >= 2 && (
+      {open && !loading && suggestions.length === 0 && query.trim().length >= 3 && (
         <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg px-4 py-3 text-sm text-gray-500">
           Адрес не найден. Проверьте написание.
         </div>

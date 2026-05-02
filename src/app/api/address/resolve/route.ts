@@ -12,13 +12,14 @@ interface WfsResponse {
 
 async function fetchCadastralCode(lat: number, lon: number): Promise<string | null> {
   const buffer = 0.0002
-  const bbox = `${lon - buffer},${lat - buffer},${lon + buffer},${lat + buffer}`
+  const bbox = `${lon - buffer},${lat - buffer},${lon + buffer},${lat + buffer},EPSG:4326`
   const url = new URL(env.LVM_GEOSERVER_URL)
   url.searchParams.set('service', 'WFS')
   url.searchParams.set('version', '2.0.0')
   url.searchParams.set('request', 'GetFeature')
-  url.searchParams.set('typeName', 'CITS:buildings')
+  url.searchParams.set('typeName', 'publicwfs:kkbuilding')
   url.searchParams.set('outputFormat', 'application/json')
+  url.searchParams.set('srsName', 'EPSG:4326')
   url.searchParams.set('bbox', bbox)
   url.searchParams.set('count', '1')
 
@@ -28,7 +29,7 @@ async function fetchCadastralCode(lat: number, lon: number): Promise<string | nu
     const data: WfsResponse = await res.json()
     const props = data.features?.[0]?.properties
     if (!props) return null
-    return ((props['kadastra_apzimejums'] as string) ?? (props['cadastral_code'] as string) ?? null)
+    return (props['code'] as string) ?? null
   } catch {
     return null
   }
