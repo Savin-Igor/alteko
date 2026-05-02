@@ -57,7 +57,6 @@ export default function HomePage() {
   const steps = t.raw('steps.items') as Step[]
   const renovationStats = t.raw('renovation.stats') as RenovationStat[]
   const boardsBullets = t.raw('boards.bullets') as string[]
-  const contractorBullets = t.raw('contractors.bullets') as string[]
   const sources = t.raw('trust.sources') as Source[]
   const faqItems = t.raw('faq.items') as FaqItem[]
   const blogPosts = t.raw('blogPreview.posts') as BlogPost[]
@@ -147,12 +146,6 @@ export default function HomePage() {
             <span>{t('hero.stats.buildings')}</span>
           </div>
 
-          <p className="mt-3 text-xs text-gray-400">
-            {t('hero.contractorText')}{' '}
-            <Link href="/contractors/register" className="text-primary underline">
-              {t('hero.contractorCta')}
-            </Link>
-          </p>
         </div>
       </section>
 
@@ -310,34 +303,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── 7. FOR CONTRACTORS ───────────────────────────────────────────────── */}
-      <section className="px-4 py-14 bg-gray-50 border-y border-gray-100">
-        <div className="max-w-2xl mx-auto md:flex items-center gap-8">
-          <div className="flex-1 mb-6 md:mb-0">
-            <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
-              {t('contractors.tagline')}
-            </p>
-            <h2 className="text-xl font-bold text-gray-900 mb-3">
-              {t('contractors.heading')}
-            </h2>
-            <ul className="space-y-2 text-sm text-gray-600">
-              {contractorBullets.map((bullet, i) => (
-                <li key={i} className="flex items-start gap-2">
-                  <span className="status-dot-success mt-1.5" />
-                  {bullet}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="flex-shrink-0">
-            <Link href="/contractors/register" className="btn-primary w-auto inline-block px-8">
-              {t('contractors.cta')}
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 8. TRUST ─────────────────────────────────────────────────────────── */}
+      {/* ── 7. TRUST ─────────────────────────────────────────────────────────── */}
       <section className="px-4 py-14 bg-white">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-xl font-bold text-gray-900 mb-6 text-center">{t('trust.heading')}</h2>

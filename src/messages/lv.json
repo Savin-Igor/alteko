@@ -39,9 +39,7 @@
         "step1": "Augšupielādēt rēķinu",
         "step2": "Saņemt atskaiti",
         "step3": "Aprēķināt renovāciju"
-      },
-      "contractorText": "Esat darbuzņēmējs?",
-      "contractorCta": "Reģistrēties →"
+      }
     },
     "problem": {
       "heading": "7 no 10 padomju laika mājām pārmaksā",
@@ -117,17 +115,6 @@
       ],
       "cta": "Atvērt paneli →",
       "ctaNote": "Nepieciešama reģistrācija"
-    },
-    "contractors": {
-      "tagline": "Darbuzņēmējiem",
-      "heading": "Priekšatlasīti pasūtītāji — bez aukstajiem zvaniem",
-      "bullets": [
-        "Mājas, kurās jau savāktas īpašnieku balsis un apstiprināts budžets",
-        "Izsoles filtrētas pēc mājas tipa, sērijas un darbu apjoma",
-        "Reitings aug ar katru veiksmīgi paveiktu projektu",
-        "Komisija tikai pie darījuma noslēgšanas — 1–2%"
-      ],
-      "cta": "Reģistrēties tirgū →"
     },
     "trust": {
       "heading": "Datu avoti",
