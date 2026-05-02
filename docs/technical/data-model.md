@@ -112,6 +112,8 @@ model Building {
   constructionYear Int?
   totalAreaM2      Decimal?
   apartmentCount   Int?
+  floorCount       Int?         // этажей над землёй (из Building.ZIP)
+  wallMaterial     String?      // материал стен (из Building.ZIP, код VZD)
   energyClass      EnergyClass?
   district         String?
   lat              Decimal?
@@ -284,13 +286,86 @@ model RenovationProject {
 
 ---
 
+## Модели синхронизации открытых данных
+
+Добавлены в `schema.prisma`, заполняются через скрипты в `scripts/`. Не связаны с пользовательскими данными напрямую.
+
+```prisma
+// Сделки с квартирами — из tg_darjumi CSV (data.gov.lv, ежемесячно)
+model ApartmentTransaction {
+  deaId           Int      @unique   // VZD ID сделки
+  propertyCadNr   String             // кадастровый номер квартиры
+  buildingCadNr   String?            // кадастровый номер здания → Building.cadastralCode
+  address         String             // полный адрес с номером квартиры
+  city            String?
+  district        String?
+  transactionDate DateTime
+  priceEur        Decimal
+  buildingAreaM2  Decimal?
+  buildingYear    Int?
+  wallMaterial    String?            // "2303 - Dzelzsbetona paneļi" и т.д.
+  depreciation    String?            // V1–V4
+  apartmentCadNr  String?
+  floorMin        Int?
+  floorMax        Int?
+  apartmentAreaM2 Decimal?
+}
+
+// Кадастровые стоимости — из data.gov.lv, ежегодно
+model CadastralValue {
+  cadastralNr       String
+  objectType        String
+  fiscalValueEur    Decimal?   // фискальная стоимость (база 2012–13)
+  universalValueEur Decimal?   // универсальная стоимость (база июль 2022, макс. 80% рынка)
+  validFrom         DateTime
+}
+
+// Индексы цен — CSP API, квартальные / месячные
+model PriceIndex {
+  indexType     String   // HOUSE_PRICE | CONSTRUCTION_COST
+  region        String?
+  periodYear    Int
+  periodQuarter Int?
+  periodMonth   Int?
+  value         Decimal
+}
+
+// Тарифы ЖКХ — ручной ввод по решениям SPRK
+model UtilityTariff {
+  providerName String
+  city         String
+  tariffType   String   // HEATING | COLD_WATER | WASTEWATER
+  pricePerUnit Decimal
+  unit         String   // EUR/MWh | EUR/m3
+  validFrom    DateTime
+  validTo      DateTime?
+}
+
+// Серии зданий — статический справочник (seed-series.ts)
+model BuildingSeries {
+  code            String   @id   // 103, 119, 467, Khrushchevka...
+  wallMaterialKey String         // совпадение с кодом в MaterialKind из tg_darjumi
+  floorsMin       Int?
+  floorsMax       Int?
+  yearFrom        Int
+  yearTo          Int
+  typicalAreaM2   Decimal?
+  description     String?
+}
+```
+
+---
+
 ## Связи
 
 ```
 Building ──< Apartment ──< Vote >── VotingCampaign >── Building
 Building ──< ExpenseReport ──< ExpenseItem
 Building ──< RenovationProject >── Contractor
-BenchmarkSegment  (производное — агрегация данных ExpenseItem, без FK)
+Building ──< ApartmentTransaction  (через buildingCadNr = cadastralCode)
+BenchmarkSegment  (производное — агрегация ExpenseItem, без FK)
+ApartmentTransaction, CadastralValue, PriceIndex, UtilityTariff, BuildingSeries
+  — открытые данные, без FK на пользовательские модели
 ```
 
 ---

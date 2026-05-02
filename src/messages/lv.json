@@ -12,12 +12,186 @@
   },
   "common": {
     "free": "Bez maksas",
-
     "seconds30": "30 sekundes",
     "findHome": "Atrast savu māju →",
     "checkBill": "Pārbaudīt rēķinu bez maksas",
     "back": "Atpakaļ",
     "backToMain": "Uz sākumu"
+  },
+  "home": {
+    "hero": {
+      "titleQuestion": "Vai apkures rēķins šķiet pārāk liels?",
+      "titleAnswer": "Salīdzināsim ar normu 30 sekundēs.",
+      "description": "Augšupielādējiet PDF rēķinu — MI salīdzinās jūsu mājas izdevumus ar normu pēc sērijas, platības un rajona. Bez maksas.",
+      "cta": "Atrast savu māju",
+      "ctaLoading": "Meklējam māju...",
+      "errorNotFound": "Māja nav atrasta datu bāzē. Mēģiniet citu adresi.",
+      "errorConnection": "Savienojuma kļūda. Pārbaudiet internetu un mēģiniet vēlreiz.",
+      "stats": {
+        "free": "Bez maksas",
+        "buildings": "624 mājas jau pārbaudītas"
+      }
+    },
+    "problem": {
+      "heading": "7 no 10 padomju laika mājām pārmaksā",
+      "description": "Apsaimniekotāji izraksta rēķinus pēc saviem standartiem — iedzīvotāji nepārbauda. Mēs salīdzinām.",
+      "stats": [
+        { "value": "+23%", "label": "vidējā pārmaksa par apkuri" },
+        { "value": "+15%", "label": "vidējā pārmaksa par karsto ūdeni" },
+        { "value": "+47%", "label": "lielākā pārmaksa par uzkopšanu" },
+        { "value": "~€840", "label": "pārmaksa gadā no vienas mājas" }
+      ]
+    },
+    "steps": {
+      "heading": "Kā tas darbojas",
+      "items": [
+        {
+          "n": "1",
+          "title": "Atrodiet savu māju",
+          "desc": "Ievadiet adresi — parādīsim ēkas datus no VZD reģistra: sēriju, gadu, energoklasi."
+        },
+        {
+          "n": "2",
+          "title": "Augšupielādējiet rēķinu",
+          "desc": "PDF no jūsu apsaimniekotāja. MI analizēs dokumentu un sagatavos atskaiti."
+        },
+        {
+          "n": "3",
+          "title": "Saņemiet atskaiti",
+          "desc": "Parādīsim, par kurām pozīcijām un par cik procentiem jūsu māja pārsniedz normu — eiro izteiksmē gadā."
+        }
+      ],
+      "cta": "Sākt pārbaudi",
+      "ctaNote": "Rezultāts — 30 sekundēs"
+    },
+    "sample": {
+      "heading": "Atskaites paraugs",
+      "subtitle": "Reāls anonīms piemērs · 119. sērija · Purvciems · 5 400 m²",
+      "normLabel": "norma",
+      "yearOverpay": "Pārmaksa gadā",
+      "yearOverpayValue": "~€3 900",
+      "perApartment": "Tas ir ~€78 no katra dzīvokļa gadā",
+      "rows": [
+        { "label": "Apkure", "value": "€1.82/m²", "norm": "€1.09/m²", "dev": "+67%", "variant": "danger" },
+        { "label": "Karstais ūdens", "value": "€3.41/m²", "norm": "€2.89/m²", "dev": "+18%", "variant": "warning" },
+        { "label": "Uzkopšana", "value": "€0.33/m²", "norm": "€0.23/m²", "dev": "+43%", "variant": "danger" },
+        { "label": "Apsaimniekošana", "value": "€0.19/m²", "norm": "€0.20/m²", "dev": "−5%", "variant": "success" }
+      ]
+    },
+    "renovation": {
+      "heading": "Pēc audita — renovācija. Valsts maksā līdz 49%.",
+      "description": "Uzziniet, cik subsidē Altum un ko renovācija atdos tieši jūsu mājai.",
+      "stats": [
+        { "value": "līdz 49%", "label": "Altum subsīdija" },
+        { "value": "€140 mēnesī", "label": "vidējais ietaupījums" },
+        { "value": "+10–11%", "label": "dzīvokļa vērtības pieaugums" },
+        { "value": "8–12 gadi", "label": "atmaksāšanās laiks" }
+      ],
+      "note": "Renovācijas aprēķins ir pieejams pēc izmaksu audita — nepieciešams sākumpunkts.",
+      "cta": "Uzzināt vairāk par renovāciju →"
+    },
+    "boards": {
+      "tagline": "Biedrību valdēm",
+      "heading": "Pārvaldiet vairākas mājas vienā panelī",
+      "bullets": [
+        "Izmaksu dinamika visām portfeļa mājām",
+        "Anomālijas un salīdzinājums ar tirgu — argumenti sarunām",
+        "Elektroniskā balsošana ar Smart-ID — savākt ≥50% bez klātienes sapulces",
+        "Konkurss starp pārbaudītiem darbuzņēmējiem"
+      ],
+      "cta": "Atvērt paneli →",
+      "ctaNote": "Nepieciešama reģistrācija"
+    },
+    "trust": {
+      "heading": "Datu avoti",
+      "sources": [
+        {
+          "name": "VZD (Valsts zemes dienests)",
+          "desc": "Kadastra reģistrs: ēkas tips, platība, būvniecības gads."
+        },
+        {
+          "name": "BVKB (Būvniecības valsts kontroles birojs)",
+          "desc": "Energoefektivitātes sertifikāti: klase un siltuma patēriņš. Dati tiek atjaunināti katru dienu."
+        },
+        {
+          "name": "SPRK",
+          "desc": "Latvijas komunālo pakalpojumu tarifi un normas."
+        },
+        {
+          "name": "Altum",
+          "desc": "Oficiālie renovācijas subsīdiju nosacījumi."
+        }
+      ],
+      "privacyLabel": "Konfidencialitāte:",
+      "privacy": "PDF tiek dzēsts pēc analīzes. Māju dati tiek publicēti tikai apkopotā veidā — bez saiknes ar konkrētiem iedzīvotājiem."
+    },
+    "faq": {
+      "heading": "Biežāk uzdotie jautājumi",
+      "items": [
+        {
+          "q": "No kurienes jūs zināt, cik «vajadzētu būt»?",
+          "a": "Mēs apkopojam datus no simtiem Latvijas māju augšupielādētajiem rēķiniem un veidojam etalonus pēc ēkas sērijas, būvniecības gada, platības un rajona. Jo vairāk datu — jo precīzāka norma. Jūs redzat tieši savas mājas atšķirību no normas, nevis abstraktu vidējo rādītāju."
+        },
+        {
+          "q": "Kāpēc jāaugšupielādē PDF? Vai nevar ievadīt datus manuāli?",
+          "a": "MI lasa PDF automātiski — ātrāk nekā aizpildīt formu ar roku."
+        },
+        {
+          "q": "Mana māja nav atrasta datu bāzē — ko darīt?",
+          "a": "Augšupielādējiet rēķinu jebkurā gadījumā. Mēs salīdzināsim jūsu datus ar vidējiem rādītājiem rajonā un pēc sērijas. Mājas kartīte tiks papildināta vēlāk, kad VZD atjauninās reģistru."
+        },
+        {
+          "q": "Kas notiks ar manu e-pastu?",
+          "a": "Atskaite un paziņojumi par jūsu māju. Jūs paši izvēlaties, ko saņemt — ievadot e-pastu, varat izvēlēties tēmas, kas jūs interesē."
+        },
+        {
+          "q": "Vai tas ir maksas pakalpojums?",
+          "a": "Izmaksu audits un pamata atskaite — bez maksas. Personīgais renovācijas aprēķins — bez maksas. Maksas pakalpojums: darījuma pavadīšana ar darbuzņēmēju (komisija 1–2% no līguma summas)."
+        },
+        {
+          "q": "Es esmu valdes priekšsēdētājs. Ko tas man dod?",
+          "a": "Augšupielādējiet rēķinus par visām portfeļa mājām — saņemsiet izmaksu dinamiku, anomālijas, salīdzinājumu ar normu. Rīks sarunām ar apsaimniekotāju un argumenti īpašniekiem, balsojot par renovāciju."
+        }
+      ]
+    },
+    "blogPreview": {
+      "heading": "No bloga",
+      "all": "Visi raksti →",
+      "min": "min.",
+      "posts": [
+        {
+          "href": "/blog/subsidiya-altum-renovaciya-2025",
+          "title": "Altum subsīdija: pilnīgs ceļvedis 2025",
+          "tag": "renovācija",
+          "mins": 8
+        },
+        {
+          "href": "/blog/norma-rashoda-tepla-latviya",
+          "title": "Siltuma patēriņa norma: cik vajadzētu būt",
+          "tag": "apkure",
+          "mins": 6
+        },
+        {
+          "href": "/blog/seriya-119-latviya",
+          "title": "119. sērijas mājas: kāpēc pārmaksā",
+          "tag": "apkure",
+          "mins": 7
+        }
+      ]
+    },
+    "footer": {
+      "description": "Platforma padomju laika māju iedzīvotājiem Latvijā",
+      "servicesTitle": "Pakalpojumi",
+      "auditLink": "Rēķinu audits",
+      "renovationLink": "Renovācija",
+      "blogLink": "Blogs",
+      "partnersTitle": "Partneriem",
+      "contractorsLink": "Darbuzņēmējiem",
+      "contactsTitle": "Kontakti",
+      "privacyLink": "Konfidencialitātes politika",
+      "termsLink": "Lietošanas noteikumi",
+      "copyright": "© 2025 ALTEKO"
+    }
   },
   "blog": {
     "title": "Blogs",

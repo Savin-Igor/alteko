@@ -16,8 +16,10 @@
     "db:studio": "prisma studio",
     "sync:vzd": "tsx scripts/sync-vzd.ts",
     "sync:bvkb": "tsx scripts/sync-bvkb.ts",
+    "sync:transactions": "tsx scripts/sync-transactions.ts",
     "seed:benchmarks": "tsx scripts/seed-benchmarks.ts",
-    "seed:blog": "tsx prisma/seed-blog.ts"
+    "seed:blog": "tsx prisma/seed-blog.ts",
+    "seed:series": "tsx prisma/seed-series.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.4",

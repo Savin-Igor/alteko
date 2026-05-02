@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -145,6 +146,8 @@ model Building {
   constructionYear Int?
   totalAreaM2      Decimal?
   apartmentCount   Int?
+  floorCount       Int?
+  wallMaterial     String?
   energyClass      EnergyClass?
   district         String?
   lat              Decimal?
@@ -153,14 +156,17 @@ model Building {
   bvkbUpdatedAt    DateTime?
   createdAt        DateTime     @default(now())
 
-  apartments Apartment[]
-  reports    ExpenseReport[]
-  campaigns  VotingCampaign[]
-  projects   RenovationProject[]
+  apartments           Apartment[]
+  reports              ExpenseReport[]
+  campaigns            VotingCampaign[]
+  projects             RenovationProject[]
+  apartmentTransactions ApartmentTransaction[]
 
   @@index([district])
   @@index([series])
   @@index([energyClass])
+  @@index([constructionYear])
+  @@index([wallMaterial])
 }
 
 model Apartment {
@@ -318,4 +324,102 @@ model RenovationProject {
   building   Building        @relation(fields: [buildingId], references: [id])
   campaign   VotingCampaign? @relation(fields: [campaignId], references: [id])
   contractor Contractor?     @relation(fields: [contractorId], references: [id])
+}
+
+// ─── OPEN DATA SYNC MODELS ────────────────────────────────────
+
+// VZD apartment transaction prices — synced from tg_darjumi CSV (data.gov.lv)
+// Source: https://data.gov.lv/dati/lv/dataset/darijumi-ar-telpu-grupam
+// CSV field mapping: DeaId, ObjType, ProCadNr, Std, ArDistrict, ArCity, ArParish,
+//   DeaDate (YYYY-MM-DD), DeaAmount, BuiCadNr, BuiTotalArea, BuiExploitYear,
+//   MaterialKind, Deprecation, PregCadNr, PregFloorMin, PregFloorMax, PregTotalArea
+model ApartmentTransaction {
+  id              String   @id @default(uuid())
+  deaId           Int      @unique
+  objType         String
+  propertyCadNr   String
+  buildingCadNr   String?
+  address         String
+  district        String?
+  city            String?
+  transactionDate DateTime
+  priceEur        Decimal
+  buildingAreaM2  Decimal?
+  buildingYear    Int?
+  wallMaterial    String?
+  depreciation    String?
+  apartmentCadNr  String?
+  floorMin        Int?
+  floorMax        Int?
+  apartmentAreaM2 Decimal?
+  syncedAt        DateTime @default(now())
+
+  building Building? @relation(fields: [buildingCadNr], references: [cadastralCode])
+
+  @@index([buildingCadNr])
+  @@index([city])
+  @@index([transactionDate])
+  @@index([buildingYear])
+}
+
+// VZD cadastral values — synced annually from data.gov.lv
+// Source: https://data.gov.lv/dati/dataset/fiskalas-un-universalas-kadastralas-vertibas-uz-2025-gada-1-janvari
+model CadastralValue {
+  id                String   @id @default(uuid())
+  cadastralNr       String
+  objectType        String
+  fiscalValueEur    Decimal?
+  universalValueEur Decimal?
+  validFrom         DateTime
+  syncedAt          DateTime @default(now())
+
+  @@unique([cadastralNr, validFrom])
+  @@index([cadastralNr])
+}
+
+// CSP house price and construction cost indices
+// Source: stat.gov.lv API
+model PriceIndex {
+  id            String   @id @default(uuid())
+  indexType     String   // HOUSE_PRICE | CONSTRUCTION_COST
+  region        String?
+  periodYear    Int
+  periodQuarter Int?
+  periodMonth   Int?
+  value         Decimal
+  syncedAt      DateTime @default(now())
+
+  @@unique([indexType, region, periodYear, periodQuarter, periodMonth])
+  @@index([indexType, periodYear])
+}
+
+// SPRK utility tariffs — manually seeded and updated per regulatory decisions
+// Source: sprk.gov.lv
+model UtilityTariff {
+  id           String    @id @default(uuid())
+  providerName String
+  city         String
+  tariffType   String    // HEATING | COLD_WATER | WASTEWATER
+  pricePerUnit Decimal
+  unit         String    // EUR/MWh | EUR/m3
+  validFrom    DateTime
+  validTo      DateTime?
+  sourceUrl    String?
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([providerName, tariffType, validFrom])
+  @@index([city, tariffType])
+}
+
+// Building series reference — static seed from academic sources
+// No official registry exists; heuristic match via year + material + floors
+model BuildingSeries {
+  code              String  @id
+  wallMaterialKey   String
+  floorsMin         Int?
+  floorsMax         Int?
+  yearFrom          Int
+  yearTo            Int
+  typicalAreaM2     Decimal?
+  description       String?
 }
