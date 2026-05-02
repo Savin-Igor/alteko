@@ -455,6 +455,60 @@
       "shareSubtitle": "Padalieties — lai pārbauda",
       "shareMessage": "Pārbaudīju mūsu mājas izdevumus ALTEKO. Pārmaksājam par apkuri {deviation}%. Apskaties: {url}",
       "shareShortMessage": "Pārmaksājam par apkuri {deviation}%"
+    },
+    "marketing": {
+      "metadata": {
+        "title": "Mājas komunālo izdevumu audits — ALTEKO",
+        "description": "Pārbaudiet, vai jūsu māja pārmaksā par apkuri un komunālajiem pakalpojumiem. Salīdzinām pēc sērijas un rajona."
+      },
+      "hero": {
+        "title": "Vai jūsu māja pārmaksā?",
+        "titleAccent": "Pārbaudīsim 30 sekundēs.",
+        "description": "MI analizēs apsaimniekotāja rēķinu un salīdzinās ar normu līdzīgām mājām jūsu rajonā.",
+        "cta": "Atrast savu māju",
+        "ctaLoading": "Meklējam māju...",
+        "errorNotFound": "Māja nav atrasta datu bāzē. Mēģiniet citu adresi.",
+        "errorConnection": "Savienojuma kļūda. Pārbaudiet internetu un mēģiniet vēlreiz."
+      },
+      "whatIs": {
+        "heading": "Ko pārbauda izmaksu audits",
+        "description": "Katrs eiro rēķinā tiek normēts uz m² un salīdzināts ar mediānu līdzīgām mājām: sērija, gads, rajons.",
+        "categories": [
+          { "label": "Apkure", "desc": "60% no visām pārmaksām. Salīdzinām pēc ēkas sērijas — 103., 119., 467. u.c." },
+          { "label": "Karstais ūdens", "desc": "Kopīgā skaitītāja rādījums vs. dzīvokļu summa — noplūdes vai aprēķina kļūdas pazīme." },
+          { "label": "Uzkopšana un pārvaldība", "desc": "Necaurspīdīgas pozīcijas. Salīdzinām ar tirgu jūsu rajonā." },
+          { "label": "Remonta fonds", "desc": "Uzkrātais vs. plānotie darbi. Anomālijas ir uzreiz redzamas." }
+        ]
+      },
+      "boards": {
+        "tagline": "Valdēm",
+        "heading": "Argumenti sarunām ar apsaimniekotāju",
+        "description": "Viens panelis visam māju portfelim. Anomālijas, tendences, salīdzinājums ar tirgu.",
+        "bullets": [
+          "Augšupielādējiet rēķinus par vairākām mājām vienuviet",
+          "Redziet izdevumu tendences katrai kategorijai",
+          "Atklājiet anomālijas automātiski",
+          "Sagatavojiet argumentus īpašniekiem, balsojot par renovāciju"
+        ],
+        "cta": "Atvērt paneli →"
+      },
+      "faq": {
+        "heading": "Biežāk uzdotie jautājumi",
+        "items": [
+          { "q": "Ko tieši pārbauda?", "a": "Visas rēķina pozīcijas: apkure, karstais un aukstais ūdens, kanalizācija, uzkopšana, pārvaldība, remonta fonds, lifts. Katra tiek normēta uz m² un salīdzināta ar P25/P50/P75 pēc līdzīgām mājām." },
+          { "q": "No kurienes ņem normas datus?", "a": "No rēķiniem, ko augšupielādē iedzīvotāji visā Latvijā — plus SPRK tarifi un VZD reģistrs. Jo vairāk māju augšupielādē rēķinus, jo precīzāka norma jūsu segmentam." },
+          { "q": "Vai tas ir bez maksas?", "a": "Audits un priekšskatījuma atskaite — bez maksas. Pilna atskaite ar sadalījumu — pēc e-pasta. Maksas pakalpojums: renovācijas pavadīšana (1–2% no līguma summas)." },
+          { "q": "Vai PDF augšupielāde ir droša?", "a": "Fails tiek izmantots tikai analīzei un dzēsts pēc apstrādes. Dati tiek publicēti apkopotā veidā bez saiknes ar konkrētiem iedzīvotājiem vai adresēm." }
+        ]
+      },
+      "cta": {
+        "heading": "Sāciet pārbaudi tūlīt",
+        "sub": "Bez maksas · 30 sekundes · Bez reģistrācijas"
+      },
+      "footer": {
+        "renovation": "Renovācija",
+        "blog": "Blogs"
+      }
     }
   },
   "building": {
@@ -480,7 +534,44 @@
     "similarBuildings": "Līdzīgu māju datu bāzē: {count}",
     "fallbackPending": "Dati par šo māju tiek precizēti",
     "uploadCta": "Augšupielādēt apsaimniekotāja rēķinu",
-    "noBillReminder": "Nav rēķina pa rokai? Atcerēties adresi — atsūtīsim atgādinājumu"
+    "noBillReminder": "Nav rēķina pa rokai? Atcerēties adresi — atsūtīsim atgādinājumu",
+    "renovateCta": "Iniciēt renovāciju →",
+    "renovate": {
+      "meta": {
+        "title": "Renovācija — {address}",
+        "description": "Mājas renovācijas iniciatīva. Balsošana ar Smart-ID."
+      },
+      "backToBuilding": "Uz mājas kartīti",
+      "activeTitle": "Notiek balsošana par renovāciju",
+      "completedTitle": "Balsošana pabeigta",
+      "noActive": {
+        "title": "Renovācija vēl nav uzsākta",
+        "description": "Lai sāktu renovāciju, mājas valdei jāatver īpašnieku balsošana. Ja vēlaties uzsākt procesu — ieejiet sistēmā kā valdes pārstāvis.",
+        "auditCta": "Sākt ar izmaksu auditu →",
+        "boardCta": "Ieiet panelī →"
+      },
+      "progress": {
+        "votedLabel": "«Par» balsis:",
+        "requiredLabel": "Nepieciešams lēmumam:",
+        "thresholdReached": "Slieksnis sasniegts. Dokumenti tiek sagatavoti iesniegšanai Altum.",
+        "deadlineLabel": "Balsošanas termiņš:"
+      },
+      "voteCta": "Doties uz balsošanu →",
+      "howItWorks": {
+        "heading": "Kā notiek balsošana",
+        "items": [
+          "Valde augšupielādē īpašnieku sarakstu no Zemesgrāmatas",
+          "Katrs īpašnieks saņem balsošanas saiti (SMS / e-pasts)",
+          "Balss tiek parakstīta ar Smart-ID vai eParaksts",
+          "Pie ≥50% «par» balsu sistēma sagatavo juridiski nozīmīgu protokolu"
+        ]
+      },
+      "legal": "Balsošana ir likumīga saskaņā ar Dzīvokļa īpašuma likumu, 20.(7-8) pantu, 2022. g.",
+      "share": {
+        "label": "Kopīgot ar kaimiņiem",
+        "copied": "Saite nokopēta"
+      }
+    }
   },
   "renovation": {
     "metadata": {
@@ -606,6 +697,45 @@
       "ctaCalculate": "Aprēķināt renovāciju {address} →",
       "howAltum": "Kā darbojas Altum subsīdija?",
       "sourcesNote": "Avoti: Altum, fi-compass 2024, Latvijas Banka DP 3/2025"
+    },
+    "comparison": {
+      "heading": "Kā tas notiek šobrīd — un kā ar ALTEKO",
+      "without": {
+        "label": "Bez ALTEKO",
+        "items": [
+          "Papīra paziņojumi — daudzi nelasa",
+          "Klātienes sapulce — kvorumu ir grūti savākt",
+          "Dokumenti — 12+ soļi manuāli",
+          "Konversija: 2,7% no 23 500 mājām"
+        ]
+      },
+      "with": {
+        "label": "Ar ALTEKO",
+        "items": [
+          "Balsošana ar Smart-ID — telefonā",
+          "Bez klātienes sapulces — juridiski nozīmīgi",
+          "Visu dokumentu automātiskā ģenerēšana",
+          "Vadām no pirmā rēķina līdz līgumam"
+        ]
+      }
+    },
+    "faq": {
+      "heading": "Biežāk uzdotie jautājumi par renovāciju",
+      "items": [
+        { "q": "Kam ir tiesības uz Altum subsīdiju?", "a": "Daudzdzīvokļu mājām ar energoklasi D–G. Lielākā daļa padomju laika paneļu māju ir piemērotas. Jūsu mājas precīzā klase ir mājas kartītē pēc adreses meklēšanas." },
+        { "q": "Cik balsu jāsavāc?", "a": "Vismaz 50% no kopējām īpašuma daļām. Ne no dzīvokļu skaita, bet no daļām — kā reģistrēts Zemesgrāmatā." },
+        { "q": "Kā notiek balsošana?", "a": "Katrs īpašnieks saņem saiti un balso ar Smart-ID vai eParaksts. Tas ir likumīgi saskaņā ar Dzīvokļa īpašuma likumu, 20.(7-8) pantu, 2022. g." },
+        { "q": "Cik ilgs ir viss process?", "a": "No audita līdz līguma parakstīšanai ar darbuzņēmēju — parasti 3–6 mēneši. Altum pieteikuma izskatīšana — vēl 2–3 mēneši." },
+        { "q": "Ko darīt, ja kaimiņi ir pret?", "a": "Nepieciešamas tikai 50%+. Ja jūs sasniedzat slieksni pēc īpašuma daļām — process turpinās. Balsošana ar Smart-ID ievērojami palielina apmeklētību salīdzinājumā ar papīra paziņojumiem." }
+      ]
+    },
+    "findHome": {
+      "heading": "Atrodiet savu māju",
+      "description": "Ievadiet adresi, lai pārbaudītu izdevumus un skatītu renovācijas iniciatīvas statusu.",
+      "cta": "Pārbaudīt manu māju →",
+      "ctaLoading": "Meklējam māju...",
+      "errorNotFound": "Māja nav atrasta datu bāzē. Mēģiniet citu adresi.",
+      "errorConnection": "Savienojuma kļūda. Pārbaudiet internetu un mēģiniet vēlreiz."
     }
   },
   "blog": {
