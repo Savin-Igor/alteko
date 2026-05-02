@@ -19,11 +19,16 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
 
 interface Stat { value: string; label: string }
 interface ProcessStep { n: string; title: string; desc: string; cta?: string }
+interface FaqItem { q: string; a: string }
+interface ComparisonSide { label: string; items: string[] }
 
 export default async function RenovationMarketingPage() {
   const t = await getTranslations('renovation')
   const stats = t.raw('stats') as Stat[]
   const steps = t.raw('process.steps') as ProcessStep[]
+  const faqItems = t.raw('faq.items') as FaqItem[]
+  const comparisonWithout = t.raw('comparison.without') as ComparisonSide
+  const comparisonWith = t.raw('comparison.with') as ComparisonSide
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -109,17 +114,67 @@ export default async function RenovationMarketingPage() {
         </div>
       </section>
 
-      {/* CTA */}
+      {/* Comparison: before / after ALTEKO */}
+      <section className="px-4 py-12 bg-white border-t border-gray-100">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-xl font-bold text-gray-900 mb-8 text-center">
+            {t('comparison.heading')}
+          </h2>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="card border-red-100 bg-danger-light space-y-3">
+              <p className="text-sm font-semibold text-danger">{comparisonWithout.label}</p>
+              <ul className="space-y-2">
+                {comparisonWithout.items.map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
+                    <span className="status-dot-danger mt-1.5 flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="card border-green-100 bg-success-light space-y-3">
+              <p className="text-sm font-semibold text-success">{comparisonWith.label}</p>
+              <ul className="space-y-2">
+                {comparisonWith.items.map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
+                    <span className="status-dot-success mt-1.5 flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="px-4 py-12 bg-gray-50 border-t border-gray-100">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-xl font-bold text-gray-900 mb-6 text-center">
+            {t('faq.heading')}
+          </h2>
+          <div className="space-y-3">
+            {faqItems.map((item, i) => (
+              <div key={i} className="card space-y-1.5">
+                <p className="text-sm font-semibold text-gray-900">{item.q}</p>
+                <p className="text-sm text-gray-600 leading-relaxed">{item.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Find home CTA */}
       <section className="px-4 py-16 bg-white border-t border-gray-100">
         <div className="max-w-md mx-auto text-center space-y-4">
           <h2 className="text-xl font-bold text-gray-900">
-            {t('cta.heading')}
+            {t('findHome.heading')}
           </h2>
-          <p className="text-gray-500">
-            {t('cta.description')}
+          <p className="text-gray-500 leading-relaxed">
+            {t('findHome.description')}
           </p>
           <Link href="/" className="btn-primary block">
-            {t('cta.button')}
+            {t('findHome.cta')}
           </Link>
           <p className="text-xs text-gray-400">{t('cta.note')}</p>
         </div>
