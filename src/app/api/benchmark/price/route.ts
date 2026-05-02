@@ -1,20 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { getPriceBenchmark } from '@/lib/benchmarks/price'
+import { getPriceBenchmark, getPriceBenchmarkBreakdown } from '@/lib/benchmarks/price'
 
 export const runtime = 'nodejs'
 
 const schema = z.object({
-  cadastralCode: z.string().min(1).max(20).optional(),
   city:          z.string().min(1).max(100).optional(),
+  cadastralCode: z.string().min(1).max(20).optional(),
   yearFrom:      z.coerce.number().int().min(1800).max(2030).optional(),
   yearTo:        z.coerce.number().int().min(1800).max(2030).optional(),
   txYears:       z.coerce.number().int().min(1).max(20).optional(),
   minArea:       z.coerce.number().min(5).max(1000).optional(),
   maxArea:       z.coerce.number().min(5).max(1000).optional(),
+  groupBy:       z.enum(['city', 'wallMaterial']).optional(),
 }).refine(
-  (d) => d.cadastralCode || d.city,
-  { message: 'At least one of cadastralCode or city is required' },
+  (d) => d.groupBy || d.cadastralCode || d.city,
+  { message: 'Provide at least one of: groupBy, cadastralCode, city' },
 )
 
 export async function GET(req: NextRequest) {
@@ -28,14 +29,25 @@ export async function GET(req: NextRequest) {
     )
   }
 
-  const result = await getPriceBenchmark(parsed.data)
+  const { groupBy, ...rest } = parsed.data
 
+  if (groupBy) {
+    const result = await getPriceBenchmarkBreakdown({ ...rest, groupBy })
+    if (!result) {
+      return NextResponse.json(
+        { error: 'Not enough data for the given filters' },
+        { status: 404 },
+      )
+    }
+    return NextResponse.json(result)
+  }
+
+  const result = await getPriceBenchmark(rest)
   if (!result) {
     return NextResponse.json(
-      { error: 'Not enough transaction data for the given filters (minimum 5 transactions required)' },
+      { error: 'Not enough transaction data (minimum 5 per group required)' },
       { status: 404 },
     )
   }
-
   return NextResponse.json(result)
 }
