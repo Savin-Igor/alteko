@@ -67,7 +67,6 @@ These are non-negotiable across all agents:
 | `doc-writer` | Documentation writer | Create or update any file in `docs/` |
 | `latvia-researcher` | Fact verifier | Verify any claim about Latvia: law, stats, subsidies, real estate |
 | `alteko-product-architect` | Product + tech architect | Design UX scenarios, data models, API routes, integrations |
-| `ux-designer` | UX designer | Design screens, flows, forms, onboarding, microcopy |
 | `ux-scenario-designer` | UX scenario specialist | Map multi-step flows, validate email-gate placement |
 | `business-analyst` | Business analyst | Evaluate monetization decisions, compare strategic options |
 
