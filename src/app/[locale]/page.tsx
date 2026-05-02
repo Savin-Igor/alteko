@@ -510,8 +510,8 @@ export default function HomePage() {
           <div className="border-t border-gray-100 pt-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-2 text-xs text-gray-400">
             <span>© 2025 ALTEKO</span>
             <div className="flex gap-4">
-              <a href="#" className="hover:text-gray-600">Политика конфиденциальности</a>
-              <a href="#" className="hover:text-gray-600">Условия использования</a>
+              <Link href="/privacy" className="hover:text-gray-600">Политика конфиденциальности</Link>
+              <Link href="/terms" className="hover:text-gray-600">Условия использования</Link>
             </div>
           </div>
         </div>
