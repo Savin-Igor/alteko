@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { useLocale } from 'next-intl'
 import { useState } from 'react'
 import Link from 'next/link'
 import { AddressAutocomplete } from '@/components/AddressAutocomplete'
@@ -59,6 +60,7 @@ const TEXT_COLOR: Record<string, string> = {
 
 export default function HomePage() {
   const router = useRouter()
+  const locale = useLocale()
   const [resolving, setResolving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [openFaq, setOpenFaq] = useState<number | null>(null)
@@ -78,9 +80,9 @@ export default function HomePage() {
       const building = await res.json()
 
       if (building.found && building.cadastralCode) {
-        router.push(`/building/${building.cadastralCode}`)
+        router.push(`/${locale}/building/${building.cadastralCode}`)
       } else if (building.cadastralCode) {
-        router.push(`/building/${building.cadastralCode}?address=${encodeURIComponent(suggestion.address)}`)
+        router.push(`/${locale}/building/${building.cadastralCode}?address=${encodeURIComponent(suggestion.address)}`)
       } else {
         setError('Дом не найден в базе. Попробуйте другой адрес.')
       }
@@ -108,7 +110,7 @@ export default function HomePage() {
           <p className="text-gray-500 mb-8 leading-relaxed">
             Загрузите PDF-счёт — ИИ сравнит расходы вашего дома
             с нормой по серии, площади и кварталу.
-            Бесплатно. Без регистрации.
+            Бесплатно.
           </p>
 
           <div className="space-y-3 text-left">
@@ -143,8 +145,6 @@ export default function HomePage() {
 
           <div className="flex items-center justify-center gap-4 mt-5 text-xs text-gray-400">
             <span>Бесплатно</span>
-            <span>·</span>
-            <span>Без регистрации</span>
             <span>·</span>
             <span>624 дома уже проверили</span>
           </div>
