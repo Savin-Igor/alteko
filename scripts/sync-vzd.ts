@@ -2,10 +2,32 @@ import { prisma } from '../src/lib/prisma'
 
 // VAR (Valsts adresu reģistrs) building sync — weekly from data.gov.lv
 // Dataset: https://data.gov.lv/dati/dataset/varis-atvertie-dati
-// File: aw_eka.csv (buildings only, TIPS_CD=108)
-// CSV columns: KODS,TIPS_CD,STATUSS,APSTIPR,APST_PAK,VKUR_CD,VKUR_TIPS,
-//              NOSAUKUMS,SORT_NOS,ATRIB,PNOD_CD,DAT_SAK,DAT_MOD,DAT_BEIG,
-//              FOR_BUILD,PLAN_ADR,STD,KOORD_X,KOORD_Y,DD_N,DD_E
+// Spec:    https://www.vzd.gov.lv/sites/vzd/files/media_file/varis_csv_specifikacija_v7_24072025_3.pdf
+// File: aw_eka.csv — ēku un apbūvei paredzēto zemes vienību adreses
+//
+// CSV columns (21 total, UTF-8 BOM, comma-separated, RFC 4180 quoting):
+//   0  KODS       String(9)   VAR address code (vzdId in our DB)
+//   1  TIPS_CD    String(3)   108 = ēka / apbūvei paredzēta zemes vienība
+//   2  STATUSS    String(3)   EKS=existing, DEL=deleted, ERR=error
+//   3  APSTIPR    String(1)   "Y" = approved
+//   4  APST_PAK   String(3)   approval level
+//   5  VKUR_CD    String(9)   parent object code
+//   6  VKUR_TIPS  String(3)   parent object type
+//   7  NOSAUKUMS  String(55)  current name
+//   8  SORT_NOS   String(55)  sort name
+//   9  ATRIB      String(7)   postal code (pasta indekss)
+//  10  PNOD_CD    String(9)   postal area code
+//  11  DAT_SAK    Date        creation date
+//  12  DAT_MOD    Date        modification date
+//  13  DAT_BEIG   Date        deletion date
+//  14  FOR_BUILD  String(1)   "N"=ēka (building), "Y"=apbūvei paredzēta zemes vienība
+//  15  PLAN_ADR   String(10)  "N"=linked to KIS cadastre, "Y"=planned/unlinked
+//  16  STD        String(103) full address text
+//  17  KOORD_X    Double(10)  centroid X, LKS-92
+//  18  KOORD_Y    Double(10)  centroid Y, LKS-92
+//  19  DD_N       Double(9)   latitude  WGS-84
+//  20  DD_E       Double(9)   longitude WGS-84
+//
 // Note: KODS is the VAR address code (vzdId), not a cadastral code.
 //       cadastralCode in the Building table must be obtained from LVM GeoServer WFS.
 //       VAR-synced buildings use surrogate cadastralCode = "VAR:{KODS}" until
@@ -64,14 +86,15 @@ async function syncVzd() {
     }
 
     const kods     = cols[0]?.trim()
-    const tipscd   = cols[1]?.trim()
     const statuss  = cols[2]?.trim()
+    const forBuild = cols[14]?.trim()
     const std      = cols[16]?.trim()
-    const ddN      = cols[19]?.trim() // latitude (WGS84)
-    const ddE      = cols[20]?.trim() // longitude (WGS84)
+    const ddN      = cols[19]?.trim() // latitude  WGS-84 (DD_N)
+    const ddE      = cols[20]?.trim() // longitude WGS-84 (DD_E)
 
-    // only active buildings (TIPS_CD=108 is guaranteed by aw_eka.csv; filter EKS=existing)
-    if (!kods || statuss !== 'EKS' || !std) {
+    // FOR_BUILD="N" → ēka (building); "Y" → apbūvei paredzēta zemes vienība (land plot)
+    // STATUSS="EKS" → existing; "DEL"/"ERR" → skip
+    if (!kods || statuss !== 'EKS' || forBuild !== 'N' || !std) {
       skipped++
       continue
     }
