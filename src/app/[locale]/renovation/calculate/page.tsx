@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { PageHeader, InfoBanner } from '@/components/ui'
 
 interface CalcResult {
@@ -35,21 +36,12 @@ interface DocUrls {
   agendaLv?: string
 }
 
-const DOC_LABELS: Record<string, string> = {
-  intentRu: 'Заявление о намерении (RU)',
-  intentLv: 'Nodomu pieteikums (LV)',
-  agendaRu: 'Повестка собрания (RU)',
-  agendaLv: 'Sapulces darba kārtība (LV)',
-}
-
-const DOC_DESCRIPTIONS: Record<string, string> = {
-  intentRu: 'Нужно для подачи в Altum',
-  intentLv: 'Nepieciešams iesniegšanai Altum',
-  agendaRu: 'Для проведения собрания собственников',
-  agendaLv: 'Īpašnieku sapulcei',
-}
+type DocKey = 'intentRu' | 'intentLv' | 'agendaRu' | 'agendaLv'
 
 function CalcContent() {
+  const t = useTranslations('renovation.calculate')
+  const tDocs = useTranslations('renovation.calculate.docs')
+
   const searchParams = useSearchParams()
   const buildingId = searchParams.get('buildingId') ?? ''
 
@@ -64,8 +56,8 @@ function CalcContent() {
     fetch(`/api/renovation/calculate?buildingId=${buildingId}`)
       .then((r) => r.json())
       .then((d) => { setResult(d); setLoading(false) })
-      .catch(() => { setError('Ошибка загрузки'); setLoading(false) })
-  }, [buildingId])
+      .catch(() => { setError(t('errorLoad')); setLoading(false) })
+  }, [buildingId, t])
 
   async function handleGenerateDocs() {
     setGenerating(true)
@@ -77,9 +69,9 @@ function CalcContent() {
       })
       const data = await res.json()
       if (res.ok) setDocUrls(data.documents)
-      else setError(data.error ?? 'Ошибка генерации документов')
+      else setError(data.error ?? t('errorGenerate'))
     } catch {
-      setError('Ошибка соединения')
+      setError(t('errorConnection'))
     } finally {
       setGenerating(false)
     }
@@ -112,7 +104,7 @@ function CalcContent() {
       <PageHeader variant="minimal" />
 
       <main className="flex-1 px-4 py-6 max-w-md mx-auto w-full space-y-4">
-        <h1 className="text-xl font-semibold text-gray-900">Расчёт реновации</h1>
+        <h1 className="text-xl font-semibold text-gray-900">{t('title')}</h1>
 
         {error && <InfoBanner variant="error">{error}</InfoBanner>}
 
@@ -120,52 +112,49 @@ function CalcContent() {
           <>
             {!result.isPersonalized && (
               <InfoBanner variant="info">
-                Расчёт основан на средних данных по серии. Загрузите счёт для точного расчёта.
+                {t('warningGeneric')}
               </InfoBanner>
             )}
 
-            {/* Savings card */}
             <div className="card space-y-3">
-              <p className="text-sm font-medium text-gray-700">Экономия на отоплении</p>
+              <p className="text-sm font-medium text-gray-700">{t('savingsTitle')}</p>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500">Сейчас:</span>
-                <span className="text-sm font-medium text-gray-900">€{result.savings.currentHeatingMonthly}/мес.</span>
+                <span className="text-sm text-gray-500">{t('currentLabel')}</span>
+                <span className="text-sm font-medium text-gray-900">{t('perMonthValue', { amount: result.savings.currentHeatingMonthly })}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500">После реновации:</span>
-                <span className="text-sm font-medium text-success">€{result.savings.projectedHeatingMonthly}/мес.</span>
+                <span className="text-sm text-gray-500">{t('afterRenovationLabel')}</span>
+                <span className="text-sm font-medium text-success">{t('perMonthValue', { amount: result.savings.projectedHeatingMonthly })}</span>
               </div>
               <div className="flex justify-between items-center border-t border-gray-100 pt-2">
-                <span className="text-sm font-medium text-gray-700">Экономия:</span>
-                <span className="text-lg font-bold text-success">€{result.savings.monthlySavingsPerApt}/мес./кв.</span>
+                <span className="text-sm font-medium text-gray-700">{t('savingsLabel')}</span>
+                <span className="text-lg font-bold text-success">{t('perMonthPerAptValue', { amount: result.savings.monthlySavingsPerApt })}</span>
               </div>
             </div>
 
-            {/* Financing card */}
             <div className="card space-y-3">
-              <p className="text-sm font-medium text-gray-700">Финансирование</p>
+              <p className="text-sm font-medium text-gray-700">{t('financingTitle')}</p>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Стоимость реновации:</span>
+                <span className="text-gray-500">{t('renovationCost')}</span>
                 <span className="text-gray-900">€{result.costEstimate.low.toLocaleString()} – €{result.costEstimate.high.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Субсидия Altum ({Math.round(result.subsidy.subsidyPercent)}%):</span>
+                <span className="text-gray-500">{t('altumSubsidy', { percent: Math.round(result.subsidy.subsidyPercent) })}</span>
                 <span className="text-success font-medium">€{result.subsidy.subsidyAmount.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-sm border-t border-gray-100 pt-2">
-                <span className="text-gray-500">Ваша доля (на квартиру):</span>
+                <span className="text-gray-500">{t('yourShare')}</span>
                 <span className="font-medium text-gray-900">€{result.subsidy.ownerSharePerApt.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Срок окупаемости:</span>
-                <span className="font-medium text-gray-900">{result.subsidy.paybackYears} лет</span>
+                <span className="text-gray-500">{t('paybackPeriod')}</span>
+                <span className="font-medium text-gray-900">{t('yearsValue', { years: result.subsidy.paybackYears })}</span>
               </div>
             </div>
 
-            {/* Documents */}
             {docUrls ? (
               <div className="card space-y-3">
-                <p className="text-sm font-medium text-success">Документы готовы:</p>
+                <p className="text-sm font-medium text-success">{t('documentsReady')}</p>
                 <div className="space-y-2">
                   {Object.entries(docUrls).map(([key, url]) => url ? (
                     <a
@@ -182,8 +171,8 @@ function CalcContent() {
                         </svg>
                       </div>
                       <div>
-                        <p className="text-sm text-primary font-medium">{DOC_LABELS[key] ?? key}</p>
-                        <p className="text-xs text-gray-400 mt-0.5">{DOC_DESCRIPTIONS[key] ?? ''}</p>
+                        <p className="text-sm text-primary font-medium">{tDocs(`${key as DocKey}.label`)}</p>
+                        <p className="text-xs text-gray-400 mt-0.5">{tDocs(`${key as DocKey}.description`)}</p>
                       </div>
                     </a>
                   ) : null)}
@@ -198,18 +187,17 @@ function CalcContent() {
                 {generating ? (
                   <span className="flex items-center justify-center gap-2">
                     <span className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                    Готовим документы...
+                    {t('preparingDocs')}
                   </span>
-                ) : 'Скачать документы для Altum'}
+                ) : t('downloadDocs')}
               </button>
             )}
 
-            {/* Voting CTA — primary hierarchy */}
             <a
               href={`/dashboard/voting?buildingId=${buildingId}`}
               className="btn-primary text-center block"
             >
-              Начать голосование собственников →
+              {t('startVoting')}
             </a>
           </>
         )}
