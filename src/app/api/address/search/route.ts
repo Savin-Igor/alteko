@@ -25,9 +25,7 @@ interface NominatimResult {
 function formatAddress(addr: NominatimAddress): string {
   const road = addr.road ?? ''
   const num = addr.house_number ?? ''
-  const city = addr.city ?? addr.town ?? addr.village ?? addr.county ?? ''
-  const street = [road, num].filter(Boolean).join(' ')
-  return [street, city].filter(Boolean).join(', ')
+  return [road, num].filter(Boolean).join(' ')
 }
 
 export async function GET(req: NextRequest) {

@@ -32,21 +32,26 @@ export default async function BuildingPage({ params, searchParams }: Props) {
   const { cadastralCode } = await params
   const { address: fallbackAddress } = await searchParams
 
-  const building = await prisma.building.findUnique({
-    where: { cadastralCode },
-    select: {
-      id: true,
-      address: true,
-      cadastralCode: true,
-      series: true,
-      constructionYear: true,
-      totalAreaM2: true,
-      apartmentCount: true,
-      energyClass: true,
-      district: true,
-      _count: { select: { reports: true } },
-    },
-  })
+  let building = null
+  try {
+    building = await prisma.building.findUnique({
+      where: { cadastralCode },
+      select: {
+        id: true,
+        address: true,
+        cadastralCode: true,
+        series: true,
+        constructionYear: true,
+        totalAreaM2: true,
+        apartmentCount: true,
+        energyClass: true,
+        district: true,
+        _count: { select: { reports: true } },
+      },
+    })
+  } catch {
+    // DB unavailable — render with fallback address if available
+  }
 
   if (!building && !fallbackAddress) notFound()
 

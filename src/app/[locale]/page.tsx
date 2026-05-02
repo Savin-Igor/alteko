@@ -48,6 +48,9 @@ export default function HomePage() {
   const [resolving, setResolving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const [pendingSuggestion, setPendingSuggestion] = useState<{
+    id: string; address: string; lat: number; lon: number
+  } | null>(null)
 
   const sampleRows = t.raw('sample.rows') as SampleRow[]
   const problemStats = t.raw('problem.stats') as ProblemStat[]
@@ -105,7 +108,7 @@ export default function HomePage() {
           </p>
 
           <div className="space-y-3 text-left">
-            <AddressSearch onSelect={handleAddressSelect} />
+            <AddressSearch onSelect={(s) => { setPendingSuggestion(s); setError(null) }} />
 
             {error && (
               <p className="text-sm text-danger bg-danger-light border border-red-200 rounded-lg px-4 py-3">
@@ -114,7 +117,8 @@ export default function HomePage() {
             )}
 
             <button
-              disabled={resolving}
+              disabled={resolving || !pendingSuggestion}
+              onClick={() => pendingSuggestion && handleAddressSelect(pendingSuggestion)}
               className="btn-primary"
             >
               {resolving ? (
