@@ -1,9 +1,11 @@
 name: CI
 
+# CI runs on every PR and push to main.
+# Deploy is handled separately in deploy.yml (push to main only).
 on:
-  push:
-    branches: [main]
   pull_request:
+    branches: [main]
+  push:
     branches: [main]
 
 jobs:

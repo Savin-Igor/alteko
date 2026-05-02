@@ -5,10 +5,11 @@ node_modules/
 .next/
 out/
 
-# Environment
+# Environment — never commit real secrets
 .env
 .env.local
 .env.production
+*.tsbuildinfo
 
 # Prisma
 prisma/dev.db
@@ -23,3 +24,7 @@ prisma/dev.db
 # Build
 dist/
 build/
+
+# Data — DB files and backups live on host, not in repo
+data/
+backups/
