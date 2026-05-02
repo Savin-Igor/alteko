@@ -1,9 +1,9 @@
 import { defineRouting } from 'next-intl/routing'
 
 export const routing = defineRouting({
-  locales: ['lv', 'ru'],
-  defaultLocale: 'lv',
-  // LV has no prefix (/blog/...), RU gets /ru/blog/...
+  locales: ['ru', 'lv'],
+  defaultLocale: 'ru',
+  // RU has no prefix (/blog/...), LV gets /lv/blog/...
   localePrefix: 'as-needed',
 })
 
