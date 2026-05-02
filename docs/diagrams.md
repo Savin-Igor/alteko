@@ -150,23 +150,21 @@ sequenceDiagram
     participant U as Пользователь
     participant FE as Next.js (frontend)
     participant API as API Route
-    participant Jana as Jāņa sēta API
+    participant Jana as Jāņa sēta API v3
     participant LVM as LVM GeoServer WFS
     participant DB as PostgreSQL
 
     U->>FE: вводит "Brīvības 55"
     FE->>API: GET /api/address/search?q=...
-    API->>Jana: autocomplete запрос
-    Jana-->>API: 5–8 вариантов адреса
-    API-->>FE: список подсказок
+    API->>Jana: /v3/{key}/search?layers=adrese&cs=wgs84
+    Jana-->>API: [{name, lat, lon}, ...]
+    API-->>FE: [{id, address, lat, lon}, ...]
     FE-->>U: выпадающий список
 
-    U->>FE: выбирает адрес
-    FE->>API: GET /api/address/resolve?vzd_id=...
-    API->>Jana: geocode → lat/lon + vzd_id
-    Jana-->>API: координаты
-    API->>LVM: WFS BBOX → cadastralCode
-    LVM-->>API: kadastra apzīmējums
+    U->>FE: выбирает адрес (lat/lon известны)
+    FE->>API: GET /api/address/resolve?lat=...&lon=...&address=...
+    API->>LVM: WFS BBOX(lat,lon) typeName=publicwfs:kkbuilding
+    LVM-->>API: code (kadastra apzīmējums)
     API->>DB: findUnique(cadastralCode)
     DB-->>API: серия, год, площадь, энергокласс
     API-->>FE: карточка здания
