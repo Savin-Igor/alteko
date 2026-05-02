@@ -1,6 +1,22 @@
 import type { MDXComponents } from 'mdx/types'
 import Link from 'next/link'
 import { InfoBanner, StatCard } from '@/components/ui'
+import { ReactNode } from 'react'
+
+function Callout({ type = 'info', title, children }: { type?: 'info' | 'warning' | 'success'; title?: string; children: ReactNode }) {
+  const styles = {
+    info: 'bg-primary-light border-blue-200 text-blue-900',
+    warning: 'bg-warning-light border-orange-200 text-orange-900',
+    success: 'bg-success-light border-green-200 text-green-900',
+  }
+  const titleStyles = { info: 'text-primary', warning: 'text-warning', success: 'text-success' }
+  return (
+    <div className={`border rounded-xl p-5 my-4 space-y-1.5 not-prose ${styles[type]}`}>
+      {title && <p className={`text-sm font-semibold ${titleStyles[type]}`}>{title}</p>}
+      <div className="text-sm">{children}</div>
+    </div>
+  )
+}
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -30,6 +46,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       <a href={href} className="text-primary hover:underline" target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noopener noreferrer' : undefined} {...props} />
     ),
     // Custom components available in MDX files
+    Callout,
     InfoBanner,
     StatCard,
     Link,

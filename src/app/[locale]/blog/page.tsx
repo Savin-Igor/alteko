@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { SiteHeader } from '@/components/ui/SiteHeader'
-import { getArticlesForLocale, type Locale } from '@/content/articles/registry'
-import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
+import { notFound } from 'next/navigation'
+import { prisma } from '@/lib/prisma'
 
 interface Props {
   params: Promise<{ locale: string }>
@@ -21,13 +21,22 @@ const TAG_COLORS: Record<string, string> = {
   'субсидии': 'bg-success-light text-success',
   'отопление': 'bg-warning-light text-warning',
   'расходы': 'bg-gray-100 text-gray-600',
+  'renovācija': 'bg-primary-light text-primary',
+  'subsīdijas': 'bg-success-light text-success',
+  'apkure': 'bg-warning-light text-warning',
+  'izdevumi': 'bg-gray-100 text-gray-600',
 }
 
 export default async function BlogPage({ params }: Props) {
   const { locale } = await params
-  if (!routing.locales.includes(locale as Locale)) notFound()
+  if (!routing.locales.includes(locale as 'lv' | 'ru')) notFound()
 
-  const posts = getArticlesForLocale(locale as Locale)
+  const posts = await prisma.blogPost.findMany({
+    where: { locale, published: true },
+    orderBy: { publishedAt: 'desc' },
+    select: { slug: true, title: true, description: true, publishedAt: true, readMinutes: true, tags: true },
+  })
+
   const isLv = locale === 'lv'
 
   return (
@@ -63,7 +72,7 @@ export default async function BlogPage({ params }: Props) {
                   </p>
                   <div className="flex items-center gap-3 mt-3">
                     <span className="text-xs text-gray-400">
-                      {new Date(post.publishedAt).toLocaleDateString(
+                      {post.publishedAt.toLocaleDateString(
                         isLv ? 'lv-LV' : 'ru-RU',
                         { year: 'numeric', month: 'long', day: 'numeric' },
                       )}

@@ -286,6 +286,24 @@ model Contractor {
   projects RenovationProject[]
 }
 
+model BlogPost {
+  id          String   @id @default(uuid())
+  slug        String
+  locale      String
+  title       String
+  description String
+  content     String   @db.Text
+  publishedAt DateTime
+  readMinutes Int
+  tags        String[]
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([slug, locale])
+  @@index([locale, published])
+}
+
 model RenovationProject {
   id                  String        @id @default(uuid())
   buildingId          String

@@ -1,37 +1,41 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { MDXRemote } from 'next-mdx-remote/rsc'
 import { SiteHeader } from '@/components/ui/SiteHeader'
-import { articles, getArticle, getArticlesForLocale, type Locale } from '@/content/articles/registry'
+import { useMDXComponents } from '@/mdx-components'
 import { routing } from '@/i18n/routing'
+import { prisma } from '@/lib/prisma'
 
 interface Props {
   params: Promise<{ locale: string; slug: string }>
 }
 
-export function generateStaticParams() {
-  return routing.locales.flatMap((locale) =>
-    articles.map((a) => ({ locale, slug: a.slug })),
-  )
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params
-  const article = getArticle(slug, locale as Locale)
-  if (!article) return {}
-  return { title: `${article.title} — ALTEKO`, description: article.description }
+  const post = await prisma.blogPost.findUnique({ where: { slug_locale: { slug, locale } } })
+  if (!post) return {}
+  return { title: `${post.title} — ALTEKO`, description: post.description }
 }
 
 export default async function BlogArticlePage({ params }: Props) {
   const { locale, slug } = await params
-  if (!routing.locales.includes(locale as Locale)) notFound()
+  if (!routing.locales.includes(locale as 'lv' | 'ru')) notFound()
 
-  const article = getArticle(slug, locale as Locale)
-  if (!article) notFound()
+  const post = await prisma.blogPost.findUnique({
+    where: { slug_locale: { slug, locale } },
+  })
+  if (!post || !post.published) notFound()
 
-  const { Content } = article
-  const others = getArticlesForLocale(locale as Locale).filter((a) => a.slug !== slug).slice(0, 2)
+  const others = await prisma.blogPost.findMany({
+    where: { locale, published: true, NOT: { slug } },
+    orderBy: { publishedAt: 'desc' },
+    take: 2,
+    select: { slug: true, title: true, readMinutes: true },
+  })
+
   const isLv = locale === 'lv'
+  const components = useMDXComponents({})
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -41,32 +45,34 @@ export default async function BlogArticlePage({ params }: Props) {
         <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
           <Link href="/blog" className="hover:text-gray-600">{isLv ? 'Blogs' : 'Блог'}</Link>
           <span>›</span>
-          <span className="text-gray-600 truncate">{article.title}</span>
+          <span className="text-gray-600 truncate">{post.title}</span>
         </div>
 
         <header className="mb-8">
           <div className="flex items-center gap-2 mb-3">
-            {article.tags.map((tag) => (
+            {post.tags.map((tag) => (
               <span key={tag} className="text-xs px-2.5 py-1 bg-primary-light text-primary rounded-full font-medium">
                 {tag}
               </span>
             ))}
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 leading-snug mb-3">{article.title}</h1>
-          <p className="text-gray-500 leading-relaxed mb-4">{article.description}</p>
+          <h1 className="text-2xl font-bold text-gray-900 leading-snug mb-3">{post.title}</h1>
+          <p className="text-gray-500 leading-relaxed mb-4">{post.description}</p>
           <div className="flex items-center gap-3 text-sm text-gray-400 border-t border-gray-100 pt-4">
             <span>
-              {new Date(article.publishedAt).toLocaleDateString(
+              {post.publishedAt.toLocaleDateString(
                 isLv ? 'lv-LV' : 'ru-RU',
                 { year: 'numeric', month: 'long', day: 'numeric' },
               )}
             </span>
             <span>·</span>
-            <span>{article.readMinutes} {isLv ? 'min.' : 'мин.'}</span>
+            <span>{post.readMinutes} {isLv ? 'min.' : 'мин.'}</span>
           </div>
         </header>
 
-        <Content />
+        <article className="prose prose-sm max-w-none">
+          <MDXRemote source={post.content} components={components} />
+        </article>
 
         <div className="mt-10 card text-center space-y-3">
           <p className="font-semibold text-gray-900">
