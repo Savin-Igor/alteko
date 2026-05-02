@@ -1,4 +1,8 @@
 {
+  "metadata": {
+    "title": "ALTEKO — Jūsu mājas izdevumu audits",
+    "description": "Uzziniet, vai jūsu māja pārmaksā par komunālajiem pakalpojumiem. Bez maksas, 30 sekundēs."
+  },
   "nav": {
     "audit": "Audits",
     "renovation": "Renovācija",

@@ -1,47 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { Link, useRouter } from '@/i18n/navigation'
 import { AddressSearch } from '@/components/AddressSearch'
 import { SiteHeader } from '@/components/ui/SiteHeader'
-
-// ─── FAQ data ────────────────────────────────────────────────────────────────
-
-const FAQ = [
-  {
-    q: 'Откуда вы знаете, сколько «должно быть»?',
-    a: 'Мы собираем данные из загруженных счетов сотен домов Латвии и строим бенчмарки по серии здания, году постройки, площади и кварталу. Чем больше данных — тем точнее норма. Вы видите отклонение именно вашего дома, а не абстрактное среднее.',
-  },
-  {
-    q: 'Зачем загружать PDF? Нельзя ввести данные руками?',
-    a: 'ИИ читает PDF автоматически — быстрее, чем заполнить форму вручную.',
-  },
-  {
-    q: 'Мой дом не найден в базе — что делать?',
-    a: 'Загрузите счёт всё равно. Мы сравним ваши данные с усреднёнными показателями по кварталу и серии. Карточка дома пополнится позже, когда VZD обновит реестр.',
-  },
-  {
-    q: 'Что будет с моим email?',
-    a: 'Отчёт и уведомления по вашему дому. Вы сами выбираете, что получать — при вводе email можно выбрать интересующие темы.',
-  },
-  {
-    q: 'Это платно?',
-    a: 'Аудит расходов и базовый отчёт — бесплатно. Персональный расчёт реновации — бесплатно. Платное: сопровождение сделки с подрядчиком (комиссия 1–2% от суммы договора).',
-  },
-  {
-    q: 'Я председатель правления. Что мне это даёт?',
-    a: 'Загружайте счета по всем домам в портфеле — получите динамику расходов, аномалии, сравнение с нормой. Инструмент для переговоров с управляющей компанией и аргументация для собственников при голосовании за реновацию.',
-  },
-]
-
-// ─── Sample result ────────────────────────────────────────────────────────────
-
-const SAMPLE_ROWS = [
-  { label: 'Отопление', value: '€1.82/м²', norm: '€1.09/м²', dev: '+67%', variant: 'danger' as const },
-  { label: 'Горячая вода', value: '€3.41/м²', norm: '€2.89/м²', dev: '+18%', variant: 'warning' as const },
-  { label: 'Уборка', value: '€0.33/м²', norm: '€0.23/м²', dev: '+43%', variant: 'danger' as const },
-  { label: 'Управление', value: '€0.19/м²', norm: '€0.20/м²', dev: '−5%', variant: 'success' as const },
-]
 
 const DOT: Record<string, string> = {
   danger: 'status-dot-danger',
@@ -54,13 +17,46 @@ const TEXT_COLOR: Record<string, string> = {
   success: 'text-success',
 }
 
-// ─── Component ───────────────────────────────────────────────────────────────
+interface SampleRow {
+  label: string
+  value: string
+  norm: string
+  dev: string
+  variant: 'danger' | 'warning' | 'success'
+}
+
+interface ProblemStat { value: string; label: string }
+interface Step { n: string; title: string; desc: string }
+interface RenovationStat { value: string; label: string }
+interface Source { name: string; desc: string }
+interface FaqItem { q: string; a: string }
+interface BlogPost { href: string; title: string; tag: string; mins: number }
+
+const SOURCE_HREFS = [
+  'https://www.vzd.gov.lv',
+  'https://data.gov.lv',
+  'https://www.sprk.gov.lv',
+  'https://www.altum.lv',
+]
+
+const RENOVATION_COLORS = ['text-primary', 'text-success', 'text-success', 'text-gray-700']
+const PROBLEM_COLORS = ['text-danger', 'text-warning', 'text-warning', 'text-danger']
 
 export default function HomePage() {
+  const t = useTranslations('home')
   const router = useRouter()
   const [resolving, setResolving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+
+  const sampleRows = t.raw('sample.rows') as SampleRow[]
+  const problemStats = t.raw('problem.stats') as ProblemStat[]
+  const steps = t.raw('steps.items') as Step[]
+  const renovationStats = t.raw('renovation.stats') as RenovationStat[]
+  const boardsBullets = t.raw('boards.bullets') as string[]
+  const sources = t.raw('trust.sources') as Source[]
+  const faqItems = t.raw('faq.items') as FaqItem[]
+  const blogPosts = t.raw('blogPreview.posts') as BlogPost[]
 
   async function handleAddressSelect(suggestion: {
     id: string; address: string; lat: number; lon: number
@@ -81,10 +77,10 @@ export default function HomePage() {
       } else if (building.cadastralCode) {
         router.push(`/building/${building.cadastralCode}?address=${encodeURIComponent(suggestion.address)}`)
       } else {
-        setError('Дом не найден в базе. Попробуйте другой адрес.')
+        setError(t('hero.errorNotFound'))
       }
     } catch {
-      setError('Ошибка соединения. Проверьте интернет и попробуйте снова.')
+      setError(t('hero.errorConnection'))
     } finally {
       setResolving(false)
     }
@@ -101,13 +97,11 @@ export default function HomePage() {
       >
         <div className="w-full max-w-lg text-center">
           <h1 className="text-3xl font-bold text-gray-900 leading-tight mb-3">
-            Счёт за отопление кажется большим?<br />
-            <span className="text-primary">Сравним с нормой за 30 секунд.</span>
+            {t('hero.titleQuestion')}<br />
+            <span className="text-primary">{t('hero.titleAnswer')}</span>
           </h1>
           <p className="text-gray-500 mb-8 leading-relaxed">
-            Загрузите PDF-счёт — ИИ сравнит расходы вашего дома
-            с нормой по серии, площади и кварталу.
-            Бесплатно.
+            {t('hero.description')}
           </p>
 
           <div className="space-y-3 text-left">
@@ -122,25 +116,22 @@ export default function HomePage() {
             <button
               disabled={resolving}
               className="btn-primary"
-              onClick={() =>
-                document.querySelector<HTMLInputElement>('input[aria-label="Адрес дома"]')?.focus()
-              }
             >
               {resolving ? (
                 <span className="flex items-center justify-center gap-2">
                   <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  Ищем дом...
+                  {t('hero.ctaLoading')}
                 </span>
               ) : (
-                'Найти свой дом'
+                t('hero.cta')
               )}
             </button>
           </div>
 
           <div className="flex items-center justify-center gap-4 mt-5 text-xs text-gray-400">
-            <span>Бесплатно</span>
+            <span>{t('hero.stats.free')}</span>
             <span>·</span>
-            <span>624 дома уже проверили</span>
+            <span>{t('hero.stats.buildings')}</span>
           </div>
         </div>
       </section>
@@ -149,22 +140,16 @@ export default function HomePage() {
       <section className="px-4 py-14 bg-gray-50 border-y border-gray-100">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">
-            7 из 10 советских домов переплачивают
+            {t('problem.heading')}
           </h2>
           <p className="text-gray-500 text-center mb-8 leading-relaxed">
-            Управляющие компании выставляют счета по своим нормативам —
-            жильцы не сравнивают. Мы сравниваем.
+            {t('problem.description')}
           </p>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {[
-              { value: '+23%', label: 'средняя переплата за отопление', color: 'text-danger' },
-              { value: '+15%', label: 'средняя переплата за горячую воду', color: 'text-warning' },
-              { value: '+47%', label: 'максимальная переплата за уборку', color: 'text-warning' },
-              { value: '~€840', label: 'переплата в год с одного дома', color: 'text-danger' },
-            ].map((stat) => (
-              <div key={stat.label} className="card text-center py-4 space-y-1">
-                <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
+            {problemStats.map((stat, i) => (
+              <div key={i} className="card text-center py-4 space-y-1">
+                <p className={`text-2xl font-bold ${PROBLEM_COLORS[i]}`}>{stat.value}</p>
                 <p className="text-xs text-gray-500 leading-snug">{stat.label}</p>
               </div>
             ))}
@@ -177,26 +162,10 @@ export default function HomePage() {
       <section className="px-4 py-14 bg-white">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-xl font-bold text-gray-900 mb-8 text-center">
-            Как это работает
+            {t('steps.heading')}
           </h2>
           <div className="grid md:grid-cols-3 gap-4">
-            {[
-              {
-                n: '1',
-                title: 'Найдите свой дом',
-                desc: 'Введите адрес — покажем карточку здания из реестра VZD: серия, год, энергокласс.',
-              },
-              {
-                n: '2',
-                title: 'Загрузите счёт',
-                desc: 'PDF от вашей управляющей компании. ИИ проанализирует документ и сформирует отчёт.',
-              },
-              {
-                n: '3',
-                title: 'Получите отчёт',
-                desc: 'Покажем, по каким статьям и на сколько процентов ваш дом выше нормы — в деньгах за год.',
-              },
-            ].map((step) => (
+            {steps.map((step) => (
               <div key={step.n} className="card space-y-3">
                 <div className="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center font-bold">
                   {step.n}
@@ -211,9 +180,9 @@ export default function HomePage() {
               className="btn-primary w-auto px-10 inline-flex items-center justify-center"
               onClick={() => document.getElementById('hero')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              Начать проверку
+              {t('steps.cta')}
             </button>
-            <p className="text-xs text-gray-400 mt-2">Результат — за 30 секунд</p>
+            <p className="text-xs text-gray-400 mt-2">{t('steps.ctaNote')}</p>
           </div>
         </div>
       </section>
@@ -222,15 +191,15 @@ export default function HomePage() {
       <section className="px-4 py-14 bg-gray-50 border-y border-gray-100">
         <div className="max-w-md mx-auto">
           <h2 className="text-xl font-bold text-gray-900 mb-1 text-center">
-            Пример отчёта
+            {t('sample.heading')}
           </h2>
           <p className="text-xs text-gray-400 text-center mb-6">
-            Реальный анонимный пример · Серия 119 · Пурвциемс · 5 400 м²
+            {t('sample.subtitle')}
           </p>
 
           <div className="card p-0 overflow-hidden">
             <div className="divide-y divide-gray-100">
-              {SAMPLE_ROWS.map((row) => (
+              {sampleRows.map((row) => (
                 <div key={row.label} className="px-5 py-3 flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
                     <span className={DOT[row.variant]} aria-hidden="true" />
@@ -238,7 +207,7 @@ export default function HomePage() {
                   </div>
                   <div className="text-right">
                     <span className="text-sm font-medium text-gray-900">{row.value}</span>
-                    <span className="text-xs text-gray-400 ml-1.5">норма {row.norm}</span>
+                    <span className="text-xs text-gray-400 ml-1.5">{t('sample.normLabel')} {row.norm}</span>
                     <span className={`text-xs font-semibold ml-2 ${TEXT_COLOR[row.variant]}`}>
                       {row.dev}
                     </span>
@@ -247,13 +216,13 @@ export default function HomePage() {
               ))}
             </div>
             <div className="px-5 py-4 bg-danger-light border-t border-red-100 flex items-center justify-between">
-              <span className="text-sm font-medium text-danger">Переплата в год</span>
-              <span className="text-metric font-bold text-danger">~€3 900</span>
+              <span className="text-sm font-medium text-danger">{t('sample.yearOverpay')}</span>
+              <span className="text-metric font-bold text-danger">{t('sample.yearOverpayValue')}</span>
             </div>
           </div>
 
           <p className="text-xs text-gray-400 text-center mt-3">
-            Это ~€78 с каждой квартиры в год
+            {t('sample.perApartment')}
           </p>
         </div>
       </section>
@@ -263,33 +232,28 @@ export default function HomePage() {
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-xl font-bold text-gray-900 mb-2">
-              После аудита — реновация. Государство платит до 49%.
+              {t('renovation.heading')}
             </h2>
             <p className="text-gray-500 leading-relaxed">
-              Узнайте, сколько субсидирует Altum и что вернёт реновация именно вашему дому.
+              {t('renovation.description')}
             </p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-            {[
-              { v: 'до 49%', l: 'субсидия Altum', color: 'text-primary' },
-              { v: '€140/мес.', l: 'средняя экономия', color: 'text-success' },
-              { v: '+10–11%', l: 'рост стоимости квартиры', color: 'text-success' },
-              { v: '8–12 лет', l: 'срок окупаемости', color: 'text-gray-700' },
-            ].map((s) => (
-              <div key={s.l} className="card text-center py-4">
-                <p className={`text-xl font-bold ${s.color}`}>{s.v}</p>
-                <p className="text-xs text-gray-500 mt-1 leading-snug">{s.l}</p>
+            {renovationStats.map((s, i) => (
+              <div key={i} className="card text-center py-4">
+                <p className={`text-xl font-bold ${RENOVATION_COLORS[i]}`}>{s.value}</p>
+                <p className="text-xs text-gray-500 mt-1 leading-snug">{s.label}</p>
               </div>
             ))}
           </div>
 
           <div className="text-center space-y-2">
             <p className="text-sm text-gray-500">
-              Расчёт реновации доступен после аудита расходов — нужна отправная точка.
+              {t('renovation.note')}
             </p>
             <Link href="/renovation" className="btn-secondary w-auto inline-block px-8">
-              Узнать о реновации подробнее →
+              {t('renovation.cta')}
             </Link>
           </div>
 
@@ -301,36 +265,26 @@ export default function HomePage() {
         <div className="max-w-2xl mx-auto md:flex items-center gap-8">
           <div className="flex-1 mb-6 md:mb-0">
             <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
-              Для правлений biedrības
+              {t('boards.tagline')}
             </p>
             <h2 className="text-xl font-bold text-gray-900 mb-3">
-              Управляйте несколькими домами в одном дашборде
+              {t('boards.heading')}
             </h2>
             <ul className="space-y-2 text-sm text-gray-600">
-              <li className="flex items-start gap-2">
-                <span className="status-dot-success mt-1.5" />
-                Динамика расходов по всем домам портфеля
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="status-dot-success mt-1.5" />
-                Аномалии и сравнение с рынком — аргументы для переговоров
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="status-dot-success mt-1.5" />
-                Электронное голосование через Smart-ID — собрать ≥50% без очного собрания
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="status-dot-success mt-1.5" />
-                Тендер среди верифицированных подрядчиков
-              </li>
+              {boardsBullets.map((bullet, i) => (
+                <li key={i} className="flex items-start gap-2">
+                  <span className="status-dot-success mt-1.5" />
+                  {bullet}
+                </li>
+              ))}
             </ul>
           </div>
           <div className="flex-shrink-0">
             <Link href="/dashboard" className="btn-primary w-auto inline-block px-8">
-              Открыть дашборд →
+              {t('boards.cta')}
             </Link>
             <p className="text-xs text-gray-500 mt-2 text-center">
-              Требуется регистрация
+              {t('boards.ctaNote')}
             </p>
           </div>
         </div>
@@ -339,35 +293,14 @@ export default function HomePage() {
       {/* ── 7. TRUST ─────────────────────────────────────────────────────────── */}
       <section className="px-4 py-14 bg-white">
         <div className="max-w-2xl mx-auto">
-          <h2 className="text-xl font-bold text-gray-900 mb-6 text-center">Откуда данные</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-6 text-center">{t('trust.heading')}</h2>
           <div className="grid md:grid-cols-2 gap-4">
-            {[
-              {
-                name: 'VZD (Valsts zemes dienests)',
-                desc: 'Кадастровый реестр: тип здания, площадь, год постройки.',
-                href: 'https://www.vzd.gov.lv',
-              },
-              {
-                name: 'BVKB (Būvniecības valsts kontroles birojs)',
-                desc: 'Энергосертификаты: класс и потребление тепла. Данные обновляются ежедневно.',
-                href: 'https://data.gov.lv',
-              },
-              {
-                name: 'SPRK',
-                desc: 'Тарифы и нормативы коммунальных услуг Латвии.',
-                href: 'https://www.sprk.gov.lv',
-              },
-              {
-                name: 'Altum',
-                desc: 'Официальные условия субсидий на реновацию.',
-                href: 'https://www.altum.lv',
-              },
-            ].map((src) => (
+            {sources.map((src, i) => (
               <div key={src.name} className="card flex items-start gap-3">
                 <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 flex-shrink-0" />
                 <div>
                   <a
-                    href={src.href}
+                    href={SOURCE_HREFS[i]}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm font-semibold text-gray-900 hover:text-primary transition-colors"
@@ -381,8 +314,7 @@ export default function HomePage() {
           </div>
           <div className="mt-6 card bg-gray-50">
             <p className="text-sm text-gray-600">
-              <strong>Конфиденциальность:</strong> PDF удаляется после анализа. Данные о домах публикуются только в агрегированном виде —
-              без привязки к конкретным жильцам.
+              <strong>{t('trust.privacyLabel')}</strong> {t('trust.privacy')}
             </p>
           </div>
         </div>
@@ -392,10 +324,10 @@ export default function HomePage() {
       <section className="px-4 py-14 bg-gray-50 border-t border-gray-100">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-xl font-bold text-gray-900 mb-6 text-center">
-            Частые вопросы
+            {t('faq.heading')}
           </h2>
           <div className="card divide-y divide-gray-100 p-0 overflow-hidden">
-            {FAQ.map((item, i) => (
+            {faqItems.map((item, i) => (
               <div key={i}>
                 <button
                   type="button"
@@ -432,32 +364,13 @@ export default function HomePage() {
       <section className="px-4 py-14 bg-white border-t border-gray-100">
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-gray-900">Из блога</h2>
+            <h2 className="text-xl font-bold text-gray-900">{t('blogPreview.heading')}</h2>
             <Link href="/blog" className="text-sm text-primary font-medium hover:underline">
-              Все статьи →
+              {t('blogPreview.all')}
             </Link>
           </div>
           <div className="grid md:grid-cols-3 gap-4">
-            {[
-              {
-                href: '/blog/subsidiya-altum-renovaciya-2025',
-                title: 'Субсидия Altum: полное руководство 2025',
-                tag: 'реновация',
-                mins: 8,
-              },
-              {
-                href: '/blog/norma-rashoda-tepla-latviya',
-                title: 'Норма расхода тепла: сколько должно быть',
-                tag: 'отопление',
-                mins: 6,
-              },
-              {
-                href: '/blog/seriya-119-latviya',
-                title: 'Дома серии 119: почему переплачивают',
-                tag: 'отопление',
-                mins: 7,
-              },
-            ].map((post) => (
+            {blogPosts.map((post) => (
               <Link
                 key={post.href}
                 href={post.href}
@@ -469,7 +382,7 @@ export default function HomePage() {
                 <p className="text-sm font-medium text-gray-900 group-hover:text-primary transition-colors leading-snug">
                   {post.title}
                 </p>
-                <p className="text-xs text-gray-400">{post.mins} мин.</p>
+                <p className="text-xs text-gray-400">{post.mins} {t('blogPreview.min')}</p>
               </Link>
             ))}
           </div>
@@ -483,35 +396,35 @@ export default function HomePage() {
             <div className="col-span-2 md:col-span-1">
               <span className="text-lg font-bold text-gray-900">ALTEKO</span>
               <p className="mt-2 text-xs text-gray-400 leading-relaxed">
-                Платформа для жителей советских домов Латвии
+                {t('footer.description')}
               </p>
             </div>
             <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Сервисы</p>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">{t('footer.servicesTitle')}</p>
               <nav className="space-y-2 text-sm">
-                <Link href="/" className="block text-gray-500 hover:text-gray-900">Аудит счетов</Link>
-                <Link href="/renovation" className="block text-gray-500 hover:text-gray-900">Реновация</Link>
-                <Link href="/blog" className="block text-gray-500 hover:text-gray-900">Блог</Link>
+                <Link href="/" className="block text-gray-500 hover:text-gray-900">{t('footer.auditLink')}</Link>
+                <Link href="/renovation" className="block text-gray-500 hover:text-gray-900">{t('footer.renovationLink')}</Link>
+                <Link href="/blog" className="block text-gray-500 hover:text-gray-900">{t('footer.blogLink')}</Link>
               </nav>
             </div>
             <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Партнёрам</p>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">{t('footer.partnersTitle')}</p>
               <nav className="space-y-2 text-sm">
-                <Link href="/contractors/register" className="block text-gray-500 hover:text-gray-900">Для подрядчиков</Link>
+                <Link href="/contractors/register" className="block text-gray-500 hover:text-gray-900">{t('footer.contractorsLink')}</Link>
               </nav>
             </div>
             <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Контакты</p>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">{t('footer.contactsTitle')}</p>
               <nav className="space-y-2 text-sm">
                 <a href="mailto:info@alteko.lv" className="block text-gray-500 hover:text-gray-900">info@alteko.lv</a>
               </nav>
             </div>
           </div>
           <div className="border-t border-gray-100 pt-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-2 text-xs text-gray-400">
-            <span>© 2025 ALTEKO</span>
+            <span>{t('footer.copyright')}</span>
             <div className="flex gap-4">
-              <Link href="/privacy" className="hover:text-gray-600">Политика конфиденциальности</Link>
-              <Link href="/terms" className="hover:text-gray-600">Условия использования</Link>
+              <a href="#" className="hover:text-gray-600">{t('footer.privacyLink')}</a>
+              <a href="#" className="hover:text-gray-600">{t('footer.termsLink')}</a>
             </div>
           </div>
         </div>
