@@ -197,6 +197,291 @@
       "copyright": "© 2025 ALTEKO"
     }
   },
+  "components": {
+    "siteHeader": {
+      "openMenu": "Открыть меню",
+      "closeMenu": "Закрыть меню"
+    },
+    "fileDropzone": {
+      "uploadFile": "Загрузить файл",
+      "wrongType": "Нужен {accept}-файл.",
+      "tooLarge": "Файл слишком большой. Максимум — {size} МБ.",
+      "fileSize": "{size} КБ · нажмите, чтобы заменить",
+      "dropOrClick": "Перетащите PDF или нажмите для выбора",
+      "supports": "Поддерживается: PDF до {size} МБ"
+    },
+    "addressSearch": {
+      "cityLabel": "Город",
+      "cityPlaceholder": "Город / посёлок",
+      "streetLabel": "Улица и номер дома",
+      "streetPlaceholderActive": "Улица и номер дома",
+      "streetPlaceholderInactive": "Сначала выберите город",
+      "addressNotFound": "Адрес не найден. Проверьте улицу и номер."
+    },
+    "addressAutocomplete": {
+      "label": "Адрес дома",
+      "placeholder": "Введите адрес вашего дома",
+      "notFound": "Адрес не найден. Проверьте написание."
+    },
+    "pageHeader": {
+      "back": "Назад",
+      "boardPanel": "Панель правления"
+    },
+    "categoryRow": {
+      "perM2": "€{value}/м²"
+    }
+  },
+  "voting": {
+    "campaignNotFound": "Кампания не найдена.",
+    "backHome": "На главную",
+    "deadlinePrefix": "До ",
+    "votedLabel": "Проголосовали:",
+    "votedCount": "{voted} из {total}",
+    "totalUnknown": "?",
+    "shareLabel": "За: {yes}% · Нужно: {required}%",
+    "yesLabel": "За",
+    "noLabel": "Против",
+    "abstainLabel": "Воздерж.",
+    "thresholdReached": "Решение принято — необходимый порог достигнут. Протокол сформирован.",
+    "cancelled": "Голосование завершено. Порог не набран.",
+    "yourVote": "Ваш голос",
+    "errorRequest": "Ошибка запроса",
+    "errorConnection": "Ошибка соединения",
+    "signWith": "Подпишите с помощью:",
+    "personalCodeLabel": "Персональный код",
+    "personalCodePlaceholder": "XXXXXX-XXXXX",
+    "back": "Назад",
+    "continue": "Продолжить",
+    "smartIdLoading": "Отправляем запрос в Smart-ID...",
+    "smartIdConfirm": "Откройте приложение Smart-ID и подтвердите:",
+    "waitingConfirm": "Ожидаем подтверждения...",
+    "smartIdTimeout": "Smart-ID не ответил за 90 секунд. Попробуйте снова.",
+    "identityConfirmed": "Личность подтверждена. Выберите решение:",
+    "voteYes": "Поддерживаю реновацию",
+    "voteNo": "Против",
+    "voteAbstain": "Воздерживаюсь",
+    "voteRecorded": "Голос записан",
+    "yourDecision": "Ваше решение:",
+    "decisionYes": "За реновацию",
+    "decisionNo": "Против",
+    "decisionAbstain": "Воздержался",
+    "signedNote": "Данные подписаны электронной подписью"
+  },
+  "contractors": {
+    "specializations": [
+      "Утепление фасада",
+      "Замена окон",
+      "Кровельные работы",
+      "Замена системы отопления",
+      "Вентиляция",
+      "Подвал и фундамент",
+      "Комплексная реновация"
+    ],
+    "districts": [
+      "Рига", "Юрмала", "Елгава", "Даугавпилс", "Резекне",
+      "Лиепая", "Вентспилс", "Валмиера", "Екабпилс"
+    ],
+    "applicationSent": "Заявка отправлена",
+    "verifiedMessage": "Компания верифицирована в Lursoft. Заявка на рассмотрении у администратора ALTEKO — ответ в течение 2 рабочих дней.",
+    "unverifiedMessage": "Заявка принята. Мы свяжемся с вами в течение 2 рабочих дней для проверки данных.",
+    "applicationId": "ID заявки: {id}",
+    "backHome": "На главную",
+    "valuePropTitle": "Получайте тендеры от готовых домов",
+    "valuePropDesc": "Дома с ≥50% голосов собственников ищут подрядчика. Без холодных звонков — только входящие запросы по вашей специализации.",
+    "lursoftVerification": "Верификация через Lursoft",
+    "commission": "Комиссия 1,5% с контракта",
+    "verifiedClients": "Только проверенные клиенты",
+    "companyName": "Название компании",
+    "regNumber": "Регистрационный номер",
+    "checkedVia": "Проверяется через ",
+    "specializationLabel": "Специализация",
+    "selectAtLeastOne": "Выберите хотя бы одну специализацию",
+    "coverageLabel": "Географическое покрытие",
+    "agreementText": "Согласен с условиями комиссионного соглашения ALTEKO — 1,5% от стоимости подписанного договора с клиентом",
+    "errorRegister": "Ошибка регистрации",
+    "errorConnection": "Ошибка соединения. Попробуйте снова.",
+    "checkingLursoft": "Проверяем в Lursoft...",
+    "submitButton": "Подать заявку"
+  },
+  "share": {
+    "linkExpired": "Ссылка устарела или дом не найден.",
+    "findHome": "Найти свой дом",
+    "neighborShared": "Ваш сосед поделился результатом",
+    "noDataYet": "Пока никто не загружал счёт по этому дому",
+    "beFirst": "Станьте первым — узнаете, как ваш дом сравнивается с нормой",
+    "normalLabel": "Дом тратит в норме",
+    "normalDesc": "Детальный разбор по категориям — в полном отчёте",
+    "overpayLabel": "Переплата за отопление:",
+    "comparedTo": "к норме для похожих домов",
+    "uploadCta": "Загрузить свой счёт — бесплатно →",
+    "ctaNote": "Бесплатно · 30 секунд",
+    "differentBuilding": "Живёте в другом доме?",
+    "findYour": "Найдите свой →",
+    "seriesPrefix": "Серия {series}",
+    "yearSuffix": "{year} г.",
+    "classLabel": "Класс {class}"
+  },
+  "dashboard": {
+    "tabs": {
+      "myBuildings": "Мои дома",
+      "projects": "Проекты",
+      "voting": "Голосование"
+    },
+    "main": {
+      "heading": "Мои дома",
+      "emptyTitle": "Нет данных по домам",
+      "emptyDescription": "Загрузите первый счёт, чтобы начать мониторинг расходов.",
+      "emptyAction": "Найти дом и загрузить счёт",
+      "seriesPrefix": "Серия {series}",
+      "classLabel": "Класс {class}",
+      "reportsCount": "{count} отч.",
+      "latestHeating": "Отопление (последний период)",
+      "perM2": "€{value}/м²",
+      "trendLabel": "Тренд отопления, €/м²:",
+      "buildingCard": "Карточка дома",
+      "votingLink": "Голосование"
+    },
+    "voting": {
+      "heading": "Голосование собственников",
+      "step1Title": "Шаг 1. Список собственников",
+      "step1Hint": "CSV-файл: квартира;площадь_м2;доля_%;zemesgramata_ref (опционально)",
+      "selectCsv": "Выберите CSV-файл",
+      "csvFromZG": "Получить из Zemesgrāmata",
+      "uploadOwners": "Загрузить список собственников",
+      "uploadingButton": "Загружаем...",
+      "csvSizeLabel": "{size} КБ",
+      "extractFrom": "Выписка из ",
+      "orManualCsv": " или ручной CSV от правления",
+      "step2Title": "Шаг 2. Создать кампанию",
+      "voteTitleLabel": "Вопрос голосования",
+      "voteTitlePlaceholder": "Реновация здания 2025 года",
+      "deadlineLabel": "Срок голосования (необязательно)",
+      "createButton": "Открыть голосование",
+      "creating": "Создаём...",
+      "afterCreate": "После создания жильцы получают ссылку для голосования через Smart-ID или eParaksts. Требуется ≥50% голосов «за».",
+      "campaignsHeading": "Кампании",
+      "openCampaign": "Открыть →",
+      "yesShare": "За: {percent}%",
+      "campaignCreatedSuccess": "Голосование создано. Ссылка для жильцов: {link}",
+      "uploadedSuccess": "Загружено {upserted} из {total} собственников",
+      "errorCreate": "Ошибка создания",
+      "errorUpload": "Ошибка загрузки",
+      "errorConnection": "Ошибка соединения",
+      "campaignStatus": {
+        "DRAFT": "Черновик",
+        "ACTIVE": "Активно",
+        "COMPLETED": "Завершено",
+        "CANCELLED": "Отменено"
+      }
+    },
+    "tenders": {
+      "heading": "Проекты реновации",
+      "emptyTitle": "Проектов пока нет",
+      "emptyDescription": "Проекты появляются автоматически, когда голосование набирает ≥50% голосов «за».",
+      "emptyAction": "Запустить голосование",
+      "lursoftVerified": "Lursoft верифицирован",
+      "noContractor": "Подрядчик ещё не выбран",
+      "contractValue": "Сумма контракта:",
+      "commission": "Комиссия ALTEKO:",
+      "campaignYesShare": "Голосование «за»: {percent}%",
+      "status": {
+        "INITIATED": "Создан",
+        "VOTING": "Голосование",
+        "CONTRACTED": "Контракт",
+        "IN_PROGRESS": "В работе",
+        "COMPLETED": "Завершён"
+      }
+    }
+  },
+  "audit": {
+    "categories": {
+      "HEATING": "Отопление",
+      "COLD_WATER": "Холодная вода",
+      "HOT_WATER": "Горячая вода",
+      "WASTEWATER": "Канализация",
+      "WASTE": "Вывоз мусора",
+      "CLEANING": "Уборка",
+      "REPAIR_FUND": "Фонд ремонта",
+      "ADMINISTRATION": "Управление",
+      "ELEVATOR": "Лифт",
+      "OTHER": "Прочее"
+    },
+    "months": ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
+    "upload": {
+      "title": "Загрузите счёт-фактуру",
+      "subtitle": "от управляющей компании",
+      "yearLabel": "Год счёта",
+      "monthLabel": "Месяц",
+      "fileHint": "Счета Namsaimnieks, RNP, Latio и др. · PDF до 10 МБ",
+      "privacyInfo": "Файл используется только для анализа вашего дома и не передаётся третьим лицам.",
+      "submitButton": "Анализировать счёт",
+      "uploadingButton": "Загружаем...",
+      "errorUpload": "Ошибка загрузки. Попробуйте снова.",
+      "errorConnection": "Ошибка соединения. Проверьте интернет и попробуйте снова.",
+      "back": "Назад"
+    },
+    "preview": {
+      "title": "Анализируем ваш счёт",
+      "stepParsing": "Читаем данные счёта...",
+      "stepComparing": "Сравниваем с похожими домами...",
+      "stepDone": "Результат готов",
+      "timeEstimate": "Обычно занимает 15–30 секунд",
+      "waitingTip": "Пока ждёте: дома серии 119 тратят в среднем на 38% больше на отопление, чем дома после реновации той же площади.",
+      "toMedian": "к медиане похожих домов",
+      "viewReport": "Смотреть отчёт →",
+      "tryAgain": "Попробовать снова",
+      "errorParse": "Не удалось прочитать счёт.",
+      "errorConnection": "Ошибка соединения. Проверьте интернет и попробуйте снова."
+    },
+    "report": {
+      "label": "Отчёт",
+      "summaryLabel": "Итог",
+      "summaryUnit": "к норме",
+      "summaryOverpay": "Потенциальная переплата: ~€{amount}/год",
+      "gateTitle": "Полный отчёт включает:",
+      "gateBullet1": "Разбивку по {count} категориям расходов",
+      "gateBullet2": "Аномалии за последние 12 месяцев",
+      "gateBullet3": "Сравнение по вашему кварталу",
+      "gateBullet4": "Рекомендации что проверить",
+      "gateSpamNote": "Без спама. Только данные по вашему дому. Отписаться в один клик.",
+      "categoriesTitle": "По категориям:",
+      "whatToDo": "Что с этим делать?",
+      "losingMoneyPrefix": "Ваш дом теряет ",
+      "losingMoneySuffix": ". Реновация устраняет причину — и государство покрывает до 49% затрат.",
+      "losingMoneyAmount": "~€{amount}/год",
+      "calcRenovation": "Рассчитать реновацию с субсидией Altum →",
+      "howAltum": "Как работает субсидия Altum?",
+      "shareTitle": "Соседи тоже переплачивают?",
+      "shareSubtitle": "Поделитесь — пусть проверят",
+      "shareMessage": "Проверил расходы нашего дома на ALTEKO. Переплачиваем за отопление на {deviation}%. Посмотри: {url}",
+      "shareShortMessage": "Переплачиваем за отопление на {deviation}%"
+    }
+  },
+  "building": {
+    "energyClass": {
+      "A": "A — Высокая",
+      "B": "B",
+      "C": "C",
+      "D": "D",
+      "E": "E — Средняя",
+      "F": "F",
+      "G": "G — Низкая"
+    },
+    "backToSearch": "Поиск адреса",
+    "seriesUnknown": "Серия не определена",
+    "seriesPrefix": "Серия {series}",
+    "yearSuffix": "{year} г.",
+    "apartments": "{count} кв.",
+    "district": "Район",
+    "totalArea": "Общая площадь",
+    "cadastralNumber": "Кадастровый №",
+    "energyEfficiency": "Энергоэффективность:",
+    "classLabel": "Класс {label}",
+    "similarBuildings": "Похожих домов в базе: {count}",
+    "fallbackPending": "Данные по этому дому уточняются",
+    "uploadCta": "Загрузить счёт управляющей компании",
+    "noBillReminder": "Нет счёта под рукой? Запомнить адрес — пришлём напоминание"
+  },
   "renovation": {
     "metadata": {
       "title": "Реновация многоквартирного дома — ALTEKO",
@@ -257,6 +542,70 @@
     "footer": {
       "blog": "Блог",
       "contractors": "Для подрядчиков"
+    },
+    "calculate": {
+      "title": "Расчёт реновации",
+      "errorLoad": "Ошибка загрузки",
+      "errorGenerate": "Ошибка генерации документов",
+      "errorConnection": "Ошибка соединения",
+      "warningGeneric": "Расчёт основан на средних данных по серии. Загрузите счёт для точного расчёта.",
+      "savingsTitle": "Экономия на отоплении",
+      "currentLabel": "Сейчас:",
+      "afterRenovationLabel": "После реновации:",
+      "savingsLabel": "Экономия:",
+      "perMonthValue": "€{amount}/мес.",
+      "perMonthPerAptValue": "€{amount}/мес./кв.",
+      "financingTitle": "Финансирование",
+      "renovationCost": "Стоимость реновации:",
+      "altumSubsidy": "Субсидия Altum ({percent}%):",
+      "yourShare": "Ваша доля (на квартиру):",
+      "paybackPeriod": "Срок окупаемости:",
+      "yearsValue": "{years} лет",
+      "documentsReady": "Документы готовы:",
+      "downloadDocs": "Скачать документы для Altum",
+      "preparingDocs": "Готовим документы...",
+      "startVoting": "Начать голосование собственников →",
+      "docs": {
+        "intentRu": {
+          "label": "Заявление о намерении (RU)",
+          "description": "Нужно для подачи в Altum"
+        },
+        "intentLv": {
+          "label": "Nodomu pieteikums (LV)",
+          "description": "Нужно для подачи в Altum"
+        },
+        "agendaRu": {
+          "label": "Повестка собрания (RU)",
+          "description": "Для проведения собрания собственников"
+        },
+        "agendaLv": {
+          "label": "Sapulces darba kārtība (LV)",
+          "description": "Для проведения собрания собственников"
+        }
+      }
+    },
+    "preview": {
+      "yourBuilding": "Ваш дом",
+      "seriesPrefix": "Серия {series}",
+      "classLabel": "Класс {label}",
+      "headingWithSeries": "Что даёт реновация домам серии {series}?",
+      "headingGeneric": "Что даёт реновация?",
+      "avgSavingsLabel": "Средняя экономия на отоплении",
+      "avgSavingsValue": "€{amount}/мес.",
+      "wholeBuilding": "на весь дом · после реновации",
+      "perApartment": "~€{amount}/мес. с квартиры",
+      "financingTitle": "Финансирование",
+      "subsidyLabel": "Субсидия Altum",
+      "subsidyValue": "до 49% стоимости",
+      "paybackLabel": "Срок окупаемости",
+      "paybackValue": "{range} лет",
+      "valueGrowthLabel": "Рост стоимости квартиры",
+      "valueGrowthValue": "+10–11%",
+      "infoNotePrefix": "Это средние данные по похожим домам. Расчёт для ",
+      "infoNoteSuffix": " — точнее.",
+      "ctaCalculate": "Рассчитать реновацию для {address} →",
+      "howAltum": "Как работает субсидия Altum?",
+      "sourcesNote": "Источники: Altum, fi-compass 2024, Latvijas Banka DP 3/2025"
     }
   },
   "blog": {
@@ -266,7 +615,17 @@
     "readMin": "мин.",
     "checkHome": "Проверьте расходы вашего дома",
     "checkHomeSub": "Бесплатно. 30 секунд.",
-    "translationPending": "Перевод готовится"
+    "checkHomeArticle": "Проверьте расходы вашего дома прямо сейчас",
+    "checkHomeArticleSub": "Бесплатно. Результат за 30 секунд.",
+    "translationPending": "Перевод готовится",
+    "metadata": {
+      "title": "Блог — ALTEKO: ЖКХ и реновация в Латвии",
+      "description": "Статьи об экономии на коммунальных расходах, субсидии Altum и реновации в Латвии."
+    },
+    "footer": {
+      "blog": "Блог",
+      "contractors": "Для подрядчиков"
+    }
   },
   "auth": {
     "signIn": "Войти в дашборд",
@@ -280,7 +639,12 @@
     "linkExpiry": "Ссылка действует 24 часа. Не нашли? Проверьте папку «Спам».",
     "requestNew": "Запросить новую ссылку",
     "noPassword": "Мы отправим одноразовую ссылку — без пароля.",
-    "tryAnother": "Попробовать другой email"
+    "tryAnother": "Попробовать другой email",
+    "errorSendFailed": "Не удалось отправить ссылку. Проверьте email и попробуйте снова.",
+    "emailSentBody": "Мы отправили ссылку для входа на {email}. Перейдите по ней — и вы сразу окажетесь в дашборде.",
+    "spamCheck": "Не нашли? Проверьте папку «Спам».",
+    "backToMain": "← Вернуться на главную",
+    "backToMainShort": "← На главную"
   },
   "errors": {
     "notFound": "Страница не найдена",

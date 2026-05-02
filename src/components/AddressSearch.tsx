@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { filterSettlements, type Settlement } from '@/lib/latvia-settlements'
 
 interface Suggestion {
@@ -18,6 +18,7 @@ interface Props {
 export function AddressSearch({ onSelect }: Props) {
   const locale = useLocale()
   const isRu = locale === 'ru'
+  const t = useTranslations('components.addressSearch')
 
   // City field state
   const [cityInput, setCityInput] = useState('')
@@ -106,10 +107,8 @@ export function AddressSearch({ onSelect }: Props) {
     onSelect(s)
   }
 
-  const cityPlaceholder = isRu ? 'Город / посёлок' : 'Pilsēta / ciems'
-  const streetPlaceholder = isRu
-    ? selectedCity ? 'Улица и номер дома' : 'Сначала выберите город'
-    : selectedCity ? 'Iela un mājas numurs' : 'Vispirms izvēlieties pilsētu'
+  const cityPlaceholder = t('cityPlaceholder')
+  const streetPlaceholder = selectedCity ? t('streetPlaceholderActive') : t('streetPlaceholderInactive')
 
   return (
     <div ref={containerRef} className="relative w-full">
@@ -125,7 +124,7 @@ export function AddressSearch({ onSelect }: Props) {
             placeholder={cityPlaceholder}
             className="input-field w-full"
             autoComplete="off"
-            aria-label={isRu ? 'Город' : 'Pilsēta'}
+            aria-label={t('cityLabel')}
           />
           {cityOpen && cityMatches.length > 0 && (
             <ul className="absolute z-50 w-56 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
@@ -156,7 +155,7 @@ export function AddressSearch({ onSelect }: Props) {
             placeholder={streetPlaceholder}
             className="input-field w-full pr-10 disabled:opacity-50 disabled:cursor-not-allowed"
             autoComplete="off"
-            aria-label={isRu ? 'Улица и номер дома' : 'Iela un mājas numurs'}
+            aria-label={t('streetLabel')}
           />
           {loading && (
             <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -185,7 +184,7 @@ export function AddressSearch({ onSelect }: Props) {
 
       {streetOpen && !loading && suggestions.length === 0 && streetQuery.trim().length >= 3 && (
         <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg px-4 py-3 text-sm text-gray-500">
-          {isRu ? 'Адрес не найден. Проверьте улицу и номер.' : 'Adrese nav atrasta. Pārbaudiet ielas nosaukumu.'}
+          {t('addressNotFound')}
         </div>
       )}
     </div>

@@ -1,8 +1,9 @@
-import Link from 'next/link'
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
+import { notFound } from 'next/navigation'
+import { Link } from '@/i18n/navigation'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 import { routing } from '@/i18n/routing'
-import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 
 interface Props {
@@ -11,9 +12,8 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
-  return locale === 'lv'
-    ? { title: 'Blogs — ALTEKO', description: 'Raksti par komunālajiem izdevumiem un renovāciju Latvijā.' }
-    : { title: 'Блог — ALTEKO: ЖКХ и реновация в Латвии', description: 'Статьи об экономии на коммунальных расходах, субсидии Altum и реновации в Латвии.' }
+  const t = await getTranslations({ locale, namespace: 'blog.metadata' })
+  return { title: t('title'), description: t('description') }
 }
 
 const TAG_COLORS: Record<string, string> = {
@@ -31,13 +31,14 @@ export default async function BlogPage({ params }: Props) {
   const { locale } = await params
   if (!routing.locales.includes(locale as 'lv' | 'ru')) notFound()
 
+  const t = await getTranslations('blog')
+  const tNav = await getTranslations('nav')
+
   const posts = await prisma.blogPost.findMany({
     where: { locale, published: true },
     orderBy: { publishedAt: 'desc' },
     select: { slug: true, title: true, description: true, publishedAt: true, readMinutes: true, tags: true },
   })
-
-  const isLv = locale === 'lv'
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -46,12 +47,10 @@ export default async function BlogPage({ params }: Props) {
       <main className="flex-1 px-4 py-10 max-w-3xl mx-auto w-full">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            {isLv ? 'Blogs' : 'Блог'}
+            {t('title')}
           </h1>
           <p className="text-gray-500">
-            {isLv
-              ? 'Komunālie izdevumi, subsīdijas un renovācija Latvijā — tikai konkrēti fakti.'
-              : 'Коммунальные расходы, субсидии и реновация в Латвии — только конкретика.'}
+            {t('subtitle')}
           </p>
         </div>
 
@@ -73,12 +72,12 @@ export default async function BlogPage({ params }: Props) {
                   <div className="flex items-center gap-3 mt-3">
                     <span className="text-xs text-gray-400">
                       {post.publishedAt.toLocaleDateString(
-                        isLv ? 'lv-LV' : 'ru-RU',
+                        locale === 'lv' ? 'lv-LV' : 'ru-RU',
                         { year: 'numeric', month: 'long', day: 'numeric' },
                       )}
                     </span>
                     <span className="text-xs text-gray-300">·</span>
-                    <span className="text-xs text-gray-400">{post.readMinutes} {isLv ? 'min.' : 'мин.'}</span>
+                    <span className="text-xs text-gray-400">{post.readMinutes} {t('readMin')}</span>
                   </div>
                 </div>
                 <div className="flex-shrink-0 hidden sm:flex flex-col gap-1 items-end">
@@ -98,13 +97,13 @@ export default async function BlogPage({ params }: Props) {
 
         <div className="mt-10 card text-center space-y-3">
           <p className="font-medium text-gray-900">
-            {isLv ? 'Pārbaudiet savas mājas izdevumus' : 'Проверьте расходы вашего дома'}
+            {t('checkHome')}
           </p>
           <p className="text-sm text-gray-500">
-            {isLv ? 'Bez maksas. 30 sekundes.' : 'Бесплатно. 30 секунд.'}
+            {t('checkHomeSub')}
           </p>
           <Link href="/#hero" className="btn-primary inline-block w-auto px-8">
-            {isLv ? 'Atrast savu māju →' : 'Найти свой дом →'}
+            {tNav('findHome')}
           </Link>
         </div>
       </main>
@@ -112,10 +111,10 @@ export default async function BlogPage({ params }: Props) {
       <footer className="px-4 py-6 border-t border-gray-100 text-center text-xs text-gray-400">
         <Link href="/" className="hover:text-gray-600">ALTEKO</Link>
         {' · '}
-        <Link href="/blog" className="hover:text-gray-600">{isLv ? 'Blogs' : 'Блог'}</Link>
+        <Link href="/blog" className="hover:text-gray-600">{t('footer.blog')}</Link>
         {' · '}
         <Link href="/contractors/register" className="hover:text-gray-600">
-          {isLv ? 'Būvuzņēmējiem' : 'Для подрядчиков'}
+          {t('footer.contractors')}
         </Link>
       </footer>
     </div>

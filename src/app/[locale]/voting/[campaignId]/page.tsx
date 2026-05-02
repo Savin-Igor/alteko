@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import Link from 'next/link'
+import { useLocale, useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { PageHeader, ProgressBar, InfoBanner } from '@/components/ui'
 
 interface CampaignStatus {
@@ -24,6 +25,9 @@ interface Props {
 type AuthStep = 'choose' | 'smartid-input' | 'smartid-loading' | 'smartid-polling' | 'done'
 
 export default function VotingPage({ params }: Props) {
+  const t = useTranslations('voting')
+  const locale = useLocale()
+
   const [campaignId, setCampaignId] = useState<string>('')
   const [status, setStatus] = useState<CampaignStatus | null>(null)
   const [loading, setLoading] = useState(true)
@@ -66,7 +70,7 @@ export default function VotingPage({ params }: Props) {
       })
       const data = await res.json()
       if (!res.ok) {
-        setError(data.error ?? 'Ошибка запроса')
+        setError(data.error ?? t('errorRequest'))
         setAuthStep('smartid-input')
         return
       }
@@ -75,7 +79,7 @@ export default function VotingPage({ params }: Props) {
       setAuthStep('smartid-polling')
       pollSmartId(data.sessionId)
     } catch {
-      setError('Ошибка соединения')
+      setError(t('errorConnection'))
       setAuthStep('smartid-input')
     }
   }
@@ -96,7 +100,7 @@ export default function VotingPage({ params }: Props) {
         }
       } catch { /* retry */ }
     }
-    setError('Smart-ID не ответил за 90 секунд. Попробуйте снова.')
+    setError(t('smartIdTimeout'))
     setAuthStep('choose')
   }
 
@@ -114,8 +118,8 @@ export default function VotingPage({ params }: Props) {
       <PageHeader variant="minimal" />
       <div className="flex-1 flex items-center justify-center px-4">
         <div className="text-center space-y-3">
-          <p className="text-gray-500">Кампания не найдена.</p>
-          <Link href="/" className="btn-secondary inline-block w-auto px-6">На главную</Link>
+          <p className="text-gray-500">{t('campaignNotFound')}</p>
+          <Link href="/" className="btn-secondary inline-block w-auto px-6">{t('backHome')}</Link>
         </div>
       </div>
     </div>
@@ -124,46 +128,44 @@ export default function VotingPage({ params }: Props) {
   const yesSharePct = Math.round(status.currentYesShare * 100)
   const requiredPct = Math.round(status.requiredThreshold * 100)
   const isClosed = status.status !== 'ACTIVE'
+  const dateLocale = locale === 'lv' ? 'lv-LV' : 'ru-RU'
 
   return (
     <div className="min-h-screen flex flex-col">
       <PageHeader variant="minimal" />
 
       <main className="flex-1 px-4 py-6 max-w-md mx-auto w-full space-y-5">
-        {/* Header */}
         <div>
           <p className="text-sm text-gray-500">{status.building.address}</p>
           <h1 className="text-lg font-bold text-gray-900 mt-0.5 leading-snug">{status.title}</h1>
           {status.deadline && (
             <p className="text-xs text-gray-400 mt-1">
-              До {new Date(status.deadline).toLocaleDateString('ru-RU', {
+              {t('deadlinePrefix')}{new Date(status.deadline).toLocaleDateString(dateLocale, {
                 day: 'numeric', month: 'long', year: 'numeric',
               })}
             </p>
           )}
         </div>
 
-        {/* Progress */}
         <div className="card space-y-4">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-500">Проголосовали:</span>
+            <span className="text-gray-500">{t('votedLabel')}</span>
             <span className="font-medium text-gray-900">
-              {status.totalVoted} из {status.building.apartmentCount ?? '?'}
+              {t('votedCount', { voted: status.totalVoted, total: status.building.apartmentCount ?? t('totalUnknown') })}
             </span>
           </div>
 
           <ProgressBar
             value={status.currentYesShare}
             variant={status.thresholdReached ? 'success' : 'primary'}
-            label={`За: ${yesSharePct}% · Нужно: ${requiredPct}%`}
+            label={t('shareLabel', { yes: yesSharePct, required: requiredPct })}
           />
 
-          {/* Vote counts */}
           <div className="grid grid-cols-3 gap-2 text-center pt-1 border-t border-gray-100">
             {([
-              { key: 'YES' as const, label: 'За', color: 'text-success' },
-              { key: 'NO' as const, label: 'Против', color: 'text-danger' },
-              { key: 'ABSTAIN' as const, label: 'Воздерж.', color: 'text-gray-500' },
+              { key: 'YES' as const, label: t('yesLabel'), color: 'text-success' },
+              { key: 'NO' as const, label: t('noLabel'), color: 'text-danger' },
+              { key: 'ABSTAIN' as const, label: t('abstainLabel'), color: 'text-gray-500' },
             ]).map(({ key, label, color }) => (
               <div key={key}>
                 <p className={`text-xl font-bold ${color}`}>{status.votes.counts[key]}</p>
@@ -174,27 +176,25 @@ export default function VotingPage({ params }: Props) {
 
           {status.thresholdReached && (
             <InfoBanner variant="success">
-              Решение принято — необходимый порог достигнут. Протокол сформирован.
+              {t('thresholdReached')}
             </InfoBanner>
           )}
           {status.status === 'CANCELLED' && (
             <InfoBanner variant="warning">
-              Голосование завершено. Порог не набран.
+              {t('cancelled')}
             </InfoBanner>
           )}
         </div>
 
-        {/* Auth / Vote */}
         {!isClosed && !voted && (
           <div className="card space-y-4">
-            <p className="text-sm font-medium text-gray-700">Ваш голос</p>
+            <p className="text-sm font-medium text-gray-700">{t('yourVote')}</p>
 
             {error && <InfoBanner variant="error">{error}</InfoBanner>}
 
-            {/* Choose method */}
             {authStep === 'choose' && (
               <div className="space-y-3">
-                <p className="text-xs text-gray-500">Подпишите с помощью:</p>
+                <p className="text-xs text-gray-500">{t('signWith')}</p>
                 <div className="flex gap-3">
                   <button
                     onClick={() => setAuthStep('smartid-input')}
@@ -212,18 +212,17 @@ export default function VotingPage({ params }: Props) {
               </div>
             )}
 
-            {/* Smart-ID: input personal code */}
             {authStep === 'smartid-input' && (
               <div className="space-y-3">
                 <label htmlFor="personal-code" className="text-sm text-gray-600 block">
-                  Персональный код
+                  {t('personalCodeLabel')}
                 </label>
                 <input
                   id="personal-code"
                   type="text"
                   value={personalCode}
                   onChange={(e) => setPersonalCode(e.target.value)}
-                  placeholder="XXXXXX-XXXXX"
+                  placeholder={t('personalCodePlaceholder')}
                   className="input-field"
                   autoComplete="off"
                 />
@@ -233,59 +232,56 @@ export default function VotingPage({ params }: Props) {
                     onClick={() => setAuthStep('choose')}
                     className="btn-ghost flex-1"
                   >
-                    Назад
+                    {t('back')}
                   </button>
                   <button onClick={initSmartId} className="btn-primary flex-1">
-                    Продолжить
+                    {t('continue')}
                   </button>
                 </div>
               </div>
             )}
 
-            {/* Smart-ID: loading (waiting for API) */}
             {authStep === 'smartid-loading' && (
               <div className="text-center space-y-3 py-2">
                 <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
-                <p className="text-sm text-gray-600">Отправляем запрос в Smart-ID...</p>
+                <p className="text-sm text-gray-600">{t('smartIdLoading')}</p>
               </div>
             )}
 
-            {/* Smart-ID: show verification code */}
             {authStep === 'smartid-polling' && verificationCode && (
               <div className="text-center space-y-3 py-2">
-                <p className="text-sm text-gray-600">Откройте приложение Smart-ID и подтвердите:</p>
+                <p className="text-sm text-gray-600">{t('smartIdConfirm')}</p>
                 <p className="text-5xl font-bold tracking-widest text-primary py-2">
                   {verificationCode}
                 </p>
                 <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
                   <div className="w-4 h-4 border-2 border-gray-300 border-t-primary rounded-full animate-spin" />
-                  Ожидаем подтверждения...
+                  {t('waitingConfirm')}
                 </div>
               </div>
             )}
 
-            {/* Vote buttons */}
             {authStep === 'done' && (
               <div className="space-y-3">
-                <InfoBanner variant="success">Личность подтверждена. Выберите решение:</InfoBanner>
+                <InfoBanner variant="success">{t('identityConfirmed')}</InfoBanner>
                 <div className="space-y-2">
                   <button
                     onClick={() => setVoted('YES')}
                     className="w-full py-3.5 min-h-[52px] border-2 border-success rounded-lg text-sm font-semibold text-success hover:bg-success-light transition-colors"
                   >
-                    Поддерживаю реновацию
+                    {t('voteYes')}
                   </button>
                   <button
                     onClick={() => setVoted('NO')}
                     className="w-full py-3.5 min-h-[52px] border-2 border-danger rounded-lg text-sm font-semibold text-danger hover:bg-danger-light transition-colors"
                   >
-                    Против
+                    {t('voteNo')}
                   </button>
                   <button
                     onClick={() => setVoted('ABSTAIN')}
                     className="w-full py-3.5 min-h-[52px] border-2 border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
                   >
-                    Воздерживаюсь
+                    {t('voteAbstain')}
                   </button>
                 </div>
               </div>
@@ -293,7 +289,6 @@ export default function VotingPage({ params }: Props) {
           </div>
         )}
 
-        {/* Voted confirmation */}
         {voted && (
           <div className="card bg-success-light border-green-200 text-center py-6 space-y-2">
             <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto">
@@ -301,14 +296,14 @@ export default function VotingPage({ params }: Props) {
                 <path d="M4 12l5 5L20 7" stroke="#16A34A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <p className="font-semibold text-success">Голос записан</p>
+            <p className="font-semibold text-success">{t('voteRecorded')}</p>
             <p className="text-sm text-gray-600">
-              Ваше решение:{' '}
+              {t('yourDecision')}{' '}
               <span className="font-medium">
-                {voted === 'YES' ? 'За реновацию' : voted === 'NO' ? 'Против' : 'Воздержался'}
+                {voted === 'YES' ? t('decisionYes') : voted === 'NO' ? t('decisionNo') : t('decisionAbstain')}
               </span>
             </p>
-            <p className="text-xs text-gray-400">Данные подписаны электронной подписью</p>
+            <p className="text-xs text-gray-400">{t('signedNote')}</p>
           </div>
         )}
       </main>

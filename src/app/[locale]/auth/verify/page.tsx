@@ -1,7 +1,10 @@
-import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 import { PageHeader } from '@/components/ui'
 
-export default function VerifyRequestPage() {
+export default async function VerifyRequestPage() {
+  const t = await getTranslations('auth')
+
   return (
     <div className="min-h-screen flex flex-col">
       <PageHeader variant="minimal" />
@@ -15,20 +18,20 @@ export default function VerifyRequestPage() {
             </svg>
           </div>
 
-          <h1 className="text-xl font-bold text-gray-900">Проверьте почту</h1>
+          <h1 className="text-xl font-bold text-gray-900">{t('checkEmail')}</h1>
           <p className="text-gray-500 leading-relaxed">
-            Ссылка для входа отправлена. Перейдите по ней — и вы окажетесь в дашборде.
+            {t('checkEmailDesc')}
           </p>
           <p className="text-sm text-gray-400">
-            Ссылка действует 24 часа. Не нашли? Проверьте папку «Спам».
+            {t('linkExpiry')}
           </p>
 
           <Link href="/auth/signin" className="text-sm text-primary hover:underline block">
-            Запросить новую ссылку
+            {t('requestNew')}
           </Link>
 
           <Link href="/" className="text-sm text-gray-400 hover:text-gray-600 block">
-            ← На главную
+            {t('backToMainShort')}
           </Link>
         </div>
       </main>

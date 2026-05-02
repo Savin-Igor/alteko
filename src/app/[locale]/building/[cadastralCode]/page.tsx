@@ -1,17 +1,8 @@
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 import { prisma } from '@/lib/prisma'
 import { SiteHeader } from '@/components/ui/SiteHeader'
-
-const ENERGY_CLASS_LABELS: Record<string, string> = {
-  A: 'A — Высокая',
-  B: 'B',
-  C: 'C',
-  D: 'D',
-  E: 'E — Средняя',
-  F: 'F',
-  G: 'G — Низкая',
-}
 
 const ENERGY_CLASS_WIDTH: Record<string, string> = {
   A: 'w-[20%]',
@@ -24,13 +15,16 @@ const ENERGY_CLASS_WIDTH: Record<string, string> = {
 }
 
 interface Props {
-  params: Promise<{ cadastralCode: string }>
+  params: Promise<{ locale: string; cadastralCode: string }>
   searchParams: Promise<{ address?: string }>
 }
 
 export default async function BuildingPage({ params, searchParams }: Props) {
-  const { cadastralCode } = await params
+  const { locale, cadastralCode } = await params
   const { address: fallbackAddress } = await searchParams
+
+  const t = await getTranslations('building')
+  const tEnergy = await getTranslations('building.energyClass')
 
   let building = null
   try {
@@ -56,6 +50,15 @@ export default async function BuildingPage({ params, searchParams }: Props) {
   if (!building && !fallbackAddress) notFound()
 
   const displayAddress = building?.address ?? fallbackAddress ?? cadastralCode
+  const localeCode = locale === 'lv' ? 'lv-LV' : 'ru-RU'
+
+  function energyLabel(cls: string): string {
+    try {
+      return tEnergy(cls as 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G')
+    } catch {
+      return cls
+    }
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -66,7 +69,7 @@ export default async function BuildingPage({ params, searchParams }: Props) {
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
             <path d="M9 11L5 7l4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          Поиск адреса
+          {t('backToSearch')}
         </Link>
 
         <div className="bg-white border border-gray-200 rounded-xl p-5 space-y-4">
@@ -76,9 +79,9 @@ export default async function BuildingPage({ params, searchParams }: Props) {
                 <h1 className="text-lg font-semibold text-gray-900">{building.address}</h1>
                 <p className="text-sm text-gray-500 mt-1">
                   {[
-                    building.series ? `Серия ${building.series}` : 'Серия не определена',
-                    building.constructionYear ? `${building.constructionYear} г.` : null,
-                    building.apartmentCount ? `${building.apartmentCount} кв.` : null,
+                    building.series ? t('seriesPrefix', { series: building.series }) : t('seriesUnknown'),
+                    building.constructionYear ? t('yearSuffix', { year: building.constructionYear }) : null,
+                    building.apartmentCount ? t('apartments', { count: building.apartmentCount }) : null,
                   ]
                     .filter(Boolean)
                     .join(' · ')}
@@ -88,23 +91,23 @@ export default async function BuildingPage({ params, searchParams }: Props) {
               <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
                 {building.district && (
                   <>
-                    <dt className="text-gray-500">Район</dt>
+                    <dt className="text-gray-500">{t('district')}</dt>
                     <dd className="text-gray-900 font-medium">{building.district}</dd>
                   </>
                 )}
                 {building.totalAreaM2 && (
                   <>
-                    <dt className="text-gray-500">Общая площадь</dt>
-                    <dd className="text-gray-900 font-medium">{Number(building.totalAreaM2).toLocaleString('ru')} м²</dd>
+                    <dt className="text-gray-500">{t('totalArea')}</dt>
+                    <dd className="text-gray-900 font-medium">{Number(building.totalAreaM2).toLocaleString(localeCode)} m²</dd>
                   </>
                 )}
-                <dt className="text-gray-500">Кадастровый №</dt>
+                <dt className="text-gray-500">{t('cadastralNumber')}</dt>
                 <dd className="text-gray-900 font-mono text-xs">{building.cadastralCode}</dd>
               </dl>
 
               {building.energyClass && (
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">Энергоэффективность:</p>
+                  <p className="text-sm text-gray-600 mb-1">{t('energyEfficiency')}</p>
                   <div className="flex items-center gap-2">
                     <div className="flex-1 bg-gray-100 rounded-full h-2">
                       <div
@@ -112,7 +115,7 @@ export default async function BuildingPage({ params, searchParams }: Props) {
                       />
                     </div>
                     <span className="text-sm font-medium text-gray-700">
-                      Класс {ENERGY_CLASS_LABELS[building.energyClass] ?? building.energyClass}
+                      {t('classLabel', { label: energyLabel(building.energyClass) })}
                     </span>
                   </div>
                 </div>
@@ -120,7 +123,7 @@ export default async function BuildingPage({ params, searchParams }: Props) {
 
               {building._count.reports > 0 && (
                 <p className="text-sm text-gray-500">
-                  Похожих домов в базе: {building._count.reports}
+                  {t('similarBuildings', { count: building._count.reports })}
                 </p>
               )}
             </>
@@ -128,7 +131,7 @@ export default async function BuildingPage({ params, searchParams }: Props) {
             <div>
               <h1 className="text-lg font-semibold text-gray-900">{displayAddress}</h1>
               <p className="text-sm text-gray-500 mt-1">
-                Данные по этому дому уточняются
+                {t('fallbackPending')}
               </p>
             </div>
           )}
@@ -138,11 +141,11 @@ export default async function BuildingPage({ params, searchParams }: Props) {
               href={`/audit/upload?building=${building?.id ?? ''}&cadastralCode=${building?.cadastralCode ?? ''}&address=${encodeURIComponent(displayAddress)}`}
               className="btn-primary text-center block"
             >
-              Загрузить счёт управляющей компании
+              {t('uploadCta')}
             </Link>
 
             <button className="w-full text-center text-sm text-gray-500 hover:text-gray-700 py-2">
-              Нет счёта под рукой? Запомнить адрес — пришлём напоминание
+              {t('noBillReminder')}
             </button>
           </div>
         </div>

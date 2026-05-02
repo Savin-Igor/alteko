@@ -1,20 +1,19 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import Link from 'next/link'
-import { Suspense } from 'react'
+import { useState, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
+import { useRouter } from '@/i18n/navigation'
 import { FileDropzone, InfoBanner, PageHeader } from '@/components/ui'
 
 const CURRENT_YEAR = new Date().getFullYear()
 const CURRENT_MONTH = new Date().getMonth() + 1
 
-const MONTHS = [
-  'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-  'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь',
-]
-
 function UploadForm() {
+  const t = useTranslations('audit.upload')
+  const tMonths = useTranslations('audit')
+  const months = tMonths.raw('months') as string[]
+
   const router = useRouter()
   const searchParams = useSearchParams()
   const buildingId = searchParams.get('building') ?? ''
@@ -42,12 +41,12 @@ function UploadForm() {
       const res = await fetch('/api/audit/upload', { method: 'POST', body: formData })
       const data = await res.json()
       if (!res.ok) {
-        setError(data.error ?? 'Ошибка загрузки. Попробуйте снова.')
+        setError(data.error ?? t('errorUpload'))
         return
       }
       router.push(`/audit/preview?reportId=${data.reportId}&building=${buildingId}&cadastralCode=${cadastralCode}`)
     } catch {
-      setError('Ошибка соединения. Проверьте интернет и попробуйте снова.')
+      setError(t('errorConnection'))
     } finally {
       setUploading(false)
     }
@@ -57,15 +56,15 @@ function UploadForm() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <PageHeader variant="breadcrumb" backHref={backHref} backLabel={address || 'Назад'} />
+      <PageHeader variant="breadcrumb" backHref={backHref} backLabel={address || t('back')} />
 
       <main className="flex-1 px-4 py-6 max-w-md mx-auto w-full">
         {address && (
           <p className="text-sm font-medium text-gray-700 mb-4">{address}</p>
         )}
 
-        <h1 className="text-xl font-semibold text-gray-900 mb-1">Загрузите счёт-фактуру</h1>
-        <p className="text-sm text-gray-500 mb-6">от управляющей компании</p>
+        <h1 className="text-xl font-semibold text-gray-900 mb-1">{t('title')}</h1>
+        <p className="text-sm text-gray-500 mb-6">{t('subtitle')}</p>
 
         <div className="space-y-4">
           <FileDropzone
@@ -73,13 +72,13 @@ function UploadForm() {
             file={file}
             accept="application/pdf"
             maxSizeMB={10}
-            hint="Счета Namsaimnieks, RNP, Latio и др. · PDF до 10 МБ"
+            hint={t('fileHint')}
             onError={setError}
           />
 
           <div className="flex gap-3">
             <div className="flex-1">
-              <label className="text-xs text-gray-500 block mb-1" htmlFor="year-select">Год счёта</label>
+              <label className="text-xs text-gray-500 block mb-1" htmlFor="year-select">{t('yearLabel')}</label>
               <select
                 id="year-select"
                 value={year}
@@ -92,14 +91,14 @@ function UploadForm() {
               </select>
             </div>
             <div className="flex-1">
-              <label className="text-xs text-gray-500 block mb-1" htmlFor="month-select">Месяц</label>
+              <label className="text-xs text-gray-500 block mb-1" htmlFor="month-select">{t('monthLabel')}</label>
               <select
                 id="month-select"
                 value={month}
                 onChange={(e) => setMonth(Number(e.target.value))}
                 className="input-field text-sm"
               >
-                {MONTHS.map((m, i) => (
+                {months.map((m, i) => (
                   <option key={i + 1} value={i + 1}>{m}</option>
                 ))}
               </select>
@@ -107,7 +106,7 @@ function UploadForm() {
           </div>
 
           <InfoBanner variant="info">
-            Файл используется только для анализа вашего дома и не передаётся третьим лицам.
+            {t('privacyInfo')}
           </InfoBanner>
 
           {error && (
@@ -122,9 +121,9 @@ function UploadForm() {
             {uploading ? (
               <span className="flex items-center justify-center gap-2">
                 <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Загружаем...
+                {t('uploadingButton')}
               </span>
-            ) : 'Анализировать счёт'}
+            ) : t('submitButton')}
           </button>
         </div>
       </main>
