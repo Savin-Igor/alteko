@@ -132,38 +132,31 @@ export default function HomePage() {
             </button>
           </div>
 
-          <div className="flex items-center justify-center gap-4 mt-5 text-xs text-gray-400">
+          <div className="flex items-center justify-center gap-2 mt-5 text-xs text-gray-400">
+            <span>{t('hero.journey.step1')}</span>
+            <span>→</span>
+            <span>{t('hero.journey.step2')}</span>
+            <span>→</span>
+            <span>{t('hero.journey.step3')}</span>
+          </div>
+
+          <div className="flex items-center justify-center gap-4 mt-3 text-xs text-gray-400">
             <span>{t('hero.stats.free')}</span>
             <span>·</span>
             <span>{t('hero.stats.buildings')}</span>
           </div>
-        </div>
-      </section>
 
-      {/* ── 2. PROBLEM ───────────────────────────────────────────────────────── */}
-      <section className="px-4 py-14 bg-gray-50 border-y border-gray-100">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">
-            {t('problem.heading')}
-          </h2>
-          <p className="text-gray-500 text-center mb-8 leading-relaxed">
-            {t('problem.description')}
+          <p className="mt-3 text-xs text-gray-400">
+            {t('hero.contractorText')}{' '}
+            <Link href="/contractors/register" className="text-primary underline">
+              {t('hero.contractorCta')}
+            </Link>
           </p>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {problemStats.map((stat, i) => (
-              <div key={i} className="card text-center py-4 space-y-1">
-                <p className={`text-2xl font-bold ${PROBLEM_COLORS[i]}`}>{stat.value}</p>
-                <p className="text-xs text-gray-500 leading-snug">{stat.label}</p>
-              </div>
-            ))}
-          </div>
-
         </div>
       </section>
 
-      {/* ── 3. HOW IT WORKS ──────────────────────────────────────────────────── */}
-      <section className="px-4 py-14 bg-white">
+      {/* ── 2. HOW IT WORKS ──────────────────────────────────────────────────── */}
+      <section className="px-4 py-14 bg-gray-50 border-y border-gray-100">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-xl font-bold text-gray-900 mb-8 text-center">
             {t('steps.heading')}
@@ -188,6 +181,28 @@ export default function HomePage() {
             </button>
             <p className="text-xs text-gray-400 mt-2">{t('steps.ctaNote')}</p>
           </div>
+        </div>
+      </section>
+
+      {/* ── 3. PROBLEM ───────────────────────────────────────────────────────── */}
+      <section className="px-4 py-14 bg-white">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">
+            {t('problem.heading')}
+          </h2>
+          <p className="text-gray-500 text-center mb-8 leading-relaxed">
+            {t('problem.description')}
+          </p>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {problemStats.map((stat, i) => (
+              <div key={i} className="card text-center py-4 space-y-1">
+                <p className={`text-2xl font-bold ${PROBLEM_COLORS[i]}`}>{stat.value}</p>
+                <p className="text-xs text-gray-500 leading-snug">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+
         </div>
       </section>
 

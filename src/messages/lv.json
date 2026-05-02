@@ -24,17 +24,24 @@
   },
   "home": {
     "hero": {
-      "titleQuestion": "Vai apkures rēķins šķiet pārāk liels?",
-      "titleAnswer": "Salīdzināsim ar normu 30 sekundēs.",
-      "description": "Augšupielādējiet PDF rēķinu — MI salīdzinās jūsu mājas izdevumus ar normu pēc sērijas, platības un rajona. Bez maksas.",
-      "cta": "Atrast savu māju",
+      "titleQuestion": "Samaziniet apkures rēķinu par 60%.",
+      "titleAnswer": "Valsts maksā līdz 49%.",
+      "description": "Sāciet ar bezmaksas pārbaudi: salīdzināsim jūsu māju ar normu pēc sērijas un rajona.",
+      "cta": "Sākt pārbaudi",
       "ctaLoading": "Meklējam māju...",
       "errorNotFound": "Māja nav atrasta datu bāzē. Mēģiniet citu adresi.",
       "errorConnection": "Savienojuma kļūda. Pārbaudiet internetu un mēģiniet vēlreiz.",
       "stats": {
         "free": "Bez maksas",
         "buildings": "624 mājas jau pārbaudītas"
-      }
+      },
+      "journey": {
+        "step1": "Augšupielādēt rēķinu",
+        "step2": "Saņemt atskaiti",
+        "step3": "Aprēķināt renovāciju"
+      },
+      "contractorText": "Esat darbuzņēmējs?",
+      "contractorCta": "Reģistrēties →"
     },
     "problem": {
       "heading": "7 no 10 padomju laika mājām pārmaksā",
