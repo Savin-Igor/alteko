@@ -95,6 +95,11 @@ seed-buildings:
 seed-series:
 	$(RUN) prisma/seed-series.ts
 
+## Assign Building.series using year + wallMaterial + floorCount heuristic
+## Run after sync-buildings (needs constructionYear, wallMaterial, floorCount populated)
+assign-series:
+	$(RUN) scripts/assign-series.ts
+
 ## Recompute BenchmarkSegment percentiles from existing expense reports
 seed-benchmarks:
 	$(RUN) scripts/seed-benchmarks.ts

@@ -15,6 +15,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "sync:buildings": "tsx scripts/sync-buildings.ts",
+    "assign:series": "tsx scripts/assign-series.ts",
     "sync:vzd": "tsx scripts/sync-vzd.ts",
     "sync:bvkb": "tsx scripts/sync-bvkb.ts",
     "sync:transactions": "tsx scripts/sync-transactions.ts",

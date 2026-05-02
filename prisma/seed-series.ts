@@ -7,10 +7,16 @@ import { PrismaClient } from '@prisma/client'
 //   - LSM article 21.01.2025 on series 104 and 119 longevity study
 //
 // No official registry exists. Match heuristic: constructionYear + wallMaterial + floorCount
-// wallMaterialKey: substring match against BuildingZIP MaterialKind field
-//   e.g. "2303" → "Dzelzsbetona paneļi" (reinforced concrete panels)
-//   "212"  → "Ķieģeļu mūris" (brick masonry)
-//   "243"  → "Koka karkasa konstrukcijas" (timber frame)
+//
+// wallMaterialKey is a SUBSTRING matched against Building.wallMaterial from Building.ZIP.
+// Building.ZIP stores full Latvian material names (no code prefix), so keys must be
+// substrings of those names:
+//   "Dzelzsbetona paneļi"  → panels (used by 104, 119, 316, 318, 464, 467, 602, 602P)
+//   "Ķieģeļu mūris"        → brick  (used by 103, Khrushchevka, Stalinka)
+//
+// NOTE: Building.wallMaterial from Building.ZIP differs from ApartmentTransaction.wallMaterial
+// from tg_darjumi CSV, which uses "CODE - name" format (e.g. "2303 - Dzelzsbetona paneļi").
+// The series assignment script (scripts/assign-series.ts) uses Building.wallMaterial.
 
 const SERIES: Array<{
   code: string
@@ -24,7 +30,7 @@ const SERIES: Array<{
 }> = [
   {
     code: '103',
-    wallMaterialKey: '212',  // Ķieģeļu mūris (brick)
+    wallMaterialKey: 'Ķieģeļu mūris',
     floorsMin: 5,
     floorsMax: 9,
     yearFrom: 1960,
@@ -34,7 +40,7 @@ const SERIES: Array<{
   },
   {
     code: '104',
-    wallMaterialKey: '2303',  // Dzelzsbetona paneļi (reinforced concrete panels)
+    wallMaterialKey: 'Dzelzsbetona paneļi',
     floorsMin: 5,
     floorsMax: 9,
     yearFrom: 1963,
@@ -44,7 +50,7 @@ const SERIES: Array<{
   },
   {
     code: '119',
-    wallMaterialKey: '2303',  // Dzelzsbetona paneļi
+    wallMaterialKey: 'Dzelzsbetona paneļi',  // Dzelzsbetona paneļi
     floorsMin: 5,
     floorsMax: 12,
     yearFrom: 1965,
@@ -54,7 +60,7 @@ const SERIES: Array<{
   },
   {
     code: '316',
-    wallMaterialKey: '2303',
+    wallMaterialKey: 'Dzelzsbetona paneļi',
     floorsMin: 5,
     floorsMax: 9,
     yearFrom: 1958,
@@ -64,7 +70,7 @@ const SERIES: Array<{
   },
   {
     code: '318',
-    wallMaterialKey: '2303',
+    wallMaterialKey: 'Dzelzsbetona paneļi',
     floorsMin: 4,
     floorsMax: 9,
     yearFrom: 1960,
@@ -74,7 +80,7 @@ const SERIES: Array<{
   },
   {
     code: '464',
-    wallMaterialKey: '2303',
+    wallMaterialKey: 'Dzelzsbetona paneļi',
     floorsMin: 4,
     floorsMax: 5,
     yearFrom: 1962,
@@ -84,7 +90,7 @@ const SERIES: Array<{
   },
   {
     code: '467',
-    wallMaterialKey: '2303',  // Reinforced concrete panels
+    wallMaterialKey: 'Dzelzsbetona paneļi',  // Reinforced concrete panels
     floorsMin: 9,
     floorsMax: 9,
     yearFrom: 1970,
@@ -94,7 +100,7 @@ const SERIES: Array<{
   },
   {
     code: '602',
-    wallMaterialKey: '2303',
+    wallMaterialKey: 'Dzelzsbetona paneļi',
     floorsMin: 6,
     floorsMax: 9,
     yearFrom: 1960,
@@ -104,7 +110,7 @@ const SERIES: Array<{
   },
   {
     code: '602P',
-    wallMaterialKey: '2303',
+    wallMaterialKey: 'Dzelzsbetona paneļi',
     floorsMin: 9,
     floorsMax: 16,
     yearFrom: 1972,
@@ -114,7 +120,7 @@ const SERIES: Array<{
   },
   {
     code: 'Khrushchevka',
-    wallMaterialKey: '212',  // Brick or early panels
+    wallMaterialKey: 'Ķieģeļu mūris',
     floorsMin: 4,
     floorsMax: 5,
     yearFrom: 1956,
@@ -124,7 +130,7 @@ const SERIES: Array<{
   },
   {
     code: 'Stalinka',
-    wallMaterialKey: '212',  // Brick
+    wallMaterialKey: 'Ķieģeļu mūris',
     floorsMin: 3,
     floorsMax: 7,
     yearFrom: 1945,

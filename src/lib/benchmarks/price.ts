@@ -3,15 +3,27 @@ import { Prisma } from '@prisma/client'
 
 export type GroupByDimension = 'city' | 'wallMaterial'
 
+// Verified by Latvijas Banka Working Paper DP 3/2025 (Romanovs, Jaunzems).
+// National average for Latvia; Riga-specific premium is higher (~13%).
+// Applied as fallback when renovated transaction sample is too small.
+const LB_RENOVATION_PREMIUM = 0.11
+
+// Minimum unique buildings required in the renovated group.
+// Below this threshold the measured premium is noise, not signal
+// (e.g. Jelgava had 11 buildings → -13% artefact).
+const MIN_RENOVATED_BUILDINGS = 20
+
+const MIN_TRANSACTIONS = 5
+
 export interface PriceBenchmarkParams {
   city?: string
   cadastralCode?: string
   yearFrom?: number
   yearTo?: number
-  txYears?: number
+  /** Transaction window in months (default 12 — avoids mixing different market cycles) */
+  txMonths?: number
   minArea?: number
   maxArea?: number
-  /** When set, returns a breakdown per city or wallMaterial instead of a single result */
   groupBy?: GroupByDimension
 }
 
@@ -20,15 +32,22 @@ export interface GroupStats {
   p50: number
   p75: number
   count: number
+  uniqueBuildings?: number
 }
 
 export interface ComparisonEntry {
   renovated: GroupStats | null
   notRenovated: GroupStats | null
+  /** Measured from transaction data, or null if insufficient renovated buildings */
   premiumPct: number | null
+  /**
+   * True when renovated sample had fewer than MIN_RENOVATED_BUILDINGS unique buildings.
+   * In this case premiumPct is estimated from Latvijas Banka DP 3/2025 (+11%),
+   * not measured directly.
+   */
+  premiumEstimated: boolean
 }
 
-/** Single-segment result (no groupBy) */
 export interface PriceBenchmarkResult extends ComparisonEntry {
   currency: 'EUR/m2'
   periodFrom: string
@@ -38,12 +57,10 @@ export interface PriceBenchmarkResult extends ComparisonEntry {
     cadastralCode?: string
     buildingYearFrom?: number
     buildingYearTo?: number
-    txYears: number
+    txMonths: number
   }
-  lowDataWarning: boolean
 }
 
-/** Multi-segment result (groupBy=city or groupBy=wallMaterial) */
 export interface PriceBenchmarkBreakdown {
   groupBy: GroupByDimension
   segments: Array<ComparisonEntry & { label: string }>
@@ -54,41 +71,59 @@ export interface PriceBenchmarkBreakdown {
     city?: string
     buildingYearFrom?: number
     buildingYearTo?: number
-    txYears: number
+    txMonths: number
   }
 }
 
-const MIN_TRANSACTIONS = 5
-
-type RawCompareRow = {
+type RawGroupRow = {
   renovation_group: string
   p25: number | null
   p50: number | null
   p75: number | null
   count: bigint
+  unique_buildings: bigint
 }
 
-type RawBreakdownRow = RawCompareRow & { segment_label: string }
+type RawBreakdownRow = RawGroupRow & { segment_label: string }
 
-function toStats(p25: number | null, p50: number | null, p75: number | null, count: bigint): GroupStats | null {
-  const n = Number(count)
-  if (n < MIN_TRANSACTIONS || p50 == null) return null
-  return { p25: Math.round(p25!), p50: Math.round(p50), p75: Math.round(p75!), count: n }
+function toStats(row: RawGroupRow): GroupStats | null {
+  const count = Number(row.count)
+  if (count < MIN_TRANSACTIONS || row.p50 == null) return null
+  return {
+    p25:             Math.round(row.p25!),
+    p50:             Math.round(row.p50),
+    p75:             Math.round(row.p75!),
+    count,
+    uniqueBuildings: Number(row.unique_buildings),
+  }
 }
 
-function buildComparison(rows: RawCompareRow[]): ComparisonEntry {
+function buildComparison(rows: RawGroupRow[]): ComparisonEntry {
   const rRow  = rows.find(r => r.renovation_group === 'renovated')
   const nrRow = rows.find(r => r.renovation_group === 'not_renovated')
-  const renovated    = rRow  ? toStats(rRow.p25,  rRow.p50,  rRow.p75,  rRow.count)  : null
-  const notRenovated = nrRow ? toStats(nrRow.p25, nrRow.p50, nrRow.p75, nrRow.count) : null
-  const premiumPct   = renovated && notRenovated
-    ? Math.round((renovated.p50 / notRenovated.p50 - 1) * 100)
-    : null
-  return { renovated, notRenovated, premiumPct }
+
+  const renovated    = rRow  ? toStats(rRow)  : null
+  const notRenovated = nrRow ? toStats(nrRow) : null
+
+  const enoughRenovatedBuildings =
+    renovated != null &&
+    (renovated.uniqueBuildings ?? 0) >= MIN_RENOVATED_BUILDINGS
+
+  let premiumPct: number | null = null
+  let premiumEstimated = false
+
+  if (enoughRenovatedBuildings && notRenovated) {
+    // Measured from transaction data
+    premiumPct = Math.round((renovated!.p50 / notRenovated.p50 - 1) * 100)
+  } else if (notRenovated) {
+    // Fallback: Latvijas Banka DP 3/2025 national average
+    premiumPct = Math.round(LB_RENOVATION_PREMIUM * 100)
+    premiumEstimated = true
+  }
+
+  return { renovated, notRenovated, premiumPct, premiumEstimated }
 }
 
-// Shared WHERE clause — all user filters applied here.
-// All values are Prisma-bound parameters: no SQL injection risk.
 function buildWhereClause(params: {
   city: string | null
   cadastralCode: string | null
@@ -104,12 +139,12 @@ function buildWhereClause(params: {
     AND t."priceEur" > 500
     AND t."transactionDate" >= ${periodStart}
     AND b."energyClass" IS NOT NULL
-    AND (${city}::text          IS NULL OR t."city"             = ${city})
-    AND (${cadastralCode}::text IS NULL OR t."buildingCadNr"    = ${cadastralCode})
-    AND (${yearFrom}::int       IS NULL OR t."buildingYear"     >= ${yearFrom})
-    AND (${yearTo}::int         IS NULL OR t."buildingYear"     <= ${yearTo})
-    AND (${minArea}::float      IS NULL OR t."apartmentAreaM2"  >= ${minArea})
-    AND (${maxArea}::float      IS NULL OR t."apartmentAreaM2"  <= ${maxArea})
+    AND (${city}::text          IS NULL OR t."city"            = ${city})
+    AND (${cadastralCode}::text IS NULL OR t."buildingCadNr"   = ${cadastralCode})
+    AND (${yearFrom}::int       IS NULL OR t."buildingYear"   >= ${yearFrom})
+    AND (${yearTo}::int         IS NULL OR t."buildingYear"   <= ${yearTo})
+    AND (${minArea}::float      IS NULL OR t."apartmentAreaM2" >= ${minArea})
+    AND (${maxArea}::float      IS NULL OR t."apartmentAreaM2" <= ${maxArea})
   `
 }
 
@@ -121,17 +156,17 @@ async function getLatestTransactionDate(): Promise<string> {
   return (latest?.transactionDate ?? new Date()).toISOString().slice(0, 10)
 }
 
-// ─── Single-segment query (no groupBy) ───────────────────────────────────────
+// ─── Single-segment ───────────────────────────────────────────────────────────
 
 export async function getPriceBenchmark(
   params: PriceBenchmarkParams,
 ): Promise<PriceBenchmarkResult | null> {
-  const { city, cadastralCode, yearFrom, yearTo, txYears = 5, minArea, maxArea } = params
+  const { city, cadastralCode, yearFrom, yearTo, txMonths = 12, minArea, maxArea } = params
 
   const periodStart = new Date()
-  periodStart.setFullYear(periodStart.getFullYear() - txYears)
+  periodStart.setMonth(periodStart.getMonth() - txMonths)
 
-  const whereClause = buildWhereClause({
+  const where = buildWhereClause({
     city: city ?? null,
     cadastralCode: cadastralCode ?? null,
     yearFrom: yearFrom ?? null,
@@ -141,65 +176,67 @@ export async function getPriceBenchmark(
     periodStart,
   })
 
-  const baseSubquery = Prisma.sql`
+  const base = Prisma.sql`
     SELECT
       CASE WHEN b."energyClass" IN ('A','B') THEN 'renovated' ELSE 'not_renovated' END AS renovation_group,
+      t."buildingCadNr",
       t."priceEur"::float / t."apartmentAreaM2"::float AS price_per_m2
     FROM "ApartmentTransaction" t
     JOIN "Building" b ON b."cadastralCode" = t."buildingCadNr"
-    WHERE ${whereClause}
+    WHERE ${where}
   `
 
   const outliers = await prisma.$queryRaw<{ low: number | null; high: number | null }[]>`
     SELECT
       percentile_cont(0.05) WITHIN GROUP (ORDER BY price_per_m2) AS low,
       percentile_cont(0.95) WITHIN GROUP (ORDER BY price_per_m2) AS high
-    FROM (${baseSubquery}) base
+    FROM (${base}) s
   `
 
   const { low, high } = outliers[0] ?? {}
   if (low == null || high == null) return null
 
-  const rows = await prisma.$queryRaw<RawCompareRow[]>`
+  const rows = await prisma.$queryRaw<RawGroupRow[]>`
     SELECT
       renovation_group,
       percentile_cont(0.25) WITHIN GROUP (ORDER BY price_per_m2) AS p25,
       percentile_cont(0.50) WITHIN GROUP (ORDER BY price_per_m2) AS p50,
       percentile_cont(0.75) WITHIN GROUP (ORDER BY price_per_m2) AS p75,
-      COUNT(*) AS count
-    FROM (${baseSubquery}) base
+      COUNT(*)                                                    AS count,
+      COUNT(DISTINCT "buildingCadNr")                             AS unique_buildings
+    FROM (${base}) s
     WHERE price_per_m2 BETWEEN ${low} AND ${high}
     GROUP BY renovation_group
   `
 
   if (rows.length === 0) return null
 
-  const { renovated, notRenovated, premiumPct } = buildComparison(rows)
+  const { renovated, notRenovated, premiumPct, premiumEstimated } = buildComparison(rows)
   if (!renovated && !notRenovated) return null
 
   return {
     renovated,
     notRenovated,
     premiumPct,
-    currency: 'EUR/m2',
+    premiumEstimated,
+    currency:   'EUR/m2',
     periodFrom: periodStart.toISOString().slice(0, 10),
-    periodTo: await getLatestTransactionDate(),
-    filters: { city, cadastralCode, buildingYearFrom: yearFrom, buildingYearTo: yearTo, txYears },
-    lowDataWarning: !renovated || !notRenovated,
+    periodTo:   await getLatestTransactionDate(),
+    filters: { city, cadastralCode, buildingYearFrom: yearFrom, buildingYearTo: yearTo, txMonths },
   }
 }
 
-// ─── Breakdown query (groupBy=city or groupBy=wallMaterial) ──────────────────
+// ─── Breakdown (groupBy=city|wallMaterial) ────────────────────────────────────
 
 export async function getPriceBenchmarkBreakdown(
   params: PriceBenchmarkParams & { groupBy: GroupByDimension },
 ): Promise<PriceBenchmarkBreakdown | null> {
-  const { city, yearFrom, yearTo, txYears = 5, minArea, maxArea, groupBy } = params
+  const { city, yearFrom, yearTo, txMonths = 12, minArea, maxArea, groupBy } = params
 
   const periodStart = new Date()
-  periodStart.setFullYear(periodStart.getFullYear() - txYears)
+  periodStart.setMonth(periodStart.getMonth() - txMonths)
 
-  const whereClause = buildWhereClause({
+  const where = buildWhereClause({
     city: city ?? null,
     cadastralCode: null,
     yearFrom: yearFrom ?? null,
@@ -209,59 +246,46 @@ export async function getPriceBenchmarkBreakdown(
     periodStart,
   })
 
-  // The segment column: city or wallMaterial (from Building, not transaction)
   const segmentCol = groupBy === 'city'
     ? Prisma.sql`COALESCE(t."city", 'Unknown')`
     : Prisma.sql`COALESCE(b."wallMaterial", 'Unknown')`
 
-  const baseSubquery = Prisma.sql`
+  const base = Prisma.sql`
     SELECT
-      ${segmentCol} AS segment_label,
+      ${segmentCol}                                                                    AS segment_label,
       CASE WHEN b."energyClass" IN ('A','B') THEN 'renovated' ELSE 'not_renovated' END AS renovation_group,
-      t."priceEur"::float / t."apartmentAreaM2"::float AS price_per_m2
+      t."buildingCadNr",
+      t."priceEur"::float / t."apartmentAreaM2"::float                                AS price_per_m2
     FROM "ApartmentTransaction" t
     JOIN "Building" b ON b."cadastralCode" = t."buildingCadNr"
-    WHERE ${whereClause}
+    WHERE ${where}
   `
-
-  // Outlier bounds per segment (prevents one segment's outliers skewing others)
-  const outlierBounds = await prisma.$queryRaw<{ segment_label: string; low: number; high: number }[]>`
-    SELECT
-      segment_label,
-      percentile_cont(0.05) WITHIN GROUP (ORDER BY price_per_m2) AS low,
-      percentile_cont(0.95) WITHIN GROUP (ORDER BY price_per_m2) AS high
-    FROM (${baseSubquery}) base
-    GROUP BY segment_label
-  `
-
-  if (outlierBounds.length === 0) return null
 
   const rows = await prisma.$queryRaw<RawBreakdownRow[]>`
     SELECT
-      base.segment_label,
-      base.renovation_group,
-      percentile_cont(0.25) WITHIN GROUP (ORDER BY base.price_per_m2) AS p25,
-      percentile_cont(0.50) WITHIN GROUP (ORDER BY base.price_per_m2) AS p50,
-      percentile_cont(0.75) WITHIN GROUP (ORDER BY base.price_per_m2) AS p75,
-      COUNT(*) AS count
-    FROM (${baseSubquery}) base
-    JOIN (
-      SELECT
-        segment_label,
-        percentile_cont(0.05) WITHIN GROUP (ORDER BY price_per_m2) AS low,
-        percentile_cont(0.95) WITHIN GROUP (ORDER BY price_per_m2) AS high
-      FROM (${baseSubquery}) bounds_base
-      GROUP BY segment_label
-    ) bounds ON base.segment_label = bounds.segment_label
-    WHERE base.price_per_m2 BETWEEN bounds.low AND bounds.high
-    GROUP BY base.segment_label, base.renovation_group
-    ORDER BY base.segment_label
+      trimmed.segment_label,
+      trimmed.renovation_group,
+      percentile_cont(0.25) WITHIN GROUP (ORDER BY trimmed.price_per_m2) AS p25,
+      percentile_cont(0.50) WITHIN GROUP (ORDER BY trimmed.price_per_m2) AS p50,
+      percentile_cont(0.75) WITHIN GROUP (ORDER BY trimmed.price_per_m2) AS p75,
+      COUNT(*)                                                            AS count,
+      COUNT(DISTINCT trimmed."buildingCadNr")                             AS unique_buildings
+    FROM (
+      SELECT s.*,
+        percentile_cont(0.05) WITHIN GROUP (ORDER BY s.price_per_m2)
+          OVER (PARTITION BY s.segment_label) AS outlier_low,
+        percentile_cont(0.95) WITHIN GROUP (ORDER BY s.price_per_m2)
+          OVER (PARTITION BY s.segment_label) AS outlier_high
+      FROM (${base}) s
+    ) trimmed
+    WHERE trimmed.price_per_m2 BETWEEN trimmed.outlier_low AND trimmed.outlier_high
+    GROUP BY trimmed.segment_label, trimmed.renovation_group
+    ORDER BY trimmed.segment_label
   `
 
   if (rows.length === 0) return null
 
-  // Group rows by segment label
-  const segmentMap = new Map<string, RawCompareRow[]>()
+  const segmentMap = new Map<string, RawGroupRow[]>()
   for (const row of rows) {
     const key = row.segment_label
     if (!segmentMap.has(key)) segmentMap.set(key, [])
@@ -271,7 +295,6 @@ export async function getPriceBenchmarkBreakdown(
   const segments = Array.from(segmentMap.entries())
     .map(([label, segRows]) => ({ label, ...buildComparison(segRows) }))
     .filter(s => s.renovated || s.notRenovated)
-    // Sort by notRenovated p50 descending (most expensive cities first)
     .sort((a, b) => (b.notRenovated?.p50 ?? 0) - (a.notRenovated?.p50 ?? 0))
 
   if (segments.length === 0) return null
@@ -279,9 +302,9 @@ export async function getPriceBenchmarkBreakdown(
   return {
     groupBy,
     segments,
-    currency: 'EUR/m2',
+    currency:   'EUR/m2',
     periodFrom: periodStart.toISOString().slice(0, 10),
-    periodTo: await getLatestTransactionDate(),
-    filters: { city, buildingYearFrom: yearFrom, buildingYearTo: yearTo, txYears },
+    periodTo:   await getLatestTransactionDate(),
+    filters: { city, buildingYearFrom: yearFrom, buildingYearTo: yearTo, txMonths },
   }
 }

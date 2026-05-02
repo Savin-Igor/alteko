@@ -9,7 +9,7 @@ const schema = z.object({
   cadastralCode: z.string().min(1).max(20).optional(),
   yearFrom:      z.coerce.number().int().min(1800).max(2030).optional(),
   yearTo:        z.coerce.number().int().min(1800).max(2030).optional(),
-  txYears:       z.coerce.number().int().min(1).max(20).optional(),
+  txMonths:      z.coerce.number().int().min(1).max(60).optional(),
   minArea:       z.coerce.number().min(5).max(1000).optional(),
   maxArea:       z.coerce.number().min(5).max(1000).optional(),
   groupBy:       z.enum(['city', 'wallMaterial']).optional(),
