@@ -87,7 +87,7 @@
       "description": "Uzziniet, cik subsidē Altum un ko renovācija atdos tieši jūsu mājai.",
       "stats": [
         { "value": "līdz 49%", "label": "Altum subsīdija" },
-        { "value": "€140 mēnesī", "label": "vidējais ietaupījums" },
+        { "value": "~60%", "label": "vidējais apkures rēķina samazinājums" },
         { "value": "+10–11%", "label": "dzīvokļa vērtības pieaugums" },
         { "value": "8–12 gadi", "label": "atmaksāšanās laiks" }
       ],
@@ -496,7 +496,7 @@
     },
     "stats": [
       { "value": "līdz 49%", "label": "subsidē Altum" },
-      { "value": "€140 mēnesī", "label": "vidējais ietaupījums (119. sērija)" },
+      { "value": "~60%", "label": "vidējais samazinājums pēc ALTUM programmas" },
       { "value": "+10–11%", "label": "dzīvokļa vērtības pieaugums" },
       { "value": "8–12 gadi", "label": "vidējais atmaksāšanās laiks" }
     ],
@@ -590,10 +590,10 @@
       "classLabel": "Klase {label}",
       "headingWithSeries": "Ko renovācija dod {series}. sērijas mājām?",
       "headingGeneric": "Ko renovācija dod?",
-      "avgSavingsLabel": "Vidējais apkures ietaupījums",
-      "avgSavingsValue": "€{amount} mēnesī",
-      "wholeBuilding": "uz visu māju · pēc renovācijas",
-      "perApartment": "~€{amount} mēnesī no dzīvokļa",
+      "avgSavingsLabel": "Apkures rēķina samazinājums",
+      "savingsCaption": "pēc renovācijas, pēc ALTUM datiem",
+      "exampleLine": "Piemēram, {size} m² dzīvoklim — ~€{amount} mēnesī ietaupījuma",
+      "perM2Line": "~€{rate}/m² mēnesī (gada vidējais)",
       "financingTitle": "Finansējums",
       "subsidyLabel": "Altum subsīdija",
       "subsidyValue": "līdz 49% no izmaksām",
