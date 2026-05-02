@@ -156,11 +156,10 @@ model Building {
   bvkbUpdatedAt    DateTime?
   createdAt        DateTime     @default(now())
 
-  apartments           Apartment[]
-  reports              ExpenseReport[]
-  campaigns            VotingCampaign[]
-  projects             RenovationProject[]
-  apartmentTransactions ApartmentTransaction[]
+  apartments Apartment[]
+  reports    ExpenseReport[]
+  campaigns  VotingCampaign[]
+  projects   RenovationProject[]
 
   @@index([district])
   @@index([series])
@@ -354,8 +353,7 @@ model ApartmentTransaction {
   apartmentAreaM2 Decimal?
   syncedAt        DateTime @default(now())
 
-  building Building? @relation(fields: [buildingCadNr], references: [cadastralCode])
-
+  // Logical reference to Building.cadastralCode — no FK constraint (independent sync)
   @@index([buildingCadNr])
   @@index([city])
   @@index([transactionDate])

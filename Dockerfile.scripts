@@ -2,5 +2,5 @@
 # Source code and node_modules are bind-mounted from the host at runtime.
 # libc6-compat lets Alpine run glibc binaries (Prisma query engine, etc.)
 FROM node:20-alpine
-RUN apk add --no-cache libc6-compat openssl
+RUN apk add --no-cache libc6-compat openssl unzip
 WORKDIR /app

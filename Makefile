@@ -6,7 +6,7 @@
   build build-scripts \
   check \
   seed seed-series seed-benchmarks seed-blog \
-  sync-vzd sync-bvkb sync-transactions \
+  sync-buildings sync-vzd sync-bvkb sync-transactions \
   cron-weekly cron-monthly \
   deploy help
 
@@ -107,6 +107,11 @@ seed-blog:
 # All sync scripts run inside the scripts Docker container.
 # Env vars (VZD_DATA_URL, BVKB_DATA_URL, VZD_TRANSACTIONS_URL) are read from .env.local.
 
+## Sync Building.ZIP: real cadastralCodes, year, material, floors (~500k buildings)
+## Run before sync-vzd and sync-bvkb — sets real cadastralCode, enabling BVKB matching
+sync-buildings:
+	$(RUN) scripts/sync-buildings.ts
+
 ## Sync VAR building addresses from data.gov.lv (daily dataset, ~100k rows)
 sync-vzd:
 	$(RUN) scripts/sync-vzd.ts
@@ -123,8 +128,11 @@ sync-transactions:
 # Mirrors the schedule in .github/workflows/sync-data.yml.
 # Run these locally to test the full sync pipeline before it fires in CI.
 
-## Simulate weekly cron (Mon 03:00 UTC): addresses + energy certs
+## Simulate weekly cron (Mon 03:00 UTC): buildings → addresses → energy certs
+## Order matters: sync-buildings sets real cadastralCodes before sync-bvkb tries to match them
 cron-weekly: db-up
+	@echo "==> [cron-weekly] sync-buildings"
+	$(MAKE) sync-buildings
 	@echo "==> [cron-weekly] sync-vzd"
 	$(MAKE) sync-vzd
 	@echo "==> [cron-weekly] sync-bvkb"

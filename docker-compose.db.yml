@@ -32,6 +32,9 @@ services:
       # Override DATABASE_URL from .env.local — inside Docker, db is reachable via service name
       DATABASE_URL: postgresql://postgres:postgres@db:5432/alteko
       SKIP_ENV_VALIDATION: "true"
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     depends_on:
       db:
         condition: service_healthy
