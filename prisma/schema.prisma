@@ -187,12 +187,12 @@ model ExpenseReport {
   rawFileKey  String
   parsedData  Json?
   status      ReportStatus @default(PENDING)
-  uploadedBy  String
+  uploadedBy  String?
   processedAt DateTime?
   createdAt   DateTime     @default(now())
 
   building Building      @relation(fields: [buildingId], references: [id])
-  uploader User          @relation(fields: [uploadedBy], references: [id])
+  uploader User?         @relation(fields: [uploadedBy], references: [id])
   items    ExpenseItem[]
 
   @@unique([buildingId, periodYear, periodMonth])

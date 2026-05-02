@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { parsePdfExpense } from '@/lib/llm'
 import { getPresignedDownloadUrl } from '@/lib/s3'
 import { auth } from '@/auth'
+import { IS_STUB, STUB_PARSED_BILL } from '@/lib/stubs'
 import type { ExpenseCategory } from '@prisma/client'
 
 export const runtime = 'nodejs'
@@ -20,82 +21,71 @@ function normalizeCategory(cat: string): ExpenseCategory {
 
 export async function POST(req: NextRequest) {
   const session = await auth()
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
 
   const { reportId } = await req.json() as { reportId: string }
-  if (!reportId) {
-    return NextResponse.json({ error: 'reportId required' }, { status: 400 })
-  }
+  if (!reportId) return NextResponse.json({ error: 'reportId required' }, { status: 400 })
 
   const report = await prisma.expenseReport.findUnique({
     where: { id: reportId },
     include: { building: true },
   })
-
   if (!report) return NextResponse.json({ error: 'Report not found' }, { status: 404 })
-  if (report.uploadedBy !== session.user.id) {
+
+  // Allow access for anonymous uploads (uploadedBy null) or the report owner
+  const isAnonymous = !report.uploadedBy
+  const isOwner = !!session?.user?.id && report.uploadedBy === session.user.id
+  if (!isAnonymous && !isOwner) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  await prisma.expenseReport.update({
-    where: { id: reportId },
-    data: { status: 'PROCESSING' },
-  })
+  await prisma.expenseReport.update({ where: { id: reportId }, data: { status: 'PROCESSING' } })
 
   try {
-    // Fetch PDF from S3 as base64
-    const signedUrl = await getPresignedDownloadUrl(report.rawFileKey)
-    const pdfRes = await fetch(signedUrl)
-    if (!pdfRes.ok) throw new Error('Failed to fetch PDF from storage')
-    const pdfBuffer = await pdfRes.arrayBuffer()
-    const pdfBase64 = Buffer.from(pdfBuffer).toString('base64')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let parsed: any
 
-    const parsed = await parsePdfExpense(pdfBase64, report.building.address)
+    if (IS_STUB) {
+      parsed = STUB_PARSED_BILL
+    } else {
+      const signedUrl = await getPresignedDownloadUrl(report.rawFileKey)
+      const pdfRes = await fetch(signedUrl)
+      if (!pdfRes.ok) throw new Error('Failed to fetch PDF from storage')
+      const pdfBase64 = Buffer.from(await pdfRes.arrayBuffer()).toString('base64')
+      parsed = await parsePdfExpense(pdfBase64, report.building.address)
+    }
 
-    // Persist items
     await prisma.$transaction([
       prisma.expenseItem.deleteMany({ where: { reportId } }),
-      ...parsed.items.map((item) =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ...parsed.items.map((item: any) =>
         prisma.expenseItem.create({
           data: {
             reportId,
-            category: normalizeCategory(item.category),
-            rawLabel: item.rawLabel,
-            amountTotal: item.amountTotal,
-            amountPerM2: item.amountPerM2,
+            category:     normalizeCategory(item.category),
+            rawLabel:     item.rawLabel,
+            amountTotal:  item.amountTotal,
+            amountPerM2:  item.amountPerM2,
             amountPerApt: item.amountPerApt,
-            unit: item.unit,
+            unit:         item.unit ?? null,
           },
         }),
       ),
       prisma.expenseReport.update({
         where: { id: reportId },
         data: {
-          status: 'PROCESSED',
-          parsedData: parsed as object,
+          status:      'PROCESSED',
           processedAt: new Date(),
-          periodYear: parsed.periodYear,
-          periodMonth: parsed.periodMonth,
+          parsedData:  parsed as object,
         },
       }),
     ])
 
-    return NextResponse.json({
-      reportId,
-      status: 'PROCESSED',
-      confidence: parsed.parseConfidence,
-      itemCount: parsed.items.length,
-    })
+    return NextResponse.json({ reportId, status: 'PROCESSED', itemCount: parsed.items.length })
   } catch (err) {
-    await prisma.expenseReport.update({
-      where: { id: reportId },
-      data: { status: 'FAILED' },
-    })
+    await prisma.expenseReport.update({ where: { id: reportId }, data: { status: 'FAILED' } })
     console.error('PDF parse failed:', err)
     return NextResponse.json(
-      { error: 'Не удалось прочитать счёт. Возможно, это скан низкого качества. Попробуйте другой файл.' },
+      { error: 'Не удалось прочитать счёт. Попробуйте другой файл.' },
       { status: 422 },
     )
   }

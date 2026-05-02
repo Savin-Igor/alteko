@@ -1,0 +1,52 @@
+{
+  "nav": {
+    "audit": "Audits",
+    "renovation": "Renovācija",
+    "blog": "Blogs",
+    "findHome": "Atrast savu māju →",
+    "login": "Ieiet"
+  },
+  "langToggle": {
+    "lv": "LV",
+    "ru": "RU"
+  },
+  "common": {
+    "free": "Bez maksas",
+    "noRegistration": "Bez reģistrācijas",
+    "seconds30": "30 sekundes",
+    "findHome": "Atrast savu māju →",
+    "checkBill": "Pārbaudīt rēķinu bez maksas",
+    "back": "Atpakaļ",
+    "backToMain": "Uz sākumu"
+  },
+  "blog": {
+    "title": "Blogs",
+    "subtitle": "Komunālie izdevumi, subsīdijas un renovācija Latvijā — tikai konkrēti fakti.",
+    "readMore": "Lasiet arī",
+    "readMin": "min.",
+    "checkHome": "Pārbaudiet savas mājas izdevumus",
+    "checkHomeSub": "Bez maksas. Bez reģistrācijas. 30 sekundes.",
+    "translationPending": "Tulkojums tiek gatavots"
+  },
+  "auth": {
+    "signIn": "Ieiet panelī",
+    "signInDesc": "Māju biedrību valdēm un platformas administratoriem",
+    "emailLabel": "E-pasts",
+    "emailPlaceholder": "jūsu@epasts.lv",
+    "sendLink": "Saņemt pieteikšanās saiti",
+    "sending": "Sūtām...",
+    "checkEmail": "Pārbaudiet pastu",
+    "checkEmailDesc": "Pieteikšanās saite nosūtīta. Noklikšķiniet uz tās — un jūs nokļūsiet panelī.",
+    "linkExpiry": "Saite ir derīga 24 stundas. Neatradāt? Pārbaudiet mēstuļu mapi.",
+    "requestNew": "Pieprasīt jaunu saiti",
+    "noPassword": "Mēs nosūtīsim vienreizēju saiti — bez paroles.",
+    "tryAnother": "Mēģināt citu e-pastu"
+  },
+  "errors": {
+    "notFound": "Lapa nav atrasta",
+    "notFoundDesc": "Iespējams, saite ir novecojusi vai mainīta.",
+    "serverError": "Kaut kas nogāja greizi",
+    "serverErrorDesc": "Radās kļūda. Mēģiniet atsvaidzināt lapu.",
+    "tryAgain": "Mēģināt vēlreiz"
+  }
+}

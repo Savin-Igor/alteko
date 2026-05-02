@@ -15,10 +15,70 @@ body {
 
 @layer components {
   .btn-primary {
-    @apply w-full bg-primary text-white font-semibold py-3 px-6 rounded-lg min-h-[48px] text-base active:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply w-full bg-primary text-white font-semibold py-3 px-6 rounded-lg min-h-[48px] text-base transition-colors duration-150;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background-color: theme('colors.primary.dark');
+  }
+  .btn-primary:active {
+    opacity: 0.9;
+  }
+  .btn-primary:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply w-full border border-primary text-primary font-semibold py-3 px-6 rounded-lg min-h-[48px] text-base transition-colors duration-150;
+  }
+  .btn-secondary:hover:not(:disabled) {
+    background-color: theme('colors.primary.light');
+  }
+  .btn-secondary:active {
+    opacity: 0.9;
+  }
+  .btn-secondary:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  .btn-ghost {
+    @apply w-full text-gray-600 font-medium py-3 px-6 rounded-lg min-h-[48px] text-base transition-colors duration-150;
+  }
+  .btn-ghost:hover:not(:disabled) {
+    @apply bg-gray-50;
+  }
+  .btn-ghost:active {
+    opacity: 0.9;
+  }
+  .btn-ghost:disabled {
+    @apply opacity-50 cursor-not-allowed;
   }
 
   .input-field {
-    @apply w-full border border-gray-300 rounded-lg px-4 py-3 text-base min-h-[48px] focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent;
+    @apply w-full border border-gray-300 rounded-lg px-4 py-3 text-base min-h-[48px] bg-white transition-shadow duration-150;
+  }
+  .input-field::placeholder {
+    @apply text-gray-400;
+  }
+  .input-field:focus {
+    @apply outline-none ring-2 ring-primary border-transparent;
+  }
+  .input-field:disabled {
+    @apply bg-gray-50 cursor-not-allowed;
+  }
+
+  .card {
+    @apply bg-white border border-gray-200 rounded-xl p-5;
+  }
+
+  .status-dot-danger {
+    @apply inline-block w-2.5 h-2.5 rounded-full bg-danger flex-shrink-0;
+  }
+
+  .status-dot-warning {
+    @apply inline-block w-2.5 h-2.5 rounded-full bg-warning flex-shrink-0;
+  }
+
+  .status-dot-success {
+    @apply inline-block w-2.5 h-2.5 rounded-full bg-success flex-shrink-0;
   }
 }

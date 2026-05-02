@@ -1,0 +1,1 @@
+- [Design system document created](project_design_system.md) — design-system.md created 2026-05-02; Tailwind tokens, 11 components, CSS classes, prohibited patterns

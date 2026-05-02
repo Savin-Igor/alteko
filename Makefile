@@ -4,6 +4,14 @@
 
 # ── Local development ─────────────────────────────────────────────────────────
 
+## First-time setup: DB + schema push + seed + dev server
+dev-setup: db-up
+	@echo "Waiting for DB..."
+	@sleep 3
+	npm run db:push
+	npm run db:seed
+	npm run dev
+
 ## Start local DB in Docker + Next.js dev server on host (hot reload)
 dev: db-up
 	npm run dev
