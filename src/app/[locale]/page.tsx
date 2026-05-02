@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import Link from 'next/link'
-import { AddressAutocomplete } from '@/components/AddressAutocomplete'
+import { AddressSearch } from '@/components/AddressSearch'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 
 // ─── FAQ data ────────────────────────────────────────────────────────────────
@@ -112,10 +112,7 @@ export default function HomePage() {
           </p>
 
           <div className="space-y-3 text-left">
-            <AddressAutocomplete
-              onSelect={handleAddressSelect}
-              placeholder="Введите адрес: ул. Brīvības 55, Rīga"
-            />
+            <AddressSearch onSelect={handleAddressSelect} />
 
             {error && (
               <p className="text-sm text-danger bg-danger-light border border-red-200 rounded-lg px-4 py-3">
