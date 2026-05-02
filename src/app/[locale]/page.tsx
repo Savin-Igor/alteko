@@ -1,9 +1,7 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { useLocale } from 'next-intl'
 import { useState } from 'react'
-import Link from 'next/link'
+import { Link, useRouter } from '@/i18n/navigation'
 import { AddressAutocomplete } from '@/components/AddressAutocomplete'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 
@@ -60,7 +58,6 @@ const TEXT_COLOR: Record<string, string> = {
 
 export default function HomePage() {
   const router = useRouter()
-  const locale = useLocale()
   const [resolving, setResolving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [openFaq, setOpenFaq] = useState<number | null>(null)
@@ -80,9 +77,9 @@ export default function HomePage() {
       const building = await res.json()
 
       if (building.found && building.cadastralCode) {
-        router.push(`/${locale}/building/${building.cadastralCode}`)
+        router.push(`/building/${building.cadastralCode}`)
       } else if (building.cadastralCode) {
-        router.push(`/${locale}/building/${building.cadastralCode}?address=${encodeURIComponent(suggestion.address)}`)
+        router.push(`/building/${building.cadastralCode}?address=${encodeURIComponent(suggestion.address)}`)
       } else {
         setError('Дом не найден в базе. Попробуйте другой адрес.')
       }
@@ -176,9 +173,6 @@ export default function HomePage() {
             ))}
           </div>
 
-          <p className="text-xs text-gray-400 text-center mt-4">
-            По данным ALTEKO · советские панельные дома Латвии · 2024–2025
-          </p>
         </div>
       </section>
 
@@ -302,9 +296,6 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <p className="text-xs text-gray-400 text-center mt-3">
-            Источники: Altum, fi-compass 2024, Latvijas Banka DP 3/2025
-          </p>
         </div>
       </section>
 
@@ -490,23 +481,43 @@ export default function HomePage() {
       </section>
 
       {/* ── FOOTER ───────────────────────────────────────────────────────────── */}
-      <footer className="px-4 py-8 border-t border-gray-100 bg-white">
-        <div className="max-w-2xl mx-auto space-y-4 text-sm text-gray-500">
-          <div className="flex items-center justify-between">
-            <span className="text-lg font-bold text-gray-900">ALTEKO</span>
-            <nav className="flex gap-4">
-              <Link href="/" className="hover:text-gray-800">Аудит</Link>
-              <Link href="/renovation" className="hover:text-gray-800">Реновация</Link>
-              <Link href="/blog" className="hover:text-gray-800">Блог</Link>
-            </nav>
+      <footer className="px-4 pt-10 pb-6 border-t border-gray-100 bg-white mt-auto">
+        <div className="max-w-2xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+            <div className="col-span-2 md:col-span-1">
+              <span className="text-lg font-bold text-gray-900">ALTEKO</span>
+              <p className="mt-2 text-xs text-gray-400 leading-relaxed">
+                Платформа для жителей советских домов Латвии
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Сервисы</p>
+              <nav className="space-y-2 text-sm">
+                <Link href="/" className="block text-gray-500 hover:text-gray-900">Аудит счетов</Link>
+                <Link href="/renovation" className="block text-gray-500 hover:text-gray-900">Реновация</Link>
+                <Link href="/blog" className="block text-gray-500 hover:text-gray-900">Блог</Link>
+              </nav>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Партнёрам</p>
+              <nav className="space-y-2 text-sm">
+                <Link href="/contractors/register" className="block text-gray-500 hover:text-gray-900">Для подрядчиков</Link>
+              </nav>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Контакты</p>
+              <nav className="space-y-2 text-sm">
+                <a href="mailto:info@alteko.lv" className="block text-gray-500 hover:text-gray-900">info@alteko.lv</a>
+              </nav>
+            </div>
           </div>
-          <div className="flex gap-4 flex-wrap text-xs">
-            <Link href="/contractors/register" className="hover:text-gray-700">Для подрядчиков</Link>
-            <a href="#" className="hover:text-gray-700">Политика конфиденциальности</a>
-            <a href="#" className="hover:text-gray-700">Условия использования</a>
-            <a href="mailto:info@alteko.lv" className="hover:text-gray-700">info@alteko.lv</a>
+          <div className="border-t border-gray-100 pt-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-2 text-xs text-gray-400">
+            <span>© 2025 ALTEKO</span>
+            <div className="flex gap-4">
+              <a href="#" className="hover:text-gray-600">Политика конфиденциальности</a>
+              <a href="#" className="hover:text-gray-600">Условия использования</a>
+            </div>
           </div>
-          <p className="text-xs text-gray-400">© 2025 ALTEKO</p>
         </div>
       </footer>
     </div>
