@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Link } from '@/i18n/navigation'
+import { SiteFooter } from '@/components/ui/SiteFooter'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 import { routing } from '@/i18n/routing'
 import { notFound } from 'next/navigation'
@@ -254,13 +255,7 @@ export default async function PrivacyPage({ params }: Props) {
         </article>
       </main>
 
-      <footer className="px-4 py-6 border-t border-gray-100 text-center text-xs text-gray-400">
-        <Link href="/" className="hover:text-gray-600">ALTEKO</Link>
-        {' · '}
-        <Link href="/privacy" className="hover:text-gray-600">Privātuma politika</Link>
-        {' · '}
-        <Link href="/terms" className="hover:text-gray-600">Lietošanas noteikumi</Link>
-      </footer>
+      <SiteFooter />
     </div>
   )
 }

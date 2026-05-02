@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Link, useRouter } from '@/i18n/navigation'
 import { AddressSearch } from '@/components/AddressSearch'
+import { SiteFooter } from '@/components/ui/SiteFooter'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 
 const DOT: Record<string, string> = {
@@ -98,7 +99,7 @@ export default function HomePage() {
         id="hero"
         className="px-4 pt-14 pb-16 bg-white flex flex-col items-center"
       >
-        <div className="w-full max-w-lg text-center">
+        <div className="w-full max-w-xl text-center">
           <h1 className="text-3xl font-bold text-gray-900 leading-tight mb-3">
             {t('hero.titleQuestion')}<br />
             <span className="text-primary">{t('hero.titleAnswer')}</span>
@@ -151,7 +152,7 @@ export default function HomePage() {
 
       {/* ── 2. HOW IT WORKS ──────────────────────────────────────────────────── */}
       <section className="px-4 py-14 bg-gray-50 border-y border-gray-100">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           <h2 className="text-xl font-bold text-gray-900 mb-8 text-center">
             {t('steps.heading')}
           </h2>
@@ -180,7 +181,7 @@ export default function HomePage() {
 
       {/* ── 3. PROBLEM ───────────────────────────────────────────────────────── */}
       <section className="px-4 py-14 bg-white">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">
             {t('problem.heading')}
           </h2>
@@ -202,7 +203,7 @@ export default function HomePage() {
 
       {/* ── 4. SAMPLE RESULT ─────────────────────────────────────────────────── */}
       <section className="px-4 py-14 bg-gray-50 border-y border-gray-100">
-        <div className="max-w-md mx-auto">
+        <div className="max-w-lg mx-auto">
           <h2 className="text-xl font-bold text-gray-900 mb-1 text-center">
             {t('sample.heading')}
           </h2>
@@ -242,7 +243,7 @@ export default function HomePage() {
 
       {/* ── 5. RENOVATION ────────────────────────────────────────────────────── */}
       <section id="renovation" className="px-4 py-14 bg-white">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-xl font-bold text-gray-900 mb-2">
               {t('renovation.heading')}
@@ -275,7 +276,7 @@ export default function HomePage() {
 
       {/* ── 6. FOR BOARDS ────────────────────────────────────────────────────── */}
       <section className="px-4 py-14 bg-primary-light border-y border-blue-100">
-        <div className="max-w-2xl mx-auto md:flex items-center gap-8">
+        <div className="max-w-3xl mx-auto md:flex items-center gap-8">
           <div className="flex-1 mb-6 md:mb-0">
             <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
               {t('boards.tagline')}
@@ -305,7 +306,7 @@ export default function HomePage() {
 
       {/* ── 7. TRUST ─────────────────────────────────────────────────────────── */}
       <section className="px-4 py-14 bg-white">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           <h2 className="text-xl font-bold text-gray-900 mb-6 text-center">{t('trust.heading')}</h2>
           <div className="grid md:grid-cols-2 gap-4">
             {sources.map((src, i) => (
@@ -335,7 +336,7 @@ export default function HomePage() {
 
       {/* ── 8. FAQ ───────────────────────────────────────────────────────────── */}
       <section className="px-4 py-14 bg-gray-50 border-t border-gray-100">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           <h2 className="text-xl font-bold text-gray-900 mb-6 text-center">
             {t('faq.heading')}
           </h2>
@@ -375,7 +376,7 @@ export default function HomePage() {
 
       {/* ── 9. BLOG PREVIEW ──────────────────────────────────────────────────── */}
       <section className="px-4 py-14 bg-white border-t border-gray-100">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-gray-900">{t('blogPreview.heading')}</h2>
             <Link href="/blog" className="text-sm text-primary font-medium hover:underline">
@@ -402,46 +403,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── FOOTER ───────────────────────────────────────────────────────────── */}
-      <footer className="px-4 pt-10 pb-6 border-t border-gray-100 bg-white mt-auto">
-        <div className="max-w-2xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
-            <div className="col-span-2 md:col-span-1">
-              <span className="text-lg font-bold text-gray-900">ALTEKO</span>
-              <p className="mt-2 text-xs text-gray-400 leading-relaxed">
-                {t('footer.description')}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">{t('footer.servicesTitle')}</p>
-              <nav className="space-y-2 text-sm">
-                <Link href="/" className="block text-gray-500 hover:text-gray-900">{t('footer.auditLink')}</Link>
-                <Link href="/renovation" className="block text-gray-500 hover:text-gray-900">{t('footer.renovationLink')}</Link>
-                <Link href="/blog" className="block text-gray-500 hover:text-gray-900">{t('footer.blogLink')}</Link>
-              </nav>
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">{t('footer.partnersTitle')}</p>
-              <nav className="space-y-2 text-sm">
-                <Link href="/contractors/register" className="block text-gray-500 hover:text-gray-900">{t('footer.contractorsLink')}</Link>
-              </nav>
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">{t('footer.contactsTitle')}</p>
-              <nav className="space-y-2 text-sm">
-                <a href="mailto:info@alteko.lv" className="block text-gray-500 hover:text-gray-900">info@alteko.lv</a>
-              </nav>
-            </div>
-          </div>
-          <div className="border-t border-gray-100 pt-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-2 text-xs text-gray-400">
-            <span>{t('footer.copyright')}</span>
-            <div className="flex gap-4">
-              <a href="#" className="hover:text-gray-600">{t('footer.privacyLink')}</a>
-              <a href="#" className="hover:text-gray-600">{t('footer.termsLink')}</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   )
 }

@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import { Link } from '@/i18n/navigation'
+import { SiteFooter } from '@/components/ui/SiteFooter'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 import { useMDXComponents } from '@/mdx-components'
 import { routing } from '@/i18n/routing'
@@ -106,11 +107,7 @@ export default async function BlogArticlePage({ params }: Props) {
         )}
       </main>
 
-      <footer className="px-4 py-6 border-t border-gray-100 text-center text-xs text-gray-400 mt-8">
-        <Link href="/" className="hover:text-gray-600">ALTEKO</Link>
-        {' · '}
-        <Link href="/blog" className="hover:text-gray-600">{t('footer.blog')}</Link>
-      </footer>
+      <SiteFooter />
     </div>
   )
 }

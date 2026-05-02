@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { Link } from '@/i18n/navigation'
+import { SiteFooter } from '@/components/ui/SiteFooter'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 import { routing } from '@/i18n/routing'
 import { prisma } from '@/lib/prisma'
@@ -108,15 +109,7 @@ export default async function BlogPage({ params }: Props) {
         </div>
       </main>
 
-      <footer className="px-4 py-6 border-t border-gray-100 text-center text-xs text-gray-400">
-        <Link href="/" className="hover:text-gray-600">ALTEKO</Link>
-        {' · '}
-        <Link href="/blog" className="hover:text-gray-600">{t('footer.blog')}</Link>
-        {' · '}
-        <Link href="/contractors/register" className="hover:text-gray-600">
-          {t('footer.contractors')}
-        </Link>
-      </footer>
+      <SiteFooter />
     </div>
   )
 }

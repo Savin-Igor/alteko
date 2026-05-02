@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
-import { SiteHeader } from '@/components/ui/SiteHeader'
+import { SiteFooter, SiteHeader } from '@/components/ui'
 import { InfoBanner } from '@/components/ui'
 
 function TagButton({
@@ -96,6 +96,7 @@ export default function ContractorRegisterPage() {
             {t('backHome')}
           </Link>
         </main>
+        <SiteFooter />
       </div>
     )
   }
@@ -220,6 +221,7 @@ export default function ContractorRegisterPage() {
           </button>
         </form>
       </main>
+      <SiteFooter />
     </div>
   )
 }
