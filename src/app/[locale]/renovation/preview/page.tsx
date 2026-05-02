@@ -8,9 +8,20 @@ interface Props {
   searchParams: Promise<{ buildingId?: string }>
 }
 
-const SEGMENT_SAVINGS: Record<string, number> = {
-  G: 160, F: 140, E: 100, D: 70, C: 40,
+// Heating consumption before renovation, kWh/m²/year, by energy class.
+// Source: docs/research/building-series-energy-benchmarks.md
+// (ALTUM portfolio data, University of Latvia 2023)
+const HEATING_KWH_PER_M2_BEFORE: Record<string, number> = {
+  G: 220, F: 160, E: 110, D: 80, C: 55, B: 45, A: 30,
 }
+
+// Average post-renovation heating consumption — ALTUM 627 buildings, 2023
+const HEATING_KWH_PER_M2_AFTER = 54
+
+// Latvia district heating average end-user price 2024-2025, EUR/kWh
+const PRICE_PER_KWH = 0.085
+
+const PAYBACK_FAST_CLASSES = new Set(['G', 'F'])
 
 export default async function RenovationPreviewPage({ searchParams }: Props) {
   const { buildingId } = await searchParams
@@ -23,6 +34,7 @@ export default async function RenovationPreviewPage({ searchParams }: Props) {
       series: true,
       energyClass: true,
       apartmentCount: true,
+      totalAreaM2: true,
     },
   })
   if (!building) notFound()
@@ -30,11 +42,19 @@ export default async function RenovationPreviewPage({ searchParams }: Props) {
   const t = await getTranslations('renovation.preview')
 
   const cls = building.energyClass ?? 'F'
-  const avgSavings = SEGMENT_SAVINGS[cls] ?? 120
-  const savingsPerApt = building.apartmentCount
-    ? Math.round(avgSavings / building.apartmentCount)
-    : null
-  const paybackRange = (cls === 'G' || cls === 'F') ? '8–14' : '12–18'
+  const before = HEATING_KWH_PER_M2_BEFORE[cls] ?? 110
+  const savedKwhPerM2Year = Math.max(before - HEATING_KWH_PER_M2_AFTER, 0)
+  const savedPct = Math.round((savedKwhPerM2Year / before) * 100)
+  const eurPerM2Year = savedKwhPerM2Year * PRICE_PER_KWH
+
+  // Example apartment savings (annualized monthly)
+  const exampleAptSize = building.apartmentCount && building.totalAreaM2
+    ? Math.max(Math.round(Number(building.totalAreaM2) / building.apartmentCount), 30)
+    : 60
+  const exampleMonthlySavings = Math.round((exampleAptSize * eurPerM2Year) / 12)
+  const eurPerM2MonthRounded = (eurPerM2Year / 12).toFixed(2)
+
+  const paybackRange = PAYBACK_FAST_CLASSES.has(cls) ? '8–14' : '12–18'
   const shortAddress = building.address.split(',')[0]
 
   return (
@@ -52,17 +72,16 @@ export default async function RenovationPreviewPage({ searchParams }: Props) {
           </h1>
         </div>
 
-        <div className="card text-center py-6 space-y-1">
-          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+        <div className="card text-center py-6 space-y-2">
+          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
             {t('avgSavingsLabel')}
           </p>
-          <p className="text-metric-xl text-success">{t('avgSavingsValue', { amount: avgSavings })}</p>
-          <p className="text-sm text-gray-500">{t('wholeBuilding')}</p>
-          {savingsPerApt && (
-            <p className="text-sm font-medium text-success mt-1">
-              {t('perApartment', { amount: savingsPerApt })}
-            </p>
-          )}
+          <p className="text-metric-xl text-success">~{savedPct}%</p>
+          <p className="text-sm text-gray-500">{t('savingsCaption')}</p>
+          <div className="border-t border-gray-100 pt-3 mt-3 space-y-1 text-sm text-gray-700">
+            <p>{t('exampleLine', { size: exampleAptSize, amount: exampleMonthlySavings })}</p>
+            <p className="text-xs text-gray-400">{t('perM2Line', { rate: eurPerM2MonthRounded })}</p>
+          </div>
         </div>
 
         <div className="card space-y-3">
