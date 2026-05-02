@@ -311,7 +311,25 @@
     "errorRegister": "Reģistrācijas kļūda",
     "errorConnection": "Savienojuma kļūda. Mēģiniet vēlreiz.",
     "checkingLursoft": "Pārbaudām Lursoft...",
-    "submitButton": "Iesniegt pieteikumu"
+    "submitButton": "Iesniegt pieteikumu",
+    "landing": {
+      "heroTitle": "Saņemiet konkursus no gatavām mājām",
+      "heroSubtitle": "Mājas ar ≥50% dzīvokļu īpašnieku balsīm meklē darbuzņēmēju. Ienākošie pieprasījumi pēc jūsu specializācijas — bez aukstajiem zvaniem.",
+      "heroCta": "Reģistrēties",
+      "statsCommissionLabel": "komisija no noslēgtā līguma",
+      "statsDealsLabel": "mājas meklē darbuzņēmēju",
+      "statsLeadsLabel": "tikai ienākošie pieprasījumi",
+      "howHeading": "Kā tas darbojas",
+      "step1Title": "Reģistrācija",
+      "step1Desc": "Norādiet uzņēmumu, specializāciju un reģionus. Pārbaude caur Lursoft — 2 darba dienas.",
+      "step2Title": "Verifikācija",
+      "step2Desc": "Pēc pārbaudes jūs parādāties tirgū. Bez priekšapmaksas un abonēšanas maksas.",
+      "step3Title": "Konkursi",
+      "step3Desc": "Mājas, kas gatavas renovācijai, patstāvīgi atrod jūs. Jūs iesniedzat piedāvājumu — mēs pavadām darījumu.",
+      "ctaHeading": "Sāciet saņemt konkursus",
+      "ctaButton": "Reģistrēties →",
+      "ctaNote": "Bez maksas · Bez abonēšanas maksas"
+    }
   },
   "share": {
     "linkExpired": "Saite ir novecojusi vai māja nav atrasta.",
@@ -655,6 +673,23 @@
     "spamCheck": "Neatradāt? Pārbaudiet mēstuļu mapi.",
     "backToMain": "← Atgriezties sākumlapā",
     "backToMainShort": "← Uz sākumu"
+  },
+  "footer": {
+    "description": "Platforma padomju laika māju iedzīvotājiem Latvijā",
+    "servicesTitle": "Pakalpojumi",
+    "auditLink": "Rēķinu audits",
+    "renovationLink": "Renovācija",
+    "calculatorLink": "Renovācijas kalkulators",
+    "blogLink": "Blogs",
+    "contractorsTitle": "Darbuzņēmējiem",
+    "contractorsLandingLink": "Darbuzņēmējiem",
+    "contractorsRegisterLink": "Reģistrēties",
+    "contractorsHowLink": "Kā tas darbojas",
+    "legalTitle": "Juridiskais",
+    "privacyLink": "Konfidencialitātes politika",
+    "termsLink": "Lietošanas noteikumi",
+    "contactsEmail": "info@alteko.lv",
+    "copyright": "© 2025 ALTEKO · Latvija"
   },
   "errors": {
     "notFound": "Lapa nav atrasta",

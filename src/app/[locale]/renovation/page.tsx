@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
+import { SiteFooter } from '@/components/ui/SiteFooter'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 
 interface MetadataParams {
@@ -30,7 +31,7 @@ export default async function RenovationMarketingPage() {
 
       {/* Hero */}
       <section className="px-4 py-16 bg-white">
-        <div className="max-w-2xl mx-auto text-center space-y-4">
+        <div className="max-w-3xl mx-auto text-center space-y-4">
           <h1 className="text-3xl font-bold text-gray-900 leading-snug">
             {t('hero.titleStart')}<br />
             <span className="text-primary">{t('hero.titleEnd')}</span>
@@ -49,7 +50,7 @@ export default async function RenovationMarketingPage() {
 
       {/* Numbers */}
       <section className="px-4 py-12 bg-gray-50 border-y border-gray-100">
-        <div className="max-w-2xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+        <div className="max-w-3xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
           {stats.map((stat) => (
             <div key={stat.label} className="card py-4">
               <p className="text-xl font-bold text-primary">{stat.value}</p>
@@ -64,7 +65,7 @@ export default async function RenovationMarketingPage() {
 
       {/* Process steps */}
       <section className="px-4 py-12 bg-white">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           <h2 className="text-xl font-bold text-gray-900 mb-8 text-center">
             {t('process.heading')}
           </h2>
@@ -91,7 +92,7 @@ export default async function RenovationMarketingPage() {
 
       {/* Altum explanation */}
       <section className="px-4 py-12 bg-gray-50 border-t border-gray-100">
-        <div className="max-w-2xl mx-auto space-y-4">
+        <div className="max-w-3xl mx-auto space-y-4">
           <h2 className="text-xl font-bold text-gray-900">{t('altum.heading')}</h2>
           <p className="text-gray-600 leading-relaxed">
             {t('altum.p1')}
@@ -124,13 +125,7 @@ export default async function RenovationMarketingPage() {
         </div>
       </section>
 
-      <footer className="px-4 py-6 border-t border-gray-100 text-center text-xs text-gray-400">
-        <Link href="/" className="hover:text-gray-600">ALTEKO</Link>
-        {' · '}
-        <Link href="/blog" className="hover:text-gray-600">{t('footer.blog')}</Link>
-        {' · '}
-        <Link href="/contractors/register" className="hover:text-gray-600">{t('footer.contractors')}</Link>
-      </footer>
+      <SiteFooter />
     </div>
   )
 }
