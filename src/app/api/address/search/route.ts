@@ -16,12 +16,14 @@ function formatAddress(raw: string): string {
 
 export async function GET(req: NextRequest) {
   const query = req.nextUrl.searchParams.get('q')?.trim()
+  const city = req.nextUrl.searchParams.get('city')?.trim()
   if (!query || query.length < 3) return NextResponse.json([])
 
+  const fullQuery = city ? `${city}, ${query}` : query
+
   if (IS_STUB) {
-    const q = query.toLowerCase()
     const results = STUB_ADDRESS_SUGGESTIONS.filter((s) =>
-      s.address.toLowerCase().includes(q),
+      s.address.toLowerCase().includes(query.toLowerCase()),
     )
     return NextResponse.json(results.length > 0 ? results : STUB_ADDRESS_SUGGESTIONS)
   }
@@ -29,10 +31,10 @@ export async function GET(req: NextRequest) {
   // TODO: replace with Jāņa sēta v3 API once API key is available
   // Endpoint: /v3/{key}/search?layers=adrese&cs=wgs84&iso_code=LVA
   const url = new URL('https://nominatim.openstreetmap.org/search')
-  url.searchParams.set('q', query)
+  url.searchParams.set('q', fullQuery)
   url.searchParams.set('countrycodes', 'lv')
   url.searchParams.set('format', 'json')
-  url.searchParams.set('limit', '6')
+  url.searchParams.set('limit', '7')
   url.searchParams.set('addressdetails', '1')
 
   try {

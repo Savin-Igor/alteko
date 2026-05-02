@@ -12,7 +12,7 @@
   },
   "common": {
     "free": "Bez maksas",
-    "noRegistration": "Bez reģistrācijas",
+
     "seconds30": "30 sekundes",
     "findHome": "Atrast savu māju →",
     "checkBill": "Pārbaudīt rēķinu bez maksas",
@@ -25,7 +25,7 @@
     "readMore": "Lasiet arī",
     "readMin": "min.",
     "checkHome": "Pārbaudiet savas mājas izdevumus",
-    "checkHomeSub": "Bez maksas. Bez reģistrācijas. 30 sekundes.",
+    "checkHomeSub": "Bez maksas. 30 sekundes.",
     "translationPending": "Tulkojums tiek gatavots"
   },
   "auth": {

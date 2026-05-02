@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Link, useRouter } from '@/i18n/navigation'
-import { AddressAutocomplete } from '@/components/AddressAutocomplete'
+import { AddressSearch } from '@/components/AddressSearch'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 
 // ─── FAQ data ────────────────────────────────────────────────────────────────
@@ -22,7 +22,7 @@ const FAQ = [
   },
   {
     q: 'Что будет с моим email?',
-    a: 'Только отчёт. Следующие счета того же дома мы пришлём автоматически. Никакой рекламы — отписаться в один клик в каждом письме.',
+    a: 'Отчёт и уведомления по вашему дому. Вы сами выбираете, что получать — при вводе email можно выбрать интересующие темы.',
   },
   {
     q: 'Это платно?',
@@ -111,10 +111,7 @@ export default function HomePage() {
           </p>
 
           <div className="space-y-3 text-left">
-            <AddressAutocomplete
-              onSelect={handleAddressSelect}
-              placeholder="Введите адрес: ул. Brīvības 55, Rīga"
-            />
+            <AddressSearch onSelect={handleAddressSelect} />
 
             {error && (
               <p className="text-sm text-danger bg-danger-light border border-red-200 rounded-lg px-4 py-3">
@@ -384,8 +381,7 @@ export default function HomePage() {
           </div>
           <div className="mt-6 card bg-gray-50">
             <p className="text-sm text-gray-600">
-              <strong>Конфиденциальность:</strong> PDF удаляется после анализа. Email используется
-              только для доставки отчёта. Данные о домах публикуются только в агрегированном виде —
+              <strong>Конфиденциальность:</strong> PDF удаляется после анализа. Данные о домах публикуются только в агрегированном виде —
               без привязки к конкретным жильцам.
             </p>
           </div>
