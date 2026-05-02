@@ -24,16 +24,16 @@
   },
   "home": {
     "hero": {
-      "titleQuestion": "Samaziniet apkures rēķinu par 60%.",
-      "titleAnswer": "Valsts maksā līdz 49%.",
-      "description": "Sāciet ar bezmaksas pārbaudi: salīdzināsim jūsu māju ar normu pēc sērijas un rajona.",
+      "titleQuestion": "Padomju laika mājas pārmaksā par apkuri.",
+      "titleAnswer": "Vai arī jūsējā?",
+      "description": "Augšupielādējiet rēķinu — salīdzināsim ar normu jūsu sērijai un rajonam. Bez maksas.",
       "cta": "Sākt pārbaudi",
       "ctaLoading": "Meklējam māju...",
       "errorNotFound": "Māja nav atrasta datu bāzē. Mēģiniet citu adresi.",
       "errorConnection": "Savienojuma kļūda. Pārbaudiet internetu un mēģiniet vēlreiz.",
       "stats": {
         "free": "Bez maksas",
-        "buildings": "624 mājas jau pārbaudītas"
+        "buildings": "Oficiālie dati no Latvijas reģistriem"
       },
       "journey": {
         "step1": "Augšupielādēt rēķinu",
@@ -62,7 +62,7 @@
         {
           "n": "2",
           "title": "Augšupielādējiet rēķinu",
-          "desc": "PDF no apsaimniekotāja. MI analizēs dokumentu un salīdzinās izdevumus pa kategorijām."
+          "desc": "PDF no apsaimniekotāja. Sistēma analizēs dokumentu un salīdzinās izdevumus ar normu jūsu sērijai."
         },
         {
           "n": "3",
@@ -101,7 +101,7 @@
         { "value": "+10–11%", "label": "dzīvokļa vērtības pieaugums" },
         { "value": "8–12 gadi", "label": "atmaksāšanās laiks" }
       ],
-      "note": "Renovācijas aprēķins ir pieejams pēc izmaksu audita — nepieciešams sākumpunkts.",
+      "note": "Precīzs aprēķins jūsu mājai — pēc rēķina augšupielādes.",
       "cta": "Uzzināt vairāk par renovāciju →"
     },
     "boards": {
@@ -317,7 +317,7 @@
       "heroSubtitle": "Mājas ar ≥50% dzīvokļu īpašnieku balsīm meklē darbuzņēmēju. Ienākošie pieprasījumi pēc jūsu specializācijas — bez aukstajiem zvaniem.",
       "heroCta": "Reģistrēties",
       "statsCommissionLabel": "komisija no noslēgtā līguma",
-      "statsDealsLabel": "mājas meklē darbuzņēmēju",
+      "statsDealsLabel": "mājas nepieciešama renovācija",
       "statsLeadsLabel": "tikai ienākošie pieprasījumi",
       "howHeading": "Kā tas darbojas",
       "step1Title": "Reģistrācija",
@@ -611,7 +611,7 @@
       "titleEnd": "Mēs vadām visu procesu.",
       "description": "No pirmā rēķina līdz parakstītam līgumam ar darbuzņēmēju. Valsts sedz līdz 49% no izmaksām.",
       "cta": "Sākt ar izmaksu auditu →",
-      "note": "Renovācija ir pieejama tikai pēc audita — jāsaprot sākumpunkts"
+      "note": "Precīzs aprēķins jūsu mājai — pēc rēķina augšupielādes."
     },
     "stats": [
       { "value": "līdz 49%", "label": "subsidē Altum" },

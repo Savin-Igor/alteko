@@ -169,7 +169,7 @@ export default function HomePage() {
           </div>
           <div className="mt-8 text-center">
             <button
-              className="btn-primary w-auto px-10 inline-flex items-center justify-center"
+              className="btn-secondary w-auto px-10 inline-flex items-center justify-center"
               onClick={() => document.getElementById('hero')?.scrollIntoView({ behavior: 'smooth' })}
             >
               {t('steps.cta')}
@@ -294,7 +294,7 @@ export default function HomePage() {
             </ul>
           </div>
           <div className="flex-shrink-0">
-            <Link href="/dashboard" className="btn-primary w-auto inline-block px-8">
+            <Link href="/dashboard" className="btn-secondary w-auto inline-block px-8">
               {t('boards.cta')}
             </Link>
             <p className="text-xs text-gray-500 mt-2 text-center">
