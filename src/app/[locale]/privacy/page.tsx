@@ -168,7 +168,7 @@ export default async function PrivacyPage({ params }: Props) {
             <ul className="list-disc pl-6 text-gray-700 space-y-2">
               <li>e-pasta sūtīšanas pakalpojumu sniedzēji (lai piegādātu auditu un autentifikācijas saites);</li>
               <li>mākoņa infrastruktūras pakalpojumu sniedzēji (datu glabāšanai un pakalpojuma darbībai);</li>
-              <li>mākslīgā intelekta pakalpojumu sniedzēji (PDF rēķinu apstrādei — tikai dokumenta saturs, bez e-pasta adreses).</li>
+              <li>dokumentu apstrādes pakalpojumu sniedzēji (PDF rēķinu apstrādei — tikai dokumenta saturs, bez e-pasta adreses).</li>
             </ul>
           </section>
 

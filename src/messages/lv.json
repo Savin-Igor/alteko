@@ -147,10 +147,6 @@
           "a": "Mēs apkopojam datus no simtiem Latvijas māju augšupielādētajiem rēķiniem un veidojam etalonus pēc ēkas sērijas, būvniecības gada, platības un rajona. Jo vairāk datu — jo precīzāka norma. Jūs redzat tieši savas mājas atšķirību no normas, nevis abstraktu vidējo rādītāju."
         },
         {
-          "q": "Kāpēc jāaugšupielādē PDF? Vai nevar ievadīt datus manuāli?",
-          "a": "MI lasa PDF automātiski — ātrāk nekā aizpildīt formu ar roku."
-        },
-        {
           "q": "Mana māja nav atrasta datu bāzē — ko darīt?",
           "a": "Augšupielādējiet rēķinu jebkurā gadījumā. Mēs salīdzināsim jūsu datus ar vidējiem rādītājiem rajonā un pēc sērijas. Mājas kartīte tiks papildināta vēlāk, kad VZD atjauninās reģistru."
         },
@@ -492,7 +488,7 @@
       "hero": {
         "title": "Vai jūsu māja pārmaksā?",
         "titleAccent": "Pārbaudīsim 30 sekundēs.",
-        "description": "MI analizēs apsaimniekotāja rēķinu un salīdzinās ar normu līdzīgām mājām jūsu rajonā.",
+        "description": "Augšupielādējiet rēķinu — salīdzināsim ar normu līdzīgām mājām jūsu rajonā.",
         "cta": "Atrast savu māju",
         "ctaLoading": "Meklējam māju...",
         "errorNotFound": "Māja nav atrasta datu bāzē. Mēģiniet citu adresi.",
@@ -604,7 +600,7 @@
   "renovation": {
     "metadata": {
       "title": "Daudzdzīvokļu mājas renovācija — ALTEKO",
-      "description": "Altum subsīdija līdz 49%, MI ietaupījuma aprēķins, elektroniskā iedzīvotāju balsošana un darbuzņēmēju tirgus."
+      "description": "Altum subsīdija līdz 49%, ietaupījuma aprēķins apkurei, elektroniskā iedzīvotāju balsošana un darbuzņēmēju tirgus."
     },
     "hero": {
       "titleStart": "Renovācija ar Altum subsīdiju.",
@@ -632,7 +628,7 @@
         {
           "n": "02",
           "title": "Renovācijas aprēķins",
-          "desc": "MI aprēķinās ietaupījumu apkurei un Altum subsīdijas daļu jūsu konkrētajai mājai."
+          "desc": "Aprēķināsim ietaupījumu apkurei un Altum subsīdijas daļu jūsu konkrētajai mājai."
         },
         {
           "n": "03",
