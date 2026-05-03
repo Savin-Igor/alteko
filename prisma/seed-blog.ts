@@ -60,12 +60,12 @@ ALTEKO создан именно для того, чтобы устранить 
 
 Типичная стоимость реновации 9-этажного дома серии 119 в Риге (5 400 м²) — €500 000–700 000. Altum покрывает ~€250 000–350 000. Остаток делится между квартирами пропорционально площади.
 
-<StatsTable rows={[
-  { label: "Полная стоимость реновации", value: "€600 000" },
-  { label: "Субсидия Altum (49%)", value: "€294 000", color: "text-success" },
-  { label: "Доля жильцов", value: "€306 000" },
-  { label: "На квартиру 50 м² (из 100 кв.)", value: "~€1 530", color: "text-primary" }
-]} />
+<StatsTable>
+  <StatsRow label="Полная стоимость реновации" value="€600 000" />
+  <StatsRow label="Субсидия Altum (49%)" value="€294 000" color="text-success" />
+  <StatsRow label="Доля жильцов" value="€306 000" />
+  <StatsRow label="На квартиру 50 м² (из 100 кв.)" value="~€1 530" color="text-primary" />
+</StatsTable>
 
 ## Источники
 
@@ -130,12 +130,12 @@ ALTEKO ir izveidots tieši lai novērstu šos šķēršļus — no pirmā rēķi
 
 Tipiskās 9 stāvu 119. sērijas mājas renovācijas izmaksas Rīgā (5 400 m²) — €500 000–700 000. Altum sedz ~€250 000–350 000. Atlikums tiek sadalīts starp dzīvokļiem proporcionāli platībai.
 
-<StatsTable rows={[
-  { label: "Pilnas renovācijas izmaksas", value: "€600 000" },
-  { label: "Altum subsīdija (49%)", value: "€294 000", color: "text-success" },
-  { label: "Iedzīvotāju daļa", value: "€306 000" },
-  { label: "50 m² dzīvoklim (no 100 dz.)", value: "~€1 530", color: "text-primary" }
-]} />
+<StatsTable>
+  <StatsRow label="Pilnas renovācijas izmaksas" value="€600 000" />
+  <StatsRow label="Altum subsīdija (49%)" value="€294 000" color="text-success" />
+  <StatsRow label="Iedzīvotāju daļa" value="€306 000" />
+  <StatsRow label="50 m² dzīvoklim (no 100 dz.)" value="~€1 530" color="text-primary" />
+</StatsTable>
 
 ## Avoti
 
@@ -302,12 +302,12 @@ const SERIYA_RU = `
 
 Реновация дома серии 119 — это комплекс работ: утепление фасада и кровли, замена окон в подъездах, установка ИТП, обновление инженерных систем.
 
-<StatsTable rows={[
-  { label: "Экономия на отоплении", value: "−50–60%", color: "text-success" },
-  { label: "Средняя экономия в месяц", value: "€100–150/квартира", color: "text-success" },
-  { label: "Рост стоимости квартиры", value: "+10–11%", color: "text-success" },
-  { label: "Субсидия Altum", value: "до 49%", color: "text-primary" }
-]} />
+<StatsTable>
+  <StatsRow label="Экономия на отоплении" value="−50–60%" color="text-success" />
+  <StatsRow label="Средняя экономия в месяц" value="€100–150/квартира" color="text-success" />
+  <StatsRow label="Рост стоимости квартиры" value="+10–11%" color="text-success" />
+  <StatsRow label="Субсидия Altum" value="до 49%" color="text-primary" />
+</StatsTable>
 
 ## Как начать
 
@@ -358,12 +358,12 @@ Mājas celtas pēc padomju laika siltumaizsardzības normām — tās bija pared
 
 119. sērijas mājas renovācija ir komplekss darbu kopums: fasādes un jumta siltināšana, logu nomaiņa kāpņu telpās, IAS uzstādīšana, inženiersistēmu atjaunošana.
 
-<StatsTable rows={[
-  { label: "Ietaupījumi apkurē", value: "−50–60%", color: "text-success" },
-  { label: "Vidējie ietaupījumi mēnesī", value: "€100–150/dzīvoklim", color: "text-success" },
-  { label: "Dzīvokļa vērtības pieaugums", value: "+10–11%", color: "text-success" },
-  { label: "Altum subsīdija", value: "līdz 49%", color: "text-primary" }
-]} />
+<StatsTable>
+  <StatsRow label="Ietaupījumi apkurē" value="−50–60%" color="text-success" />
+  <StatsRow label="Vidējie ietaupījumi mēnesī" value="€100–150/dzīvoklim" color="text-success" />
+  <StatsRow label="Dzīvokļa vērtības pieaugums" value="+10–11%" color="text-success" />
+  <StatsRow label="Altum subsīdija" value="līdz 49%" color="text-primary" />
+</StatsTable>
 
 ## Kā sākt
 

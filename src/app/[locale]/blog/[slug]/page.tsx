@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { MDXRemote } from 'next-mdx-remote/rsc'
+import remarkGfm from 'remark-gfm'
 import { Link } from '@/i18n/navigation'
 import { SiteFooter } from '@/components/ui/SiteFooter'
 import { SiteHeader } from '@/components/ui/SiteHeader'
@@ -75,7 +76,11 @@ export default async function BlogArticlePage({ params }: Props) {
         </header>
 
         <article className="prose prose-sm max-w-none">
-          <MDXRemote source={post.content} components={components} />
+          <MDXRemote
+            source={post.content}
+            components={components}
+            options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
+          />
         </article>
 
         <div className="mt-10 card text-center space-y-3">
