@@ -32,3 +32,10 @@ backups/
 # Local tooling
 .playwright-mcp/
 .claude/worktrees/
+.claude/agent-memory/
+.firecrawl/
+
+# Screenshots and local review artifacts
+*.png
+*.jpeg
+*.jpg
