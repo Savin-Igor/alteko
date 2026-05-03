@@ -1,10 +1,10 @@
 .PHONY: \
-  dev dev-setup \
+  dev dev-setup dev-fresh \
   db-up db-down db-rebuild \
   up down restart logs shell \
   migrate migrate-deploy push studio backup \
   build build-scripts \
-  check \
+  check clean \
   seed seed-series seed-benchmarks seed-blog \
   sync-buildings sync-vzd sync-bvkb sync-transactions \
   cron-weekly cron-monthly \
@@ -24,6 +24,14 @@ dev-setup: db-up build-scripts
 	@$(DC) run --rm scripts sh -c "until pg_isready -h db -U postgres; do sleep 1; done"
 	$(MAKE) push
 	$(MAKE) seed
+	npm run dev
+
+## Remove Next.js build cache (.next/)
+clean:
+	rm -rf .next
+
+## Clean build cache and start fresh dev server
+dev-fresh: clean db-up
 	npm run dev
 
 ## Start local DB + Next.js dev server on host (hot reload)
