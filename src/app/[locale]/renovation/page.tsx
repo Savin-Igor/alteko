@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
+import { FunnelFlow, STEP_ICONS } from '@/components/ui/FunnelFlow'
 import { SiteFooter } from '@/components/ui/SiteFooter'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 
@@ -74,6 +75,20 @@ export default async function RenovationMarketingPage() {
           <h2 className="text-xl font-bold text-gray-900 mb-8 text-center">
             {t('process.heading')}
           </h2>
+
+          {/* Visual funnel overview — full journey, renovation step highlighted */}
+          <div className="mb-8 p-4 bg-gray-50 rounded-xl border border-gray-100">
+            <FunnelFlow
+              activeIndex={1}
+              steps={[
+                { label: steps[0]?.title ?? '', icon: STEP_ICONS.bill },
+                { label: steps[1]?.title ?? '', icon: STEP_ICONS.report },
+                { label: steps[2]?.title ?? '', icon: STEP_ICONS.vote },
+                { label: steps[3]?.title ?? '', icon: STEP_ICONS.contractor },
+              ]}
+            />
+          </div>
+
           <div className="space-y-4">
             {steps.map((step, i) => (
               <div key={step.n} className="card flex items-start gap-4">

@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import { Link, useRouter } from '@/i18n/navigation'
 import { AddressSearch } from '@/components/AddressSearch'
 import { BuildingIcon } from '@/components/ui/BuildingIcon'
+import { FunnelFlow, STEP_ICONS } from '@/components/ui/FunnelFlow'
 import { SiteFooter } from '@/components/ui/SiteFooter'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 
@@ -134,19 +135,20 @@ export default function HomePage() {
             </button>
           </div>
 
-          <div className="flex items-center justify-center gap-2 mt-5 text-xs text-gray-400">
-            <span>{t('hero.journey.step1')}</span>
-            <span>→</span>
-            <span>{t('hero.journey.step2')}</span>
-            <span>→</span>
-            <span>{t('hero.journey.step3')}</span>
+          <div className="mt-6">
+            <FunnelFlow
+              size="sm"
+              steps={[
+                { label: t('hero.journey.step1'), icon: STEP_ICONS.bill },
+                { label: t('hero.journey.step2'), icon: STEP_ICONS.report },
+                { label: t('hero.journey.step3'), icon: STEP_ICONS.renovation },
+              ]}
+            />
           </div>
 
-          <div className="flex items-center justify-center gap-4 mt-3 text-xs text-gray-400">
-            <span>{t('hero.stats.free')}</span>
-            <span>·</span>
-            <span>{t('hero.stats.buildings')}</span>
-          </div>
+          <p className="mt-4 text-xs text-gray-400">
+            {t('hero.stats.free')} · {t('hero.stats.buildings')}
+          </p>
 
         </div>
       </section>
