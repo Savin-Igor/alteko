@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Link, useRouter } from '@/i18n/navigation'
 import { AddressSearch } from '@/components/AddressSearch'
+import { BuildingIcon } from '@/components/ui/BuildingIcon'
 import { SiteFooter } from '@/components/ui/SiteFooter'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 
@@ -188,6 +189,16 @@ export default function HomePage() {
           <p className="text-gray-500 text-center mb-8 leading-relaxed">
             {t('problem.description')}
           </p>
+
+          {/* Building isotype chart: 7 overpaying, 3 normal */}
+          <div className="flex justify-center gap-1.5 mb-8 flex-wrap">
+            {Array.from({ length: 7 }).map((_, i) => (
+              <BuildingIcon key={`d-${i}`} variant="danger" size={36} />
+            ))}
+            {Array.from({ length: 3 }).map((_, i) => (
+              <BuildingIcon key={`s-${i}`} variant="success" size={36} />
+            ))}
+          </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {problemStats.map((stat, i) => (
