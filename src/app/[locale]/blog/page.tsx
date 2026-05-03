@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { Link } from '@/i18n/navigation'
 import { SiteFooter } from '@/components/ui/SiteFooter'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 import { BlogCoverIcon } from '@/components/ui/BlogCoverIcon'
+import { seriesFromSlug, getSeriesImage } from '@/lib/buildingImages'
 import { routing } from '@/i18n/routing'
 import { prisma } from '@/lib/prisma'
 
@@ -64,7 +66,21 @@ export default async function BlogPage({ params }: Props) {
               className="card block hover:border-gray-300 transition-colors group"
             >
               <div className="flex items-start gap-4">
-                <BlogCoverIcon tags={post.tags} />
+                {(() => {
+                  const series = seriesFromSlug(post.slug)
+                  return series ? (
+                    <div className="flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden relative">
+                      <Image
+                        src={getSeriesImage(series)}
+                        alt={`Серия ${series}`}
+                        fill
+                        className="object-cover object-center"
+                      />
+                    </div>
+                  ) : (
+                    <BlogCoverIcon tags={post.tags} />
+                  )
+                })()}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2 mb-1">
                     <h2 className="font-semibold text-gray-900 group-hover:text-primary transition-colors leading-snug">

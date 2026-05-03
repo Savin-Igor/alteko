@@ -1,7 +1,9 @@
+import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { prisma } from '@/lib/prisma'
+import { getSeriesImage } from '@/lib/buildingImages'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 
 const ENERGY_CLASS_WIDTH: Record<string, string> = {
@@ -72,7 +74,19 @@ export default async function BuildingPage({ params, searchParams }: Props) {
           {t('backToSearch')}
         </Link>
 
-        <div className="bg-white border border-gray-200 rounded-xl p-5 space-y-4">
+        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          {/* Series photo */}
+          <div className="relative w-full h-40 bg-gray-100">
+            <Image
+              src={getSeriesImage(building?.series)}
+              alt={building?.series ? `Серия ${building.series}` : 'Многоквартирный дом'}
+              fill
+              className="object-cover object-center"
+              priority
+            />
+          </div>
+
+          <div className="p-5 space-y-4">
           {building ? (
             <>
               <div>
@@ -154,6 +168,7 @@ export default async function BuildingPage({ params, searchParams }: Props) {
             <button className="w-full text-center text-sm text-gray-500 hover:text-gray-700 py-2">
               {t('noBillReminder')}
             </button>
+          </div>
           </div>
         </div>
       </main>
