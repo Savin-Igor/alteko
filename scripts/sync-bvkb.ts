@@ -26,10 +26,14 @@ function makeTempDir(name: string): string {
 // Column index → field (0-based, after stripping BOM from header):
 //   0  Dokumenta_numurs      — certificate document number
 //   2  Statuss               — "Ir spēkā" (valid) | "Zaudējis spēku" (expired)
-//   3  Izdosanas_datums      — issue date
+//   3  Izdosanas_datums      — issue date (YYYY-MM-DD)
 //   4  Deriguma_termins      — expiry date
 //  11  Objektu_identificejosie_kadastra_apzimejumi — cadastral code(s)
+//  14  Parbuves_gads         — renovation year (integer, nullable)
+//  20  Energija_apkurei_kwh_m_2_gada — heating energy kWh/m²/year
 //  25  Ekas_energoefektivitates_klase — energy class: A B C D E F G
+//  27  Primara_kopeja_energija — total primary energy kWh/m²/year
+//  34  Oglekla_dioksida_emisijas_novertejums_kg_co_2_m_2 — CO2 kg/m²/year
 //
 // Note: BVKB functions transferred to EVA (Energētikas un vides aģentūra) in Feb 2025,
 //       but data continues to publish under the same dataset on data.gov.lv.
@@ -37,14 +41,37 @@ function makeTempDir(name: string): string {
 //       update the URL in GitHub Secrets or .env.local.
 
 const COL = {
-  DOC_NR: 0,
-  STATUS: 2,
-  CADASTRAL: 11,
-  ENERGY_CLASS: 25,
+  DOC_NR:          0,
+  STATUS:          2,
+  CERT_DATE:       3,
+  CADASTRAL:      11,
+  RENOVATION_YEAR: 14,
+  HEATING_ENERGY:  20,
+  ENERGY_CLASS:   25,
+  PRIMARY_ENERGY:  27,
+  CO2_KG_M2:      34,
 } as const
 
 const VALID_STATUS = 'Ir spēkā'
 const VALID_CLASSES = new Set<string>(['A', 'B', 'C', 'D', 'E', 'F', 'G'])
+
+function parseDecimal(raw: string | undefined): number | null {
+  if (!raw || raw.trim() === '' || raw.trim() === 'N/A') return null
+  const n = parseFloat(raw.trim())
+  return isNaN(n) ? null : n
+}
+
+function parseYear(raw: string | undefined): number | null {
+  if (!raw || raw.trim() === '' || raw.trim() === 'N/A') return null
+  const n = parseInt(raw.trim(), 10)
+  return (isNaN(n) || n < 1900 || n > 2100) ? null : n
+}
+
+function parseCertDate(raw: string | undefined): Date | null {
+  if (!raw || raw.trim() === '') return null
+  const d = new Date(raw.trim())
+  return isNaN(d.getTime()) ? null : d
+}
 
 function parseCSVRow(line: string): string[] {
   const result: string[] = []
@@ -103,7 +130,7 @@ async function syncBvkb() {
       if (!line.trim()) continue
 
       const cols = parseCSVRow(line)
-      if (cols.length < 26) { skipped++; continue }
+      if (cols.length < 35) { skipped++; continue }
 
       // Only process currently valid certificates
       const status = cols[COL.STATUS]?.trim()
@@ -123,8 +150,13 @@ async function syncBvkb() {
       await prisma.building.updateMany({
         where: { cadastralCode },
         data: {
-          energyClass: rawClass as EnergyClass,
-          bvkbUpdatedAt: new Date(),
+          energyClass:        rawClass as EnergyClass,
+          heatingEnergyKwhM2: parseDecimal(cols[COL.HEATING_ENERGY]),
+          renovationYear:     parseYear(cols[COL.RENOVATION_YEAR]),
+          bvkbCertDate:       parseCertDate(cols[COL.CERT_DATE]),
+          primaryEnergyKwhM2: parseDecimal(cols[COL.PRIMARY_ENERGY]),
+          co2KgM2:            parseDecimal(cols[COL.CO2_KG_M2]),
+          bvkbUpdatedAt:      new Date(),
         },
       })
 
