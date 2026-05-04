@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { prisma } from '@/lib/prisma'
 import { getSeriesImage } from '@/lib/buildingImages'
+import { getHeatingBenchmark, deviationBadgeClass } from '@/lib/benchmarks/series-heating'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 import { SiteFooter } from '@/components/ui/SiteFooter'
 import { Badge } from '@/components/ui'
@@ -52,6 +53,7 @@ export default async function BuildingPage({ params, searchParams }: Props) {
         totalAreaM2: true,
         apartmentCount: true,
         energyClass: true,
+        heatingEnergyKwhM2: true,
         district: true,
         readinessScore: {
           select: {
@@ -87,6 +89,14 @@ export default async function BuildingPage({ params, searchParams }: Props) {
   const displayAddress = building?.address ?? fallbackAddress ?? cadastralCode
   const localeCode = locale === 'lv' ? 'lv-LV' : 'ru-RU'
   const isRu = locale === 'ru'
+
+  // Heating benchmark (issue #11)
+  const heatingBenchmark = building
+    ? await getHeatingBenchmark(
+        building.series,
+        building.heatingEnergyKwhM2 ? Number(building.heatingEnergyKwhM2) : null
+      ).catch(() => null)
+    : null
 
   function energyLabel(cls: string): string {
     try {
@@ -170,6 +180,35 @@ export default async function BuildingPage({ params, searchParams }: Props) {
                         {t('classLabel', { label: energyLabel(building.energyClass) })}
                       </span>
                     </div>
+                  </div>
+                )}
+
+                {/* Heating benchmark (issue #11) */}
+                {heatingBenchmark && (
+                  <div className="border-t border-gray-100 pt-3 space-y-1.5">
+                    <p className="text-xs font-medium text-gray-500">{t('heating.heading')}</p>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">{t('heating.norm', { series: heatingBenchmark.seriesCode })}</span>
+                      <span className="font-medium text-gray-900">{heatingBenchmark.normKwhM2Year} kWh/m²/g.</span>
+                    </div>
+                    {heatingBenchmark.actualKwhM2Year !== null && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-600">{t('heating.actual')}</span>
+                        <span className="font-medium text-gray-900">{heatingBenchmark.actualKwhM2Year} kWh/m²/g.</span>
+                      </div>
+                    )}
+                    {heatingBenchmark.deviationPct !== null && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-600">{t('heating.deviation')}</span>
+                        <span className={`font-bold ${deviationBadgeClass(heatingBenchmark.deviationPct)}`}>
+                          {heatingBenchmark.deviationPct > 0 ? '+' : ''}{heatingBenchmark.deviationPct}%
+                        </span>
+                      </div>
+                    )}
+                    {heatingBenchmark.isFallback && (
+                      <p className="text-xs text-gray-400 italic">{t('heating.fallbackNote')}</p>
+                    )}
+                    <p className="text-xs text-gray-400">{t('heating.source')}</p>
                   </div>
                 )}
               </>

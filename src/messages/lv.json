@@ -561,6 +561,14 @@
     "noBillReminder": "Nav rēķina pa rokai? Atcerēties adresi — atsūtīsim atgādinājumu",
     "renovateCta": "Iniciēt renovāciju →",
     "financingCta": "Finansējuma scenāriji →",
+    "heating": {
+      "heading": "Apkures norma pēc sērijas",
+      "norm": "Norma ({series})",
+      "actual": "Jūsu māja",
+      "deviation": "Novirze",
+      "fallbackNote": "Sērija nav noteikta — izmantota vidējā norma Latvijā",
+      "source": "Avots: ALTUM portfelis (627 mājas), Latvijas Universitāte, EM 2023"
+    },
     "readiness": {
       "nextAction": "Nākamais solis",
       "financingHeading": "Finansējuma scenāriji",
