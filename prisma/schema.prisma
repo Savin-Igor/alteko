@@ -430,16 +430,19 @@ model BuildingSeries {
   description       String?
 }
 
-// Apartment-level records from VZD Building.ZIP (PremiseGroupItemData elements)
-// Linked to Building via buildingCadastralCode — no FK constraint (same as ApartmentTransaction pattern)
+// Apartment-level records from VZD PremiseGroup data (PremiseGroupItemData elements)
 // Source: https://data.gov.lv/dati/dataset/kadastra-informacijas-sistemas-atvertie-dati
+// XSD: PremiseGroupFullData.xsd — tag PremiseGroupCadastreNr is 17 chars; first 14 = building cadastralCode
+// Linked to Building via buildingCadastralCode — no FK constraint (independent sync schedule)
 model BuildingUnit {
   id                    String   @id @default(uuid())
-  cadastralCode         String   @unique
-  buildingCadastralCode String
-  areaM2                Decimal?
-  floor                 Int?
-  roomCount             Int?
+  cadastralCode         String   @unique  // PremiseGroupCadastreNr (17 chars)
+  buildingCadastralCode String            // first 14 chars of cadastralCode → Building.cadastralCode
+  varisCode             String?           // VARISCode (VAR apartment address code)
+  useKindId             Int?              // PremiseGroupUseKindId; 1122 = residential apartment
+  areaM2                Decimal?          // PremiseGroupArea m²
+  floor                 Int?              // PremiseGroupFloor
+  roomCount             Int?              // PremiseGroupRoomsCount (if present in XML)
   syncedAt              DateTime @default(now())
 
   @@index([buildingCadastralCode])
