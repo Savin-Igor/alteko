@@ -152,9 +152,16 @@ model Building {
   district         String?
   lat              Decimal?
   lon              Decimal?
-  vzdUpdatedAt     DateTime?
-  bvkbUpdatedAt    DateTime?
-  createdAt        DateTime     @default(now())
+  vzdUpdatedAt         DateTime?
+  bvkbUpdatedAt        DateTime?
+  postalCode           String?   // from VAR ATRIB[9]; e.g. "LV-1050"
+  isPlanAddress        Boolean?  // from VAR PLAN_ADR[15]; true=planned/unlinked, false=real building
+  heatingEnergyKwhM2   Decimal?  // from BVKB[20]: heat consumption kWh/m²/year (pre-renovation baseline)
+  renovationYear       Int?      // from BVKB[14]: year building was renovated (null = not renovated)
+  bvkbCertDate         DateTime? // from BVKB[3]: energy certificate issue date
+  primaryEnergyKwhM2   Decimal?  // from BVKB[27]: total primary energy kWh/m²/year
+  co2KgM2              Decimal?  // from BVKB[34]: CO2 emissions kg/m²/year
+  createdAt            DateTime  @default(now())
 
   apartments Apartment[]
   reports    ExpenseReport[]
@@ -352,6 +359,7 @@ model ApartmentTransaction {
   floorMax        Int?
   apartmentAreaM2 Decimal?
   syncedAt        DateTime @default(now())
+  buildingUseCode String?  // from tg_darjumi BUI_USE_CODE[20]; 1122=multi-apartment building
 
   // Logical reference to Building.cadastralCode — no FK constraint (independent sync)
   @@index([buildingCadNr])
@@ -420,4 +428,19 @@ model BuildingSeries {
   yearTo            Int
   typicalAreaM2     Decimal?
   description       String?
+}
+
+// Apartment-level records from VZD Building.ZIP (PremiseGroupItemData elements)
+// Linked to Building via buildingCadastralCode — no FK constraint (same as ApartmentTransaction pattern)
+// Source: https://data.gov.lv/dati/dataset/kadastra-informacijas-sistemas-atvertie-dati
+model BuildingUnit {
+  id                    String   @id @default(uuid())
+  cadastralCode         String   @unique
+  buildingCadastralCode String
+  areaM2                Decimal?
+  floor                 Int?
+  roomCount             Int?
+  syncedAt              DateTime @default(now())
+
+  @@index([buildingCadastralCode])
 }

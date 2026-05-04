@@ -42,3 +42,6 @@ tmp/
 *.png
 *.jpeg
 *.jpg
+
+# Payload MCP config (contains API key)
+.mcp.json

@@ -2,6 +2,7 @@ import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { seoPlugin } from '@payloadcms/plugin-seo'
+import { mcpPlugin } from '@payloadcms/plugin-mcp'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { Users } from './src/collections/Users'
@@ -18,6 +19,18 @@ export default buildConfig({
   collections: [Users, Media, BlogPosts],
   editor: lexicalEditor(),
   plugins: [
+    mcpPlugin({
+      collections: {
+        'blog-posts': {
+          enabled: true,
+          description: 'Blog articles in LV and RU about renovation and energy costs in Latvian Soviet-era apartment buildings.',
+        },
+        media: {
+          enabled: { find: true, create: true, update: true, delete: false },
+          description: 'Article hero images and media files.',
+        },
+      },
+    }),
     seoPlugin({
       collections: ['blog-posts'],
       generateTitle: ({ doc }) => `${doc?.title ?? ''} — ALTEKO`,
@@ -32,6 +45,7 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URL,
     },
+    schemaName: 'payload',
   }),
   localization: {
     locales: [

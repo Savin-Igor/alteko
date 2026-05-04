@@ -110,7 +110,9 @@ async function syncVzd() {
 
       const kods     = cols[0]?.trim()
       const statuss  = cols[2]?.trim()
+      const atrib    = cols[9]?.trim()  || null  // postal code, e.g. "LV-4211"
       const forBuild = cols[14]?.trim()
+      const planAdr  = cols[15]?.trim() || null  // "N"=linked to KIS cadastre, "Y"=planned/unlinked
       const std      = cols[16]?.trim()
       const ddN      = cols[19]?.trim() // latitude  WGS-84 (DD_N)
       const ddE      = cols[20]?.trim() // longitude WGS-84 (DD_E)
@@ -121,6 +123,7 @@ async function syncVzd() {
 
       const lat = ddN ? parseFloat(ddN) : null
       const lon = ddE ? parseFloat(ddE) : null
+      const isPlanAddress = planAdr === 'Y' ? true : planAdr === 'N' ? false : null
 
       await prisma.building.upsert({
         where: { vzdId: kods },
@@ -131,12 +134,16 @@ async function syncVzd() {
           address: std,
           lat,
           lon,
+          postalCode: atrib,
+          isPlanAddress,
           vzdUpdatedAt: new Date(),
         },
         update: {
           address: std,
           lat,
           lon,
+          postalCode: atrib,
+          isPlanAddress,
           vzdUpdatedAt: new Date(),
         },
       })
