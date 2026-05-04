@@ -47,15 +47,18 @@ graph TB
 ## 2. Поток обработки PDF-счёта
 
 От загрузки файла до результата в двух форматах: превью (мгновенно) и полный отчёт (после email).
+Без OCR: PDF передаётся в GPT-4o vision напрямую через base64.
 
 ```mermaid
 flowchart LR
-    Upload([PDF загружен]) --> OCR[OCR\nизвлечение текста]
-    OCR --> LLM[GPT-4o\nкатегоризация строк]
-    LLM --> Norm[Нормализация\n€/м² · €/квартира]
-    Norm --> DB[(PostgreSQL\nExpenseItem)]
-    DB --> Bench[Бенчмаркинг\nсерия × район × площадь]
-    Bench --> Anomaly[Обнаружение аномалий\nP75 · YoY · счётчики]
+    Upload([PDF загружен]) --> S3[Сохранить в S3\nExpenseReport PENDING]
+    S3 --> Presign["Presigned URL\nPOST /api/audit/parse"]
+    Presign --> B64["base64-кодирование\ndata:application/pdf;base64,..."]
+    B64 --> LLM["GPT-4o vision\nодин вызов — structured JSON"]
+    LLM --> Items["ExpenseItem[]\nHEATING, COLD_WATER ...\nстатус PROCESSED"]
+    Items --> DB[(PostgreSQL)]
+    DB --> Bench["Бенчмаркинг\nсерия × район × площадь"]
+    Bench --> Anomaly["Обнаружение аномалий\nP75 · YoY · счётчики"]
 
     Anomaly --> Preview["Превью\n% отклонения — без email"]
     Preview --> Gate{Email\nвведён?}
@@ -107,7 +110,7 @@ flowchart TD
 graph LR
     subgraph Audit["Аудит расходов"]
         A1[Загрузка PDF]
-        A2[OCR + LLM]
+        A2["GPT-4o vision\n(без OCR)"]
         A3[Бенчмаркинг]
         A4[Email-гейт]
         A1 --> A2 --> A3 --> A4
@@ -192,4 +195,105 @@ flowchart LR
 
 ---
 
-*Все диаграммы основаны на: architecture.md, module-audit.md, module-renovation.md, address-search.md, monetization.md, concept.md*
+## 7. Поток аутентификации
+
+Два независимых пути: вход на платформу и подпись голоса.
+
+```mermaid
+flowchart TD
+    subgraph Login["Вход на платформу"]
+        L1[Пользователь вводит email]
+        L2["NextAuth: генерирует magic link\nNodemailer отправляет письмо"]
+        L3["Пользователь переходит по ссылке\n/auth/verify"]
+        L4["NextAuth: создаёт JWT сессию\nPrismaAdapter: upsert User"]
+        L1 --> L2 --> L3 --> L4
+    end
+
+    subgraph VoteSign["Подпись голоса"]
+        V1["Пользователь нажимает Голосовать\n(сессия уже есть)"]
+        V2{Метод\nподписи?}
+
+        subgraph SmartID["Smart-ID"]
+            S1["POST /api/auth/smartid/init\nинициирует сессию"]
+            S2["Вызов на телефон пользователя"]
+            S3["POST /api/auth/smartid/verify\nполучает подписанный ответ"]
+            S1 --> S2 --> S3
+        end
+
+        subgraph EParaksts["eParaksts"]
+            E1["OAuth redirect на LVRTC"]
+            E2["GET /api/auth/eparaksts/callback\nполучает подпись"]
+            E1 --> E2
+        end
+
+        V1 --> V2
+        V2 -->|"Smart-ID"| S1
+        V2 -->|"eParaksts"| E1
+        S3 --> DB2["Vote.signature\nсохраняется в PostgreSQL"]
+        E2 --> DB2
+    end
+```
+
+---
+
+## 8. Поток голосования
+
+От создания кампании до тендера.
+
+```mermaid
+flowchart TD
+    Admin["ASSOCIATION_ADMIN\nили PLATFORM_ADMIN"]
+    Admin --> Create["POST /api/voting/create\nсоздаёт VotingCampaign"]
+    Create --> Upload["POST /api/voting/owners-upload\nCSV от правления товарищества\n(Zemesgrāmata API нет)"]
+    Upload --> Activate["Кампания активна\nсобственники уведомлены"]
+
+    Activate --> Resident["Житель заходит на платформу\n(magic link сессия)"]
+    Resident --> Sign["Подписывает голос\nSmart-ID или eParaksts"]
+    Sign --> Vote["POST /api/voting/vote\nownershipShare фиксируется\ncurrentYesShare пересчитывается"]
+    Vote --> Check{"currentYesShare\n>= requiredThreshold?"}
+    Check -->|нет| Resident
+    Check -->|да| Auto["Автозавершение кампании"]
+    Auto --> Protocol["POST /api/voting/protocol\nгенерирует протокол\nзагружает в S3"]
+    Protocol --> Tender["Тендер подрядчиков\nPOST /api/tenders/bid"]
+    Tender --> Select["Выбор победителя\nPOST /api/tenders/select\nкомиссия 1.5%"]
+```
+
+---
+
+## 9. Синхронизация данных
+
+Три источника внешних данных, порядок выполнения скриптов важен.
+
+```mermaid
+flowchart TD
+    subgraph Weekly["Еженедельно"]
+        VZD["VZD Building.ZIP\ndata.gov.lv, CC BY"]
+        SyncB["scripts/sync-buildings.ts\nустанавливает cadastralCode\nгод, материал, этажи, площадь"]
+        VZD --> SyncB
+        SyncB --> DB1[(Building в PostgreSQL)]
+    end
+
+    subgraph Daily["Ежедневно"]
+        BVKB["BVKB энергосертификаты\ndata.gov.lv, CC0"]
+        VADRS["VZD адреса\ndata.gov.lv"]
+        SyncE["scripts/sync-bvkb.ts\nприсваивает energyClass A-G\nсвязывает через cadastralCode"]
+        SyncA["scripts/sync-vzd.ts\nобновляет адресные данные"]
+        BVKB --> SyncE
+        VADRS --> SyncA
+        SyncE --> DB1
+        SyncA --> DB1
+    end
+
+    subgraph Monthly["Ежемесячно (независимо)"]
+        TXN["VZD сделки с квартирами\nDarijumi ar telpu grupam"]
+        SyncT["scripts/sync-transactions.ts\nуппертирует ApartmentTransaction"]
+        TXN --> SyncT
+        SyncT --> DB2[(ApartmentTransaction\nв PostgreSQL)]
+    end
+
+    DB1 --> Note["sync-buildings запускается первым:\ncadastalCode нужен\nдля sync-bvkb и sync-vzd"]
+```
+
+---
+
+*Все диаграммы основаны на: architecture.md, module-audit.md, module-renovation.md, address-search.md, monetization.md, concept.md, integrations.md*
