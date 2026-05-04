@@ -3,6 +3,8 @@
 Визуализация архитектуры, потоков данных и пользовательских сценариев.
 Все диаграммы построены строго по документации — ничего не выдумано.
 
+> **v2 update:** диаграммы ниже постепенно обновляются под Readiness Platform. Новые v2-диаграммы — в конце документа в разделе [«v2: Mājas gatavības platforma»](#v2-mājas-gatavības-platforma).
+
 ---
 
 ## 1. Архитектура системы
@@ -296,4 +298,196 @@ flowchart TD
 
 ---
 
-*Все диаграммы основаны на: architecture.md, module-audit.md, module-renovation.md, address-search.md, monetization.md, concept.md, integrations.md*
+## v2: Mājas gatavības platforma
+
+### v2.1 — Карта 4 режимов продукта
+
+```mermaid
+graph LR
+    Visitor([Любой посетитель])
+    Resident([Владелец квартиры])
+    Board([biedrība / mājas vecākais])
+    Pro([apsaimniekotājs / ESCO / projektu vadītājs])
+
+    Visitor --> Public[Publiskais režīms<br/>карточка дома + readiness]
+    Resident --> Iedz[Iedzīvotāja režīms<br/>загрузка PDF + trust artifact]
+    Board --> Valdes[Valdes režīms<br/>дашборд + кампании + BIS]
+    Pro --> Spec[Speciālista režīms<br/>портфель + Tender Room]
+
+    Public --> Building[Карточка дома +<br/>Building Readiness Score]
+    Iedz --> Building
+    Valdes --> Building
+    Spec --> Building
+
+    style Building fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
+```
+
+### v2.2 — Поток данных в Building Readiness Score
+
+```mermaid
+graph TB
+    subgraph Inputs[Входные данные]
+        VZD[VZD Building.ZIP<br/>еженедельно]
+        BVKB[BVKB сертификаты<br/>ежедневно]
+        Rep[ExpenseReport<br/>загрузка пользователем]
+        CSV[CSV собственников<br/>от правления]
+        Lurs[Lursoft + IUB<br/>граф связей]
+        Rules[RulesEngineVersion<br/>версионируемые правила]
+    end
+
+    subgraph Computation[Расчёт Readiness Score]
+        Energy[energy_score]
+        Funding[funding_eligibility_score]
+        Doc[document_readiness_score]
+        Owner[owner_decision_readiness_score]
+        Fin[financial_feasibility_score]
+        Sup[supplier_selection_status]
+        Legal[legal_confidence_status]
+        Data[data_confidence_status]
+    end
+
+    subgraph Output[Выход]
+        Score[BuildingReadinessScore]
+        NBA[nextBestAction<br/>LV / RU]
+        Integ[Integrity Score блок<br/>procurement_transparency,<br/>conflict_risk, ...]
+    end
+
+    VZD --> Energy
+    BVKB --> Energy
+    Rep --> Data
+    Rep --> Energy
+    CSV --> Owner
+    Rules --> Funding
+    Lurs --> Sup
+    Lurs --> Integ
+
+    Energy --> Score
+    Funding --> Score
+    Doc --> Score
+    Owner --> Score
+    Fin --> Score
+    Sup --> Score
+    Legal --> Score
+    Data --> Score
+
+    Score --> NBA
+    Score --> Integ
+
+    style Score fill:#e8f5e9,stroke:#2e7d32,stroke-width:3px
+    style NBA fill:#fff3e0,stroke:#e65100,stroke-width:3px
+```
+
+### v2.3 — Поток Decision Campaign с экспортом в BIS
+
+```mermaid
+sequenceDiagram
+    participant Board as Правление<br/>(Valdes mode)
+    participant ALTEKO
+    participant Owners as Собственники
+    participant BIS as BIS Mājas lieta
+
+    Board->>ALTEKO: Создать DecisionCampaign<br/>(тип: PREPARATION_DECISION)
+    ALTEKO->>ALTEKO: Шаблон вопроса LV/RU<br/>+ объяснение простым языком
+    ALTEKO->>Owners: Уведомление о намерениях<br/>(email/SMS)
+    Owners->>ALTEKO: Предварительные намерения<br/>(intentionsYes/No/Abstain)
+
+    Note over ALTEKO,BIS: Подготовительная фаза завершена
+
+    Board->>ALTEKO: Promote to formal vote
+    ALTEKO->>ALTEKO: Создать VotingCampaign
+    ALTEKO->>Owners: Smart-ID/eParaksts<br/>подпись решения
+    Owners->>ALTEKO: Vote с подписью
+
+    Board->>ALTEKO: Экспорт в BIS
+    ALTEKO->>ALTEKO: Генерация PDF-пакета
+    ALTEKO->>BIS: Загрузка пакета<br/>(ручная в Phase 1)
+    BIS-->>Board: Подтверждение в Mājas lieta
+```
+
+### v2.4 — 5 финансовых сценариев
+
+```mermaid
+graph LR
+    Building[Карточка дома<br/>energy + площадь + серия]
+
+    Building --> SCF[Sociālā klimata fonds<br/>2026-2032<br/>🟡 Gaidāms]
+    Building --> Loan[ALTUM remonta aizdevums<br/>3.9% / 20 г.<br/>🟢 Atvērts]
+    Building --> Bank[Коммерческий банк<br/>~5% / 25 г.<br/>🟢 Atvērts]
+    Building --> Own[Свой ремонтный фонд<br/>🟢 Vienmēr]
+    Building --> Mix[Смешанный<br/>ALTUM + грант + свои<br/>🟢 Atvērts]
+
+    SCF --> Eligibility[FinancingEligibility<br/>+ confidence]
+    Loan --> Eligibility
+    Bank --> Eligibility
+    Own --> Eligibility
+    Mix --> Eligibility
+
+    Eligibility --> Recommend[nextBestAction<br/>«Можно подавать на X»<br/>«Рано выбирать подрядчика»]
+
+    style SCF fill:#fff8e1,stroke:#f9a825
+    style Loan fill:#e8f5e9,stroke:#2e7d32
+    style Recommend fill:#e3f2fd,stroke:#1976d2
+```
+
+### v2.5 — Tender Room с Supplier Risk Check
+
+```mermaid
+sequenceDiagram
+    participant House as Дом / Speciālista
+    participant ALTEKO
+    participant Lursoft
+    participant IUB
+    participant Suppliers as Поставщики
+
+    House->>ALTEKO: Создать тендер<br/>(объём, бюджет, сроки)
+    ALTEKO->>ALTEKO: Подобрать ≥5 верифицированных<br/>(требование ALTUM)
+    ALTEKO->>Suppliers: Уведомления<br/>(email + кабинет)
+    Suppliers->>ALTEKO: Подача предложений<br/>(цена, сроки, гарантии)
+
+    Note over ALTEKO,IUB: Supplier Risk Check
+    ALTEKO->>Lursoft: Граф связей<br/>(правления, владельцы)
+    Lursoft-->>ALTEKO: Связи обнаружены
+    ALTEKO->>IUB: История тендеров<br/>+ жалобы
+    IUB-->>ALTEKO: Risk indicators
+
+    ALTEKO-->>House: Сравнительная таблица<br/>+ risk indicators
+
+    House->>ALTEKO: Решение о выборе<br/>(через DecisionCampaign)
+    ALTEKO->>ALTEKO: Генерация протокола ALTUM
+    ALTEKO-->>House: Протокол + audit trail
+```
+
+### v2.6 — Воронка платных продуктов
+
+```mermaid
+graph TB
+    Visitor([Посетитель главной])
+
+    Visitor --> Search[Поиск адреса]
+    Search --> Card[Карточка дома +<br/>Readiness Score 42/100]
+
+    Card -->|Жилец| Audit[Загрузить PDF<br/>бесплатно]
+    Card -->|Правление| Order[Заказать<br/>Gatavības atskaite<br/>EUR 600]
+
+    Audit --> TrustArt[Trust artifact:<br/>вопросы управляющему +<br/>nextBestAction]
+    TrustArt -->|Передаёт правлению| Order
+
+    Order -->|оплата Stripe| Report[PDF-отчёт<br/>+ доступ к дому 30 дней]
+    Report --> Sub[Подписка<br/>Valdes darba telpa<br/>EUR 30-100/мес.]
+    Sub --> Pkg[Projekta sagatavošanas<br/>pakete<br/>EUR 2k-8k]
+
+    Card -->|Специалист| ProSub[Speciālista portfelis<br/>EUR 100-500/мес.]
+
+    style Order fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
+    style Sub fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
+    style Pkg fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
+    style ProSub fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
+```
+
+---
+
+*v2-диаграммы основаны на: business/concept.md, business/monetization.md, product/overview.md, product/module-readiness.md, product/module-renovation.md, product/module-tender-room.md, technical/architecture.md, technical/data-model.md*
+
+---
+
+*v1-диаграммы (выше) основаны на: architecture.md, module-audit.md, module-renovation.md, address-search.md, monetization.md, concept.md, integrations.md*
