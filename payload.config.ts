@@ -1,6 +1,7 @@
 import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { seoPlugin } from '@payloadcms/plugin-seo'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { Users } from './src/collections/Users'
@@ -16,6 +17,17 @@ export default buildConfig({
   },
   collections: [Users, Media, BlogPosts],
   editor: lexicalEditor(),
+  plugins: [
+    seoPlugin({
+      collections: ['blog-posts'],
+      generateTitle: ({ doc }) => `${doc?.title ?? ''} — ALTEKO`,
+      generateDescription: ({ doc }) => doc?.description ?? '',
+      generateImage: ({ doc }) => doc?.heroImage,
+      generateURL: ({ doc }) =>
+        `https://alteko.lv/blog/${doc?.slug ?? ''}`,
+      uploadsCollection: 'media',
+    }),
+  ],
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL,

@@ -1,12 +1,13 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
+import { getPayload } from 'payload'
+import config from '@payload-config'
 import { Link } from '@/i18n/navigation'
 import { SiteFooter } from '@/components/ui/SiteFooter'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 import { BlogCoverIcon } from '@/components/ui/BlogCoverIcon'
 import { routing } from '@/i18n/routing'
-import { prisma } from '@/lib/prisma'
 
 interface Props {
   params: Promise<{ locale: string }>
@@ -36,10 +37,13 @@ export default async function BlogPage({ params }: Props) {
   const t = await getTranslations('blog')
   const tNav = await getTranslations('nav')
 
-  const posts = await prisma.blogPost.findMany({
-    where: { locale, published: true },
-    orderBy: { publishedAt: 'desc' },
-    select: { slug: true, title: true, description: true, publishedAt: true, readMinutes: true, tags: true },
+  const payload = await getPayload({ config })
+  const { docs: posts } = await payload.find({
+    collection: 'blog-posts',
+    locale: locale as 'lv' | 'ru',
+    where: { published: { equals: true } },
+    sort: '-publishedAt',
+    depth: 0,
   })
 
   return (
@@ -57,47 +61,52 @@ export default async function BlogPage({ params }: Props) {
         </div>
 
         <div className="space-y-4">
-          {posts.map((post) => (
-            <Link
-              key={post.slug}
-              href={`/blog/${post.slug}`}
-              className="card block hover:border-gray-300 transition-colors group"
-            >
-              <div className="flex items-start gap-4">
-                <BlogCoverIcon tags={post.tags} />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-2 mb-1">
-                    <h2 className="font-semibold text-gray-900 group-hover:text-primary transition-colors leading-snug">
-                      {post.title}
-                    </h2>
-                    <div className="flex-shrink-0 hidden sm:flex flex-col gap-1 items-end">
-                      {post.tags.slice(0, 2).map((tag) => (
-                        <span
-                          key={tag}
-                          className={`text-xs px-2 py-0.5 rounded-full font-medium ${TAG_COLORS[tag] ?? 'bg-gray-100 text-gray-600'}`}
-                        >
-                          {tag}
-                        </span>
-                      ))}
+          {posts.map((post) => {
+            const tags = (post.tags as Array<{ tag: string }> ?? []).map((item) => item.tag)
+            const publishedAt = new Date(post.publishedAt as string)
+
+            return (
+              <Link
+                key={post.slug as string}
+                href={`/blog/${post.slug}`}
+                className="card block hover:border-gray-300 transition-colors group"
+              >
+                <div className="flex items-start gap-4">
+                  <BlogCoverIcon tags={tags} />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2 mb-1">
+                      <h2 className="font-semibold text-gray-900 group-hover:text-primary transition-colors leading-snug">
+                        {post.title as string}
+                      </h2>
+                      <div className="flex-shrink-0 hidden sm:flex flex-col gap-1 items-end">
+                        {tags.slice(0, 2).map((tag) => (
+                          <span
+                            key={tag}
+                            className={`text-xs px-2 py-0.5 rounded-full font-medium ${TAG_COLORS[tag] ?? 'bg-gray-100 text-gray-600'}`}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-500 leading-relaxed line-clamp-2">
+                      {post.description as string}
+                    </p>
+                    <div className="flex items-center gap-3 mt-3">
+                      <span className="text-xs text-gray-400">
+                        {publishedAt.toLocaleDateString(
+                          locale === 'lv' ? 'lv-LV' : 'ru-RU',
+                          { year: 'numeric', month: 'long', day: 'numeric' },
+                        )}
+                      </span>
+                      <span className="text-xs text-gray-300">·</span>
+                      <span className="text-xs text-gray-400">{post.readMinutes as number} {t('readMin')}</span>
                     </div>
                   </div>
-                  <p className="text-sm text-gray-500 leading-relaxed line-clamp-2">
-                    {post.description}
-                  </p>
-                  <div className="flex items-center gap-3 mt-3">
-                    <span className="text-xs text-gray-400">
-                      {post.publishedAt.toLocaleDateString(
-                        locale === 'lv' ? 'lv-LV' : 'ru-RU',
-                        { year: 'numeric', month: 'long', day: 'numeric' },
-                      )}
-                    </span>
-                    <span className="text-xs text-gray-300">·</span>
-                    <span className="text-xs text-gray-400">{post.readMinutes} {t('readMin')}</span>
-                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            )
+          })}
         </div>
 
         <div className="mt-10 card text-center space-y-3">
