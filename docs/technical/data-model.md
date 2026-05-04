@@ -2,9 +2,11 @@
 
 Определена в `prisma/schema.prisma`. Prisma — единственный источник правды. Все изменения вносятся через `prisma migrate dev` локально и `prisma migrate deploy` в CI.
 
+> **v2 (Readiness Platform):** Базовая схема ниже сохранена в коде. В разделе [«v2 additions»](#v2-additions-модели-readiness-platform) описаны новые сущности (Readiness, Financing, Decisions) — они **запланированы, но ещё не в migrations**. Добавление — отдельная итерация после rewrite доков. Хардкод 1.5% commission в `RenovationProject.commissionAmount` подлежит удалению.
+
 ---
 
-## Схема
+## Схема (текущая, v1 в production)
 
 ```prisma
 generator client {
@@ -401,3 +403,284 @@ ApartmentTransaction, CadastralValue, PriceIndex, UtilityTariff, BuildingSeries,
 - Имена полей: camelCase
 - Все ID: UUID (`@default(uuid())`)
 - Временные метки: `createdAt` у всех моделей, `updatedAt` у изменяемых записей
+
+---
+
+## v2 additions: модели Readiness Platform
+
+> **Статус:** запланировано в этой итерации rewrite доков. Реализация в коде — следующая итерация. Будут добавлены новые миграции и расширения существующих моделей.
+
+### Новые enum'ы
+
+```prisma
+// Статус окна финансирования
+enum FundingWindowStatus {
+  CLOSED      // программа закрыта для новых заявок (ALTUM 2021-2027)
+  EXPECTED    // ожидается (SCF 2026-2032 — MK noteikumi Q4 2026)
+  OPEN        // принимает заявки (ALTUM remonta aizdevums, банк)
+  UNKNOWN     // правила неизвестны
+}
+
+// Достоверность данных по карточке дома
+enum DataConfidence {
+  PUBLIC_DATA            // только публичные источники (VZD, BVKB)
+  USER_UPLOADED          // загружено пользователем (счета, CSV)
+  BOARD_VERIFIED         // подтверждено правлением
+  PROFESSIONAL_VERIFIED  // подтверждено специалистом
+}
+
+// Юридическая уверенность в документе/решении
+enum LegalConfidence {
+  DRAFT          // черновик, без юр. проверки
+  NEEDS_REVIEW   // требует юр. консультации
+  VALIDATED      // юр. проверено
+}
+
+// Заменяет ProjectStatus в новой логике
+enum BuildingProjectStatus {
+  NOT_READY                // нет данных, документов, решений
+  READY_FOR_LOAN           // готов к ALTUM remonta aizdevums или банку
+  READY_FOR_FUTURE_GRANT   // готов к будущему окну SCF
+  IN_APPLICATION           // заявка подана
+  APPROVED                 // одобрено
+  IN_CONSTRUCTION          // в стройке
+  COMPLETED                // завершено
+}
+
+// Семь типов решений собственников
+enum DecisionType {
+  PREPARATION_DECISION         // решение о начале подготовки
+  REPRESENTATIVE_AUTHORIZATION // назначение уполномоченного лица
+  DATA_COLLECTION_CONSENT      // согласие на обработку данных (GDPR)
+  ENERGY_AUDIT_DECISION        // решение об энергоаудите
+  PROGRAM_APPLICATION_DECISION // решение об участии в программе
+  LOAN_DECISION                // решение о кредите
+  SUPPLIER_SELECTION_DECISION  // решение о выборе поставщика
+}
+
+// Финансовые сценарии
+enum FinancingScenarioType {
+  SCF_2026_2032             // Sociālā klimata fonds
+  ALTUM_REMONTA_AIZDEVUMS   // ALTUM ремонтный кредит
+  COMMERCIAL_BANK           // коммерческий банк
+  OWN_FUND                  // свой ремонтный фонд
+  MIXED                     // смешанный
+}
+
+// Предварительная пригодность к сценарию
+enum FinancingEligibility {
+  ELIGIBLE
+  LIKELY_ELIGIBLE
+  UNLIKELY
+  NOT_ELIGIBLE
+  UNKNOWN
+}
+
+// Подписки в Tender Room
+enum ContractorSubscriptionTier {
+  NONE        // не подписан
+  BASIC       // EUR 50/мес.
+  PLUS        // EUR 200/мес.
+}
+```
+
+### Новые модели
+
+```prisma
+// Сводный показатель готовности дома — центральная сущность v2
+model BuildingReadinessScore {
+  id                            String              @id @default(uuid())
+  buildingId                    String              @unique
+  // 8 компонентов
+  energyScore                   Int?                // 0-100, на основе BVKB
+  fundingEligibilityScore       Int?                // 0-100, агрегация по сценариям
+  documentReadinessScore        Int?                // 0-100, % выполненных пунктов
+  ownerDecisionReadinessScore   Int?                // 0-100, % принятых обязательных решений
+  financialFeasibilityScore     Int?                // 0-100
+  supplierSelectionStatus       String?             // enum в виде string для гибкости
+  legalConfidenceStatus         LegalConfidence     @default(DRAFT)
+  dataConfidenceStatus          DataConfidence      @default(PUBLIC_DATA)
+  // Главное поле
+  nextBestAction                String              // локализованная строка (LV основная)
+  nextBestActionRu              String?             // RU перевод (опционально)
+  // Integrity Score блок
+  procurementTransparencyScore  Int?                // 0-100
+  supplierConflictRisk          Int?                // 0-100
+  decisionQuality               Int?                // 0-100
+  ownerUnderstandingScore       Int?                // 0-100
+  documentCompleteness          Int?                // 0-100
+  priceBenchmarkDeviation       Decimal?            // % отклонения от бенчмарков
+  // Технические поля
+  rulesEngineVersion            String              // версия правил, по которой считалось
+  computedAt                    DateTime            @default(now())
+  expiresAt                     DateTime?           // когда нужно пересчитать
+
+  building                      Building            @relation(fields: [buildingId], references: [id])
+
+  @@index([buildingId])
+}
+
+// Один из 5 финансовых сценариев для дома
+model FinancingScenario {
+  id              String                 @id @default(uuid())
+  buildingId      String
+  scenarioType    FinancingScenarioType
+  windowStatus    FundingWindowStatus
+  eligibility     FinancingEligibility
+  confidence      String                 // low | medium | high
+  // Расчёты
+  estimatedCostEur          Decimal?
+  estimatedSubsidyPercent   Decimal?
+  estimatedSubsidyEur       Decimal?
+  monthlyPaymentPerApartment Decimal?
+  paybackYears              Decimal?
+  // Объяснение для UI
+  reasoningLv     String                 // объяснение пригодности (LV)
+  reasoningRu     String?
+  // Метаданные
+  rulesEngineVersion String
+  computedAt      DateTime               @default(now())
+
+  building        Building               @relation(fields: [buildingId], references: [id])
+
+  @@unique([buildingId, scenarioType])
+  @@index([buildingId])
+  @@index([scenarioType])
+}
+
+// Кампания решений собственников — расширение/замена VotingCampaign
+// В Phase 1 реализовано через расширение VotingCampaign (см. ниже).
+// В Phase 2+ — отдельная модель DecisionCampaign с поддержкой подготовительной фазы.
+model DecisionCampaign {
+  id                  String          @id @default(uuid())
+  buildingId          String
+  decisionType        DecisionType
+  title               String
+  questionTextLv      String          // вопрос для собственников на LV
+  questionTextRu      String?
+  explanationTextLv   String          // объяснение простым языком
+  explanationTextRu   String?
+  // Подготовительная фаза (предварительные намерения)
+  intentionsCollected Boolean         @default(false)
+  intentionsYesCount  Int             @default(0)
+  intentionsNoCount   Int             @default(0)
+  intentionsAbstainCount Int          @default(0)
+  // Финальная фаза (через VotingCampaign или экспорт в BIS)
+  formalCampaignId    String?         @unique  // ссылка на VotingCampaign для официального голоса
+  bisExportedAt       DateTime?       // когда экспортировано в BIS Mājas lieta
+  bisExportRef        String?         // ссылка/идентификатор в BIS
+  // Юридическая чистота
+  legalConfidence     LegalConfidence @default(DRAFT)
+  // Метаданные
+  status              CampaignStatus  @default(DRAFT)
+  deadline            DateTime?
+  createdAt           DateTime        @default(now())
+
+  building            Building        @relation(fields: [buildingId], references: [id])
+  formalCampaign      VotingCampaign? @relation(fields: [formalCampaignId], references: [id])
+
+  @@index([buildingId])
+  @@index([decisionType])
+}
+
+// Заказ платного Gatavības atskaite (€300-900 разово)
+model ReadinessReportOrder {
+  id                  String              @id @default(uuid())
+  buildingId          String
+  orderedByEmail      String              // email заказчика
+  orderedByUserId     String?             // если зарегистрирован
+  amountEur           Decimal             // зафиксированная сумма
+  currency            String              @default("EUR")
+  paymentProviderRef  String?             // Stripe payment_intent ID
+  paymentStatus       String              @default("pending") // pending | succeeded | failed | refunded
+  reportFileKey       String?             // S3 ключ к сгенерированному PDF
+  emailSentAt         DateTime?
+  language            Language            @default(LV)
+  createdAt           DateTime            @default(now())
+  paidAt              DateTime?
+
+  building            Building            @relation(fields: [buildingId], references: [id])
+
+  @@index([buildingId])
+  @@index([orderedByEmail])
+}
+
+// Версионирование rules engine (правила пригодности)
+model RulesEngineVersion {
+  version         String      @id   // например, "scf-2026-v0.1"
+  scenarioType    FinancingScenarioType
+  rulesJson       Json        // правила в JSON-формате
+  effectiveFrom   DateTime
+  effectiveUntil  DateTime?
+  description     String?
+  createdAt       DateTime    @default(now())
+  createdByUserId String?
+
+  @@index([scenarioType, effectiveFrom])
+}
+```
+
+### Расширения существующих моделей
+
+```prisma
+// User — добавить новые роли
+enum UserRole {
+  OWNER
+  BOARD_MEMBER         // новое: член правления biedrība
+  PROFESSIONAL         // новое: apsaimniekotājs / ESCO / projektu vadītājs
+  ASSOCIATION_ADMIN    // оставлено для совместимости (= BOARD_MEMBER)
+  CONTRACTOR
+  PLATFORM_ADMIN
+}
+
+// Building — добавить ссылку на readiness
+model Building {
+  // ... существующие поля
+  readinessScore   BuildingReadinessScore?
+  scenarios        FinancingScenario[]
+  decisionCampaigns DecisionCampaign[]
+  readinessOrders  ReadinessReportOrder[]
+}
+
+// VotingCampaign — добавить связь с DecisionCampaign
+model VotingCampaign {
+  // ... существующие поля
+  decisionCampaign DecisionCampaign?
+}
+
+// Contractor — добавить subscription tier
+model Contractor {
+  // ... существующие поля
+  subscriptionTier      ContractorSubscriptionTier @default(NONE)
+  subscriptionStartedAt DateTime?
+  subscriptionExpiresAt DateTime?
+}
+
+// RenovationProject — переименовать commissionAmount → ОТМЕНЯЕТСЯ
+// 1.5% commission хардкод в api/tenders/bid и api/tenders/select
+// будет удалён в отдельной итерации после rewrite доков.
+```
+
+### Связи (с v2)
+
+```
+Building ──< BuildingReadinessScore (1:1)
+Building ──< FinancingScenario (1:N — по одному на сценарий)
+Building ──< DecisionCampaign (1:N)
+Building ──< ReadinessReportOrder (1:N)
+DecisionCampaign ──< VotingCampaign (1:0..1 — формальная фаза)
+RulesEngineVersion (без FK — справочник)
+```
+
+### Migration plan (для следующей итерации)
+
+1. Добавить новые enum'ы (FundingWindowStatus, DataConfidence, LegalConfidence, BuildingProjectStatus, DecisionType, FinancingScenarioType, FinancingEligibility, ContractorSubscriptionTier)
+2. Добавить новые модели (BuildingReadinessScore, FinancingScenario, DecisionCampaign, ReadinessReportOrder, RulesEngineVersion)
+3. Расширить существующие enum'ы (UserRole)
+4. Добавить relations на Building / VotingCampaign / Contractor
+5. Удалить `RenovationProject.commissionAmount` (с миграцией для существующих записей)
+6. Запустить `prisma migrate dev` локально, потом `prisma migrate deploy` в CI
+
+---
+
+*Связанные документы: [docs/product/module-readiness.md](../product/module-readiness.md), [docs/product/module-renovation.md](../product/module-renovation.md), [docs/product/module-tender-room.md](../product/module-tender-room.md), [docs/reference/readiness-glossary.md](../reference/readiness-glossary.md)*
