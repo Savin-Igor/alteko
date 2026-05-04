@@ -1,3 +1,9 @@
+import { join } from 'node:path'
+import { tmpdir } from 'node:os'
+import { mkdtempSync, rmSync, createWriteStream, createReadStream } from 'node:fs'
+import { pipeline } from 'node:stream/promises'
+import { Readable } from 'node:stream'
+import { createInterface } from 'node:readline'
 import { prisma } from '../src/lib/prisma'
 import type { EnergyClass } from '@prisma/client'
 
@@ -61,56 +67,70 @@ async function syncBvkb() {
     process.exit(1)
   }
 
-  console.log('Fetching BVKB energy certificate data...')
-  const res = await fetch(url)
-  if (!res.ok) throw new Error(`BVKB fetch failed: ${res.status}`)
+  const tmpDir  = mkdtempSync(join(tmpdir(), 'alteko-bvkb-'))
+  const csvPath = join(tmpDir, 'energosertifikati.csv')
 
-  const text = await res.text()
-  // Strip UTF-8 BOM
-  const stripped = text.startsWith('﻿') ? text.slice(1) : text
-  const lines = stripped.split('\n')
-  const dataLines = lines.slice(1) // skip header
+  try {
+    console.log('Downloading BVKB energy certificate data...')
+    const res = await fetch(url)
+    if (!res.ok) throw new Error(`BVKB fetch failed: ${res.status}`)
+    await pipeline(Readable.fromWeb(res.body as Parameters<typeof Readable.fromWeb>[0]), createWriteStream(csvPath))
+    console.log('Download complete.')
 
-  let updated = 0
-  let expired = 0
-  let skipped = 0
+    let updated   = 0
+    let expired   = 0
+    let skipped   = 0
+    let firstLine = true
 
-  for (const line of dataLines) {
-    if (!line.trim()) continue
+    const rl = createInterface({ input: createReadStream(csvPath, { encoding: 'utf-8' }) })
 
-    const cols = parseCSVRow(line)
-    if (cols.length < 26) { skipped++; continue }
+    for await (const rawLine of rl) {
+      // Strip UTF-8 BOM from first line, then skip header
+      const line = firstLine ? rawLine.replace(/^﻿/, '') : rawLine
+      if (firstLine) { firstLine = false; continue } // skip header row
 
-    // Only process currently valid certificates
-    const status = cols[COL.STATUS]?.trim()
-    if (status !== VALID_STATUS) { expired++; continue }
+      if (!line.trim()) continue
 
-    const rawClass = cols[COL.ENERGY_CLASS]?.trim().toUpperCase()
-    if (!rawClass || !VALID_CLASSES.has(rawClass)) { skipped++; continue }
+      const cols = parseCSVRow(line)
+      if (cols.length < 26) { skipped++; continue }
 
-    // Cadastral field may contain a single code or be empty
-    const cadastralRaw = cols[COL.CADASTRAL]?.trim()
-    if (!cadastralRaw) { skipped++; continue }
+      // Only process currently valid certificates
+      const status = cols[COL.STATUS]?.trim()
+      if (status !== VALID_STATUS) { expired++; continue }
 
-    // Normalise: strip quotes, take first code if semicolon-separated
-    const cadastralCode = cadastralRaw.replace(/^"|"$/g, '').split(';')[0].trim()
-    if (!cadastralCode) { skipped++; continue }
+      const rawClass = cols[COL.ENERGY_CLASS]?.trim().toUpperCase()
+      if (!rawClass || !VALID_CLASSES.has(rawClass)) { skipped++; continue }
 
-    await prisma.building.updateMany({
-      where: { cadastralCode },
-      data: {
-        energyClass: rawClass as EnergyClass,
-        bvkbUpdatedAt: new Date(),
-      },
-    })
+      // Cadastral field may contain a single code or be empty
+      const cadastralRaw = cols[COL.CADASTRAL]?.trim()
+      if (!cadastralRaw) { skipped++; continue }
 
-    updated++
-    if (updated % 500 === 0) {
-      console.log(`Updated ${updated} energy classes...`)
+      // Normalise: strip quotes, take first code if semicolon-separated
+      const cadastralCode = cadastralRaw.replace(/^"|"$/g, '').split(';')[0].trim()
+      if (!cadastralCode) { skipped++; continue }
+
+      await prisma.building.updateMany({
+        where: { cadastralCode },
+        data: {
+          energyClass: rawClass as EnergyClass,
+          bvkbUpdatedAt: new Date(),
+        },
+      })
+
+      updated++
+      if (updated % 500 === 0) console.log(`Updated ${updated} energy classes...`)
+    }
+
+    console.log(`BVKB sync complete. Updated: ${updated}, expired skipped: ${expired}, invalid skipped: ${skipped}.`)
+
+  } finally {
+    if (process.env.KEEP_TEMP_FILES === 'true') {
+      console.log(`Temp files kept at: ${tmpDir}`)
+    } else {
+      rmSync(tmpDir, { recursive: true, force: true })
     }
   }
 
-  console.log(`BVKB sync complete. Updated: ${updated}, expired skipped: ${expired}, invalid skipped: ${skipped}.`)
   await prisma.$disconnect()
 }
 

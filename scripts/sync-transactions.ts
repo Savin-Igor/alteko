@@ -1,3 +1,9 @@
+import { join } from 'node:path'
+import { tmpdir } from 'node:os'
+import { mkdtempSync, rmSync, createWriteStream, createReadStream } from 'node:fs'
+import { pipeline } from 'node:stream/promises'
+import { Readable } from 'node:stream'
+import { createInterface } from 'node:readline'
 import { prisma } from '../src/lib/prisma'
 
 // VZD apartment transaction prices — synced from tg_darjumi CSV
@@ -99,103 +105,89 @@ async function syncTransactions() {
     process.exit(1)
   }
 
-  console.log('Fetching apartment transaction data...')
-  const res = await fetch(url)
-  if (!res.ok) throw new Error(`Transactions fetch failed: ${res.status}`)
+  const tmpDir  = mkdtempSync(join(tmpdir(), 'alteko-transactions-'))
+  const csvPath = join(tmpDir, 'tg_darjumi.csv')
 
-  const text = await res.text()
-  // Strip UTF-8 BOM if present
-  const stripped = text.startsWith('﻿') ? text.slice(1) : text
-  const lines = stripped.split('\n')
-  const dataLines = lines.slice(1) // skip header
+  try {
+    console.log('Downloading apartment transaction data (~200 MB)...')
+    const res = await fetch(url)
+    if (!res.ok) throw new Error(`Transactions fetch failed: ${res.status}`)
+    await pipeline(Readable.fromWeb(res.body as Parameters<typeof Readable.fromWeb>[0]), createWriteStream(csvPath))
+    console.log('Download complete.')
 
-  let upserted = 0
-  let skipped = 0
+    let upserted  = 0
+    let skipped   = 0
+    let firstLine = true
 
-  for (const line of dataLines) {
-    if (!line.trim()) continue
+    const rl = createInterface({ input: createReadStream(csvPath, { encoding: 'utf-8' }) })
 
-    const cols = parseCSVRow(line)
-    if (cols.length < 37) {
-      skipped++
-      continue
+    for await (const rawLine of rl) {
+      // Strip UTF-8 BOM from first line, then skip header
+      const line = firstLine ? rawLine.replace(/^﻿/, '') : rawLine
+      if (firstLine) { firstLine = false; continue } // skip header row
+
+      if (!line.trim()) continue
+
+      const cols = parseCSVRow(line)
+      if (cols.length < 37) { skipped++; continue }
+
+      const deaId = parseInt10(cols[COL.DEA_ID])
+      if (!deaId) { skipped++; continue }
+
+      // Filter to apartment transactions only
+      const objType = cols[COL.OBJ_TYPE]?.trim()
+      if (objType !== 'Dz') { skipped++; continue }
+
+      const priceEur = parseInt10(cols[COL.DEA_AMOUNT])
+      if (!priceEur) { skipped++; continue }
+
+      const rawDate = cols[COL.DEA_DATE]?.trim()
+      if (!rawDate) { skipped++; continue }
+      const transactionDate = new Date(rawDate)
+      if (isNaN(transactionDate.getTime())) { skipped++; continue }
+
+      const propertyCadNr  = cols[COL.PROP_CAD_NR]?.trim() || ''
+      const address         = cols[COL.ADDRESS]?.trim() || ''
+      const district        = cols[COL.DISTRICT]?.trim() || null
+      const city            = cols[COL.CITY]?.trim() === 'NULL' ? null : (cols[COL.CITY]?.trim() || null)
+      const buildingCadNr   = cols[COL.BUI_CAD_NR]?.trim() || null
+      const buildingAreaM2  = parseDecimal(cols[COL.BUI_TOTAL_AREA])
+      const buildingYear    = parseInt10(cols[COL.BUI_YEAR])
+      const wallMaterial    = cols[COL.MATERIAL]?.trim() === 'NULL' ? null : (cols[COL.MATERIAL]?.trim() || null)
+      const depreciation    = cols[COL.DEPRECATION]?.trim() === 'NULL' ? null : (cols[COL.DEPRECATION]?.trim() || null)
+      const apartmentCadNr  = cols[COL.PREG_CAD_NR]?.trim() || null
+      const floorMin        = parseInt10(cols[COL.FLOOR_MIN])
+      const floorMax        = parseInt10(cols[COL.FLOOR_MAX])
+      const apartmentAreaM2 = parseDecimal(cols[COL.APT_AREA])
+
+      await prisma.apartmentTransaction.upsert({
+        where: { deaId },
+        create: {
+          deaId, objType, propertyCadNr, buildingCadNr, address, district, city,
+          transactionDate, priceEur, buildingAreaM2, buildingYear, wallMaterial,
+          depreciation, apartmentCadNr, floorMin, floorMax, apartmentAreaM2,
+        },
+        update: {
+          address, district, city, transactionDate, priceEur, buildingAreaM2,
+          buildingYear, wallMaterial, depreciation, apartmentCadNr, floorMin,
+          floorMax, apartmentAreaM2, syncedAt: new Date(),
+        },
+      })
+
+      upserted++
+      if (upserted % 5000 === 0) console.log(`Upserted ${upserted} transactions...`)
     }
 
-    const deaId = parseInt10(cols[COL.DEA_ID])
-    if (!deaId) { skipped++; continue }
+    console.log(`Transaction sync complete. Upserted: ${upserted}, skipped: ${skipped}.`)
 
-    // Filter to apartment transactions only
-    const objType = cols[COL.OBJ_TYPE]?.trim()
-    if (objType !== 'Dz') { skipped++; continue }
-
-    const priceEur = parseInt10(cols[COL.DEA_AMOUNT])
-    if (!priceEur) { skipped++; continue }
-
-    const rawDate = cols[COL.DEA_DATE]?.trim()
-    if (!rawDate) { skipped++; continue }
-    const transactionDate = new Date(rawDate)
-    if (isNaN(transactionDate.getTime())) { skipped++; continue }
-
-    const propertyCadNr = cols[COL.PROP_CAD_NR]?.trim() || ''
-    const address        = cols[COL.ADDRESS]?.trim() || ''
-    const district       = cols[COL.DISTRICT]?.trim() || null
-    const city           = cols[COL.CITY]?.trim() === 'NULL' ? null : (cols[COL.CITY]?.trim() || null)
-    const buildingCadNr  = cols[COL.BUI_CAD_NR]?.trim() || null
-    const buildingAreaM2 = parseDecimal(cols[COL.BUI_TOTAL_AREA])
-    const buildingYear   = parseInt10(cols[COL.BUI_YEAR])
-    const wallMaterial   = cols[COL.MATERIAL]?.trim() === 'NULL' ? null : (cols[COL.MATERIAL]?.trim() || null)
-    const depreciation   = cols[COL.DEPRECATION]?.trim() === 'NULL' ? null : (cols[COL.DEPRECATION]?.trim() || null)
-    const apartmentCadNr = cols[COL.PREG_CAD_NR]?.trim() || null
-    const floorMin       = parseInt10(cols[COL.FLOOR_MIN])
-    const floorMax       = parseInt10(cols[COL.FLOOR_MAX])
-    const apartmentAreaM2 = parseDecimal(cols[COL.APT_AREA])
-
-    await prisma.apartmentTransaction.upsert({
-      where: { deaId },
-      create: {
-        deaId,
-        objType,
-        propertyCadNr,
-        buildingCadNr,
-        address,
-        district,
-        city,
-        transactionDate,
-        priceEur,
-        buildingAreaM2,
-        buildingYear,
-        wallMaterial,
-        depreciation,
-        apartmentCadNr,
-        floorMin,
-        floorMax,
-        apartmentAreaM2,
-      },
-      update: {
-        address,
-        district,
-        city,
-        transactionDate,
-        priceEur,
-        buildingAreaM2,
-        buildingYear,
-        wallMaterial,
-        depreciation,
-        apartmentCadNr,
-        floorMin,
-        floorMax,
-        apartmentAreaM2,
-        syncedAt: new Date(),
-      },
-    })
-
-    upserted++
-    if (upserted % 5000 === 0) {
-      console.log(`Upserted ${upserted} transactions...`)
+  } finally {
+    if (process.env.KEEP_TEMP_FILES === 'true') {
+      console.log(`Temp files kept at: ${tmpDir}`)
+    } else {
+      rmSync(tmpDir, { recursive: true, force: true })
     }
   }
 
-  console.log(`Transaction sync complete. Upserted: ${upserted}, skipped: ${skipped}.`)
   await prisma.$disconnect()
 }
 

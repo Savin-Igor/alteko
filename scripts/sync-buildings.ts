@@ -211,7 +211,11 @@ async function syncBuildings() {
     console.log(`  Total processed:                       ${(totalMigrated + totalCreated).toLocaleString()}`)
 
   } finally {
-    rmSync(tmpDir, { recursive: true, force: true })
+    if (process.env.KEEP_TEMP_FILES === 'true') {
+      console.log(`Temp files kept at: ${tmpDir}`)
+    } else {
+      rmSync(tmpDir, { recursive: true, force: true })
+    }
   }
 
   await prisma.$disconnect()

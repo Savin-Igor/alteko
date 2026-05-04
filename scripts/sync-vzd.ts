@@ -1,3 +1,9 @@
+import { join } from 'node:path'
+import { tmpdir } from 'node:os'
+import { mkdtempSync, rmSync, createWriteStream, createReadStream } from 'node:fs'
+import { pipeline } from 'node:stream/promises'
+import { Readable } from 'node:stream'
+import { createInterface } from 'node:readline'
 import { prisma } from '../src/lib/prisma'
 
 // VAR (Valsts adresu reģistrs) building sync — weekly from data.gov.lv
@@ -65,69 +71,79 @@ async function syncVzd() {
     process.exit(1)
   }
 
-  console.log('Fetching VAR building data...')
-  const res = await fetch(url)
-  if (!res.ok) throw new Error(`VAR fetch failed: ${res.status}`)
+  const tmpDir  = mkdtempSync(join(tmpdir(), 'alteko-vzd-'))
+  const csvPath = join(tmpDir, 'aw_eka.csv')
 
-  const text = await res.text()
-  const lines = text.split('\n')
-  const dataLines = lines.slice(1) // skip header row
+  try {
+    console.log('Downloading VAR building data...')
+    const res = await fetch(url)
+    if (!res.ok) throw new Error(`VAR fetch failed: ${res.status}`)
+    await pipeline(Readable.fromWeb(res.body as Parameters<typeof Readable.fromWeb>[0]), createWriteStream(csvPath))
+    console.log('Download complete.')
 
-  let upserted = 0
-  let skipped = 0
+    let upserted = 0
+    let skipped  = 0
+    let firstLine = true
 
-  for (const line of dataLines) {
-    if (!line.trim()) continue
+    const rl = createInterface({ input: createReadStream(csvPath, { encoding: 'utf-8' }) })
 
-    const cols = parseCSVRow(line)
-    if (cols.length < 21) {
-      skipped++
-      continue
+    for await (const rawLine of rl) {
+      // Strip UTF-8 BOM from first line
+      const line = firstLine ? rawLine.replace(/^﻿/, '') : rawLine
+      firstLine = false
+
+      if (!line.trim()) continue
+
+      const cols = parseCSVRow(line)
+      if (cols.length < 21) { skipped++; continue }
+
+      const kods     = cols[0]?.trim()
+      const statuss  = cols[2]?.trim()
+      const forBuild = cols[14]?.trim()
+      const std      = cols[16]?.trim()
+      const ddN      = cols[19]?.trim() // latitude  WGS-84 (DD_N)
+      const ddE      = cols[20]?.trim() // longitude WGS-84 (DD_E)
+
+      // FOR_BUILD="N" → ēka (building); "Y" → apbūvei paredzēta zemes vienība (land plot)
+      // STATUSS="EKS" → existing; "DEL"/"ERR" → skip
+      if (!kods || statuss !== 'EKS' || forBuild !== 'N' || !std) { skipped++; continue }
+
+      const lat = ddN ? parseFloat(ddN) : null
+      const lon = ddE ? parseFloat(ddE) : null
+
+      await prisma.building.upsert({
+        where: { vzdId: kods },
+        create: {
+          // surrogate key until LVM WFS resolves the real cadastral code
+          cadastralCode: `VAR:${kods}`,
+          vzdId: kods,
+          address: std,
+          lat,
+          lon,
+          vzdUpdatedAt: new Date(),
+        },
+        update: {
+          address: std,
+          lat,
+          lon,
+          vzdUpdatedAt: new Date(),
+        },
+      })
+
+      upserted++
+      if (upserted % 1000 === 0) console.log(`Upserted ${upserted} buildings...`)
     }
 
-    const kods     = cols[0]?.trim()
-    const statuss  = cols[2]?.trim()
-    const forBuild = cols[14]?.trim()
-    const std      = cols[16]?.trim()
-    const ddN      = cols[19]?.trim() // latitude  WGS-84 (DD_N)
-    const ddE      = cols[20]?.trim() // longitude WGS-84 (DD_E)
+    console.log(`VAR sync complete. Upserted: ${upserted}, skipped: ${skipped}.`)
 
-    // FOR_BUILD="N" → ēka (building); "Y" → apbūvei paredzēta zemes vienība (land plot)
-    // STATUSS="EKS" → existing; "DEL"/"ERR" → skip
-    if (!kods || statuss !== 'EKS' || forBuild !== 'N' || !std) {
-      skipped++
-      continue
-    }
-
-    const lat = ddN ? parseFloat(ddN) : null
-    const lon = ddE ? parseFloat(ddE) : null
-
-    await prisma.building.upsert({
-      where: { vzdId: kods },
-      create: {
-        // surrogate key until LVM WFS resolves the real cadastral code
-        cadastralCode: `VAR:${kods}`,
-        vzdId: kods,
-        address: std,
-        lat,
-        lon,
-        vzdUpdatedAt: new Date(),
-      },
-      update: {
-        address: std,
-        lat,
-        lon,
-        vzdUpdatedAt: new Date(),
-      },
-    })
-
-    upserted++
-    if (upserted % 1000 === 0) {
-      console.log(`Upserted ${upserted} buildings...`)
+  } finally {
+    if (process.env.KEEP_TEMP_FILES === 'true') {
+      console.log(`Temp files kept at: ${tmpDir}`)
+    } else {
+      rmSync(tmpDir, { recursive: true, force: true })
     }
   }
 
-  console.log(`VAR sync complete. Upserted: ${upserted}, skipped: ${skipped}.`)
   await prisma.$disconnect()
 }
 
