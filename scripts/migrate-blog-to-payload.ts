@@ -1,5 +1,8 @@
+// @ts-nocheck — migration complete, BlogPost model removed. Kept for audit trail only.
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * One-time migration: Prisma BlogPost rows → Payload CMS documents.
+ * MIGRATION COMPLETE — BlogPost table dropped. This script is kept for audit trail only.
  *
  * Run AFTER starting the dev server once (so Payload creates its tables):
  *   npx tsx scripts/migrate-blog-to-payload.ts
@@ -157,8 +160,16 @@ async function convertMarkdownToLexical(markdown: string): Promise<object> {
 }
 
 async function main() {
-  const payload = await getPayload({ config })
+  // Migration already completed — BlogPost table was dropped (migration 20260504000004).
+  // All 3 articles are in Payload CMS. This script is a no-op and kept for audit trail.
+  console.log('Migration already completed. BlogPost table dropped. Articles are in Payload CMS.')
+  return
 
+  // eslint-disable-next-line no-unreachable
+  const payload = await getPayload({ config })
+  void payload
+
+  // @ts-expect-error BlogPost model removed after migration (issue #60)
   const rows = await prisma.blogPost.findMany({
     orderBy: [{ slug: 'asc' }, { locale: 'asc' }],
   })
