@@ -39,6 +39,7 @@
 - [integrations.md](technical/integrations.md) — внешние API и системы
 - [tech-stack.md](technical/tech-stack.md) — TypeScript, Next.js, Prisma, PostgreSQL, Docker, CI/CD
 - [address-search.md](technical/address-search.md) — автодополнение адреса, геокодинг, поиск кадастровых данных
+- [local-development.md](technical/local-development.md) — локальная разработка: команды, флоу, типичные проблемы
 
 ### Справочник
 Постоянные справочные материалы.

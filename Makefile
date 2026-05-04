@@ -12,21 +12,24 @@
 
 DC       = docker compose -f docker-compose.db.yml
 DC_PROD  = docker compose
-RUN      = $(DC) run --rm scripts npx tsx
+RUN      = $(DC) run --rm scripts npx tsx   # for .ts scripts
+EXEC     = $(DC) run --rm scripts            # for shell/prisma commands
 
 ##@ Development
 
-dev: db-up ## Start local DB + Next.js dev server (hot reload)
+dev: db-up ## Daily dev: DB + schema sync + Next.js dev server
+	$(MAKE) push
 	npm run dev
 
-dev-setup: db-up build-scripts ## First-time setup: DB + schema push + seed + dev server
+dev-setup: db-up build-scripts ## First-time setup: DB + schema + seed + dev server
 	@echo "Waiting for DB to be healthy..."
 	@$(DC) run --rm scripts sh -c "until pg_isready -h db -U postgres; do sleep 1; done"
 	$(MAKE) push
 	$(MAKE) seed
 	npm run dev
 
-dev-fresh: clean db-up ## Clean build cache and start fresh dev server
+dev-fresh: clean db-up ## Wipe .next cache, sync schema, start dev server
+	$(MAKE) push
 	npm run dev
 
 clean: ## Remove Next.js build cache (.next/)
@@ -44,13 +47,13 @@ db-rebuild: ## Rebuild scripts Docker image (after Dockerfile.scripts changes)
 	$(DC) build scripts
 
 push: ## Apply schema to local DB without migrations (dev only)
-	$(RUN) sh -c "npx prisma generate && npx prisma db push"
+	$(EXEC) sh -c "npx prisma generate && npx prisma db push"
 
-migrate: ## Run prisma migrate dev on host (interactive, creates migration files)
-	npm run db:migrate
+migrate: ## Run prisma migrate dev in container (interactive, creates migration files)
+	$(EXEC) npx prisma migrate dev
 
-migrate-deploy: ## Run prisma migrate deploy inside scripts container (production-safe)
-	$(RUN) npx prisma migrate deploy
+migrate-deploy: ## Run prisma migrate deploy in container (production-safe)
+	$(EXEC) npx prisma migrate deploy
 
 studio: ## Open Prisma Studio
 	npm run db:studio
