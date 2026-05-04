@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { FunnelFlow, STEP_ICONS } from '@/components/ui/FunnelFlow'
+import { InfoBanner } from '@/components/ui/InfoBanner'
 import { SiteFooter } from '@/components/ui/SiteFooter'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 
@@ -51,6 +52,18 @@ export default async function RenovationMarketingPage() {
           <p className="text-xs text-gray-400">
             {t('hero.note')}
           </p>
+        </div>
+      </section>
+
+      {/* ALTUM 2021-2027 closure notice (Sprint 1 / v2) */}
+      <section className="px-4 pt-2 pb-6 bg-white">
+        <div className="max-w-3xl mx-auto">
+          <InfoBanner variant="warning">
+            <strong>{t('closureNotice.title')}</strong>
+            <p className="mt-1 text-orange-800/90 leading-relaxed">
+              {t('closureNotice.body')}
+            </p>
+          </InfoBanner>
         </div>
       </section>
 
