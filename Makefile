@@ -5,197 +5,152 @@
   migrate migrate-deploy push studio backup \
   build build-scripts \
   check clean \
-  seed seed-series seed-benchmarks seed-blog \
+  seed seed-buildings seed-series assign-series seed-benchmarks seed-blog \
   sync-buildings sync-vzd sync-bvkb sync-transactions \
   cron-weekly cron-monthly \
   deploy help
-
-# ── Shortcuts ─────────────────────────────────────────────────────────────────
 
 DC       = docker compose -f docker-compose.db.yml
 DC_PROD  = docker compose
 RUN      = $(DC) run --rm scripts npx tsx
 
-# ── Local development ─────────────────────────────────────────────────────────
+##@ Development
 
-## First-time setup: DB + schema push + seed + dev server
-dev-setup: db-up build-scripts
+dev: db-up ## Start local DB + Next.js dev server (hot reload)
+	npm run dev
+
+dev-setup: db-up build-scripts ## First-time setup: DB + schema push + seed + dev server
 	@echo "Waiting for DB to be healthy..."
 	@$(DC) run --rm scripts sh -c "until pg_isready -h db -U postgres; do sleep 1; done"
 	$(MAKE) push
 	$(MAKE) seed
 	npm run dev
 
-## Remove Next.js build cache (.next/)
-clean:
+dev-fresh: clean db-up ## Clean build cache and start fresh dev server
+	npm run dev
+
+clean: ## Remove Next.js build cache (.next/)
 	rm -rf .next
 
-## Clean build cache and start fresh dev server
-dev-fresh: clean db-up
-	npm run dev
+##@ Database
 
-## Start local DB + Next.js dev server on host (hot reload)
-dev: db-up
-	npm run dev
-
-## Start only the local PostgreSQL container
-db-up:
+db-up: ## Start local PostgreSQL container
 	$(DC) up -d db
 
-## Stop the local PostgreSQL container
-db-down:
+db-down: ## Stop local PostgreSQL container
 	$(DC) down
 
-## Rebuild the scripts Docker image (run after Dockerfile.scripts changes)
-db-rebuild:
+db-rebuild: ## Rebuild scripts Docker image (after Dockerfile.scripts changes)
 	$(DC) build scripts
 
-# ── Build ─────────────────────────────────────────────────────────────────────
-
-## Run TypeScript type check + ESLint
-check:
-	npm run type-check && npm run lint
-
-## Build production Docker image (tagged alteko:local)
-build:
-	docker build -t alteko:local .
-
-## Build the scripts runner image
-build-scripts:
-	$(DC) build scripts
-
-# ── Database ──────────────────────────────────────────────────────────────────
-
-## Apply schema to local DB without migrations (dev only)
-push:
+push: ## Apply schema to local DB without migrations (dev only)
 	$(RUN) sh -c "npx prisma generate && npx prisma db push"
 
-## Run prisma migrate deploy inside scripts container (production-safe)
-migrate-deploy:
-	$(RUN) npx prisma migrate deploy
-
-## Run prisma migrate dev on host (interactive — creates migration files)
-migrate:
+migrate: ## Run prisma migrate dev on host (interactive, creates migration files)
 	npm run db:migrate
 
-## Open Prisma Studio (host)
-studio:
+migrate-deploy: ## Run prisma migrate deploy inside scripts container (production-safe)
+	$(RUN) npx prisma migrate deploy
+
+studio: ## Open Prisma Studio
 	npm run db:studio
 
-## Backup local DB to ./backups/
-backup:
+backup: ## Backup local DB to ./backups/
 	@mkdir -p backups
 	$(DC) exec -T db \
 	  pg_dump -U postgres alteko \
 	  > backups/backup-$$(date +%Y%m%d-%H%M%S).sql
 	@echo "Backup saved to backups/"
 
-# ── Seeds ─────────────────────────────────────────────────────────────────────
+##@ Build
 
-## Seed all: stub buildings + building series
-seed: seed-buildings seed-series
+build: ## Build production Docker image (tagged alteko:local)
+	docker build -t alteko:local .
 
-## Seed stub buildings (development fixtures)
-seed-buildings:
+build-scripts: ## Build the scripts runner Docker image
+	$(DC) build scripts
+
+check: ## Run TypeScript type check + ESLint
+	npm run type-check && npm run lint
+
+##@ Seeds
+
+seed: seed-buildings seed-series ## Seed all: stub buildings + building series
+
+seed-buildings: ## Seed stub buildings (development fixtures)
 	$(RUN) prisma/seed.ts
 
-## Seed building series reference data (103, 119, 467, etc.)
-seed-series:
+seed-series: ## Seed building series reference data (103, 119, 467, etc.)
 	$(RUN) prisma/seed-series.ts
 
-## Assign Building.series using year + wallMaterial + floorCount heuristic
-## Run after sync-buildings (needs constructionYear, wallMaterial, floorCount populated)
-assign-series:
+assign-series: ## Assign Building.series using year + wallMaterial + floorCount heuristic
 	$(RUN) scripts/assign-series.ts
 
-## Recompute BenchmarkSegment percentiles from existing expense reports
-seed-benchmarks:
+seed-benchmarks: ## Recompute BenchmarkSegment percentiles from existing expense reports
 	$(RUN) scripts/seed-benchmarks.ts
 
-## Seed blog posts from markdown files
-seed-blog:
+seed-blog: ## Seed blog posts from markdown files
 	$(RUN) prisma/seed-blog.ts
 
-# ── Data sync ─────────────────────────────────────────────────────────────────
-# All sync scripts run inside the scripts Docker container.
-# Env vars (VZD_DATA_URL, BVKB_DATA_URL, VZD_TRANSACTIONS_URL) are read from .env.local.
+##@ Data Sync
 
-## Sync Building.ZIP: real cadastralCodes, year, material, floors (~500k buildings)
-## Run before sync-vzd and sync-bvkb — sets real cadastralCode, enabling BVKB matching
-sync-buildings:
+sync-buildings: ## Sync Building.ZIP: cadastralCodes, year, material, floors (~500k buildings)
 	$(RUN) scripts/sync-buildings.ts
 
-## Sync VAR building addresses from data.gov.lv (daily dataset, ~100k rows)
-sync-vzd:
+sync-vzd: ## Sync VZD building addresses from data.gov.lv (daily, ~100k rows)
 	$(RUN) scripts/sync-vzd.ts
 
-## Sync BVKB energy certificates from data.gov.lv (daily dataset)
-sync-bvkb:
+sync-bvkb: ## Sync BVKB energy certificates from data.gov.lv (daily)
 	$(RUN) scripts/sync-bvkb.ts
 
-## Sync apartment transaction prices from data.gov.lv (monthly, 2016–present, ~200MB)
-sync-transactions:
+sync-transactions: ## Sync apartment transaction prices from data.gov.lv (monthly, ~200MB)
 	$(RUN) scripts/sync-transactions.ts
 
-# ── Cron simulation ───────────────────────────────────────────────────────────
-# Mirrors the schedule in .github/workflows/sync-data.yml.
-# Run these locally to test the full sync pipeline before it fires in CI.
+##@ Cron Simulation
 
-## Simulate weekly cron (Mon 03:00 UTC): buildings → addresses → energy certs
-## Order matters: sync-buildings sets real cadastralCodes before sync-bvkb tries to match them
-cron-weekly: db-up
-	@echo "==> [cron-weekly] sync-buildings"
+cron-weekly: db-up ## Simulate weekly cron (Mon 03:00 UTC): buildings → vzd → bvkb
+	@echo "==> sync-buildings"
 	$(MAKE) sync-buildings
-	@echo "==> [cron-weekly] sync-vzd"
+	@echo "==> sync-vzd"
 	$(MAKE) sync-vzd
-	@echo "==> [cron-weekly] sync-bvkb"
+	@echo "==> sync-bvkb"
 	$(MAKE) sync-bvkb
-	@echo "==> [cron-weekly] done"
 
-## Simulate monthly cron (12th 04:00 UTC): apartment transaction prices
-cron-monthly: db-up
-	@echo "==> [cron-monthly] sync-transactions"
+cron-monthly: db-up ## Simulate monthly cron (12th 04:00 UTC): transaction prices
+	@echo "==> sync-transactions"
 	$(MAKE) sync-transactions
-	@echo "==> [cron-monthly] done"
 
-# ── Production stack ──────────────────────────────────────────────────────────
+##@ Production
 
-## Start production stack (app + db) in background
-up:
+up: ## Start production stack (app + db) in background
 	mkdir -p data/postgres backups
 	$(DC_PROD) up -d
 
-## Stop production stack (data preserved — never use down -v)
-down:
+down: ## Stop production stack (data preserved)
 	$(DC_PROD) down
 
-## Restart only the app container
-restart:
+restart: ## Restart only the app container
 	$(DC_PROD) up -d app
 
-## Stream app logs
-logs:
+logs: ## Stream app logs
 	$(DC_PROD) logs -f app
 
-## Open a shell in the running app container
-shell:
+shell: ## Open a shell in the running app container
 	$(DC_PROD) exec app sh
 
-## SSH deploy: pull latest image and restart app on VPS
-## Usage: make deploy DEPLOY_HOST=user@your-vps-ip
-deploy:
+deploy: ## SSH deploy: pull latest image and restart app  [DEPLOY_HOST=user@host]
 	@test -n "$(DEPLOY_HOST)" || (echo "DEPLOY_HOST not set. Usage: make deploy DEPLOY_HOST=user@host" && exit 1)
 	ssh $(DEPLOY_HOST) 'cd /opt/alteko && \
 	  docker compose pull app && \
 	  docker compose up -d app && \
 	  docker image prune -f'
 
-# ── Help ──────────────────────────────────────────────────────────────────────
+##@ Help
 
-## Show available targets
-help:
-	@echo ""
-	@echo "ALTEKO — make targets:"
-	@echo ""
-	@grep -E '^## ' $(MAKEFILE_LIST) | sed 's/## /  /'
-	@echo ""
+help: ## Show available targets
+	@awk ' \
+	  BEGIN { FS = ":.*##"; printf "\n\033[1mALTEKO — make targets\033[0m\n" } \
+	  /^##@/ { printf "\n\033[1;33m%s\033[0m\n", substr($$0, 5) } \
+	  /^[a-zA-Z0-9_-]+:.*?##/ { printf "  \033[36m%-22s\033[0m %s\n", $$1, $$2 } \
+	  END { printf "\n" } \
+	' $(MAKEFILE_LIST)
