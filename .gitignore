@@ -29,6 +29,9 @@ build/
 data/
 backups/
 
+# Temp files kept by KEEP_TEMP_FILES=true (sync scripts)
+tmp/
+
 # Local tooling
 .playwright-mcp/
 .claude/worktrees/

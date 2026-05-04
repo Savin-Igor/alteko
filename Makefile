@@ -35,6 +35,9 @@ dev-fresh: clean db-up ## Wipe .next cache, sync schema, start dev server
 clean: ## Remove Next.js build cache (.next/)
 	rm -rf .next
 
+clean-tmp: ## Remove temp files kept by KEEP_TEMP_FILES=true (./tmp/)
+	rm -rf tmp/
+
 ##@ Database
 
 db-up: ## Start local PostgreSQL container

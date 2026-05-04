@@ -1,10 +1,21 @@
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
-import { mkdtempSync, rmSync, createWriteStream, createReadStream } from 'node:fs'
+import { mkdtempSync, mkdirSync, rmSync, createWriteStream, createReadStream } from 'node:fs'
 import { pipeline } from 'node:stream/promises'
 import { Readable } from 'node:stream'
 import { execFileSync } from 'node:child_process'
 import { prisma } from '../src/lib/prisma'
+
+const KEEP = process.env.KEEP_TEMP_FILES === 'true'
+
+function makeTempDir(name: string): string {
+  if (KEEP) {
+    const dir = join(process.cwd(), 'tmp', name)
+    mkdirSync(dir, { recursive: true })
+    return dir
+  }
+  return mkdtempSync(join(tmpdir(), `alteko-${name}-`))
+}
 
 // VZD Building.ZIP — weekly open data, CC-BY-4.0
 // Dataset: https://data.gov.lv/dati/dataset/kadastra-informacijas-sistemas-atvertie-dati
@@ -175,7 +186,7 @@ async function syncBuildings() {
   const url = process.env.VZD_BUILDING_ZIP_URL
   if (!url) { console.error('VZD_BUILDING_ZIP_URL not set'); process.exit(1) }
 
-  const tmpDir = mkdtempSync(join(tmpdir(), 'alteko-buildings-'))
+  const tmpDir  = makeTempDir('buildings')
   const zipPath = join(tmpDir, 'building.zip')
 
   try {
@@ -211,7 +222,7 @@ async function syncBuildings() {
     console.log(`  Total processed:                       ${(totalMigrated + totalCreated).toLocaleString()}`)
 
   } finally {
-    if (process.env.KEEP_TEMP_FILES === 'true') {
+    if (KEEP) {
       console.log(`Temp files kept at: ${tmpDir}`)
     } else {
       rmSync(tmpDir, { recursive: true, force: true })

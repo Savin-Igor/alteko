@@ -1,11 +1,22 @@
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
-import { mkdtempSync, rmSync, createWriteStream, createReadStream } from 'node:fs'
+import { mkdtempSync, mkdirSync, rmSync, createWriteStream, createReadStream } from 'node:fs'
 import { pipeline } from 'node:stream/promises'
 import { Readable } from 'node:stream'
 import { createInterface } from 'node:readline'
 import { prisma } from '../src/lib/prisma'
 import type { EnergyClass } from '@prisma/client'
+
+const KEEP = process.env.KEEP_TEMP_FILES === 'true'
+
+function makeTempDir(name: string): string {
+  if (KEEP) {
+    const dir = join(process.cwd(), 'tmp', name)
+    mkdirSync(dir, { recursive: true })
+    return dir
+  }
+  return mkdtempSync(join(tmpdir(), `alteko-${name}-`))
+}
 
 // BVKB Energy Certificates — synced from data.gov.lv (daily updates)
 // Dataset: https://data.gov.lv/dati/eng/dataset/bis_ygdi8jmgg-bneuijz7wiwq
@@ -67,7 +78,7 @@ async function syncBvkb() {
     process.exit(1)
   }
 
-  const tmpDir  = mkdtempSync(join(tmpdir(), 'alteko-bvkb-'))
+  const tmpDir  = makeTempDir('bvkb')
   const csvPath = join(tmpDir, 'energosertifikati.csv')
 
   try {
@@ -124,7 +135,7 @@ async function syncBvkb() {
     console.log(`BVKB sync complete. Updated: ${updated}, expired skipped: ${expired}, invalid skipped: ${skipped}.`)
 
   } finally {
-    if (process.env.KEEP_TEMP_FILES === 'true') {
+    if (KEEP) {
       console.log(`Temp files kept at: ${tmpDir}`)
     } else {
       rmSync(tmpDir, { recursive: true, force: true })

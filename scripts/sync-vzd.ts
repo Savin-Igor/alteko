@@ -1,10 +1,21 @@
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
-import { mkdtempSync, rmSync, createWriteStream, createReadStream } from 'node:fs'
+import { mkdtempSync, mkdirSync, rmSync, createWriteStream, createReadStream } from 'node:fs'
 import { pipeline } from 'node:stream/promises'
 import { Readable } from 'node:stream'
 import { createInterface } from 'node:readline'
 import { prisma } from '../src/lib/prisma'
+
+const KEEP = process.env.KEEP_TEMP_FILES === 'true'
+
+function makeTempDir(name: string): string {
+  if (KEEP) {
+    const dir = join(process.cwd(), 'tmp', name)
+    mkdirSync(dir, { recursive: true })
+    return dir
+  }
+  return mkdtempSync(join(tmpdir(), `alteko-${name}-`))
+}
 
 // VAR (Valsts adresu reģistrs) building sync — weekly from data.gov.lv
 // Dataset: https://data.gov.lv/dati/dataset/varis-atvertie-dati
@@ -71,7 +82,7 @@ async function syncVzd() {
     process.exit(1)
   }
 
-  const tmpDir  = mkdtempSync(join(tmpdir(), 'alteko-vzd-'))
+  const tmpDir  = makeTempDir('vzd')
   const csvPath = join(tmpDir, 'aw_eka.csv')
 
   try {
@@ -137,7 +148,7 @@ async function syncVzd() {
     console.log(`VAR sync complete. Upserted: ${upserted}, skipped: ${skipped}.`)
 
   } finally {
-    if (process.env.KEEP_TEMP_FILES === 'true') {
+    if (KEEP) {
       console.log(`Temp files kept at: ${tmpDir}`)
     } else {
       rmSync(tmpDir, { recursive: true, force: true })
