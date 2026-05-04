@@ -1,9 +1,15 @@
-// eParaksts (LVRTC) OAuth 2.0 integration stub.
-// Production implementation requires registration at https://developer.eparaksts.lv/
+// eParaksts (LVRTC) OAuth 2.0 integration.
+// Production requires registration at https://developer.eparaksts.lv/
 //
 // Scopes needed: openid, profile, eid
-// Auth endpoint: https://id.eidentity.lv/op/authorize
+// Auth endpoint:  https://id.eidentity.lv/op/authorize
 // Token endpoint: https://id.eidentity.lv/op/token
+// JWKS endpoint:  https://id.eidentity.lv/op/jwks
+
+import { createRemoteJWKSet, jwtVerify } from 'jose'
+
+const LVRTC_JWKS_URL = 'https://id.eidentity.lv/op/jwks'
+const LVRTC_ISSUER = 'https://id.eidentity.lv/op'
 
 export interface EparakstsClaims {
   sub: string               // LVRTC subject identifier
@@ -38,7 +44,7 @@ export async function exchangeCodeForClaims(code: string): Promise<EparakstsClai
   const tokenEndpoint = process.env.EPARAKSTS_TOKEN_URL ?? 'https://id.eidentity.lv/op/token'
 
   if (!clientId || !clientSecret) {
-    // Development mock
+    // Development mock — only active when eParaksts credentials are not configured
     return {
       sub: `mock-eparaksts-${code}`,
       personalCode: 'LV-020202-54321',
@@ -64,17 +70,24 @@ export async function exchangeCodeForClaims(code: string): Promise<EparakstsClai
 
   if (!res.ok) throw new Error(`eParaksts token exchange failed: ${res.status}`)
 
-  const tokens = await res.json()
-  // Decode ID token claims (simplified — in production use jose or jsonwebtoken)
-  const idToken = tokens.id_token as string
-  const payload = JSON.parse(Buffer.from(idToken.split('.')[1]!, 'base64').toString())
+  const tokens = await res.json() as { id_token: string }
+  const idToken = tokens.id_token
+
+  // Verify JWT signature using LVRTC JWKS — prevents token forgery / replay attacks (issue #42)
+  const jwksUri = new URL(process.env.EPARAKSTS_JWKS_URL ?? LVRTC_JWKS_URL)
+  const JWKS = createRemoteJWKSet(jwksUri)
+
+  const { payload } = await jwtVerify(idToken, JWKS, {
+    issuer: process.env.EPARAKSTS_ISSUER ?? LVRTC_ISSUER,
+    audience: clientId,
+  })
 
   return {
-    sub: payload.sub,
-    personalCode: payload['personal_code'] ?? payload.sub,
-    givenName: payload.given_name ?? '',
-    surname: payload.family_name ?? '',
-    signature: tokens.id_token,
+    sub: payload.sub ?? '',
+    personalCode: (payload['personal_code'] as string | undefined) ?? payload.sub ?? '',
+    givenName: (payload['given_name'] as string | undefined) ?? '',
+    surname: (payload['family_name'] as string | undefined) ?? '',
+    signature: idToken,
     signedAt: new Date(),
   }
 }

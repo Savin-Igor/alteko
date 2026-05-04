@@ -4,6 +4,7 @@ import { parsePdfExpense } from '@/lib/llm'
 import { getPresignedDownloadUrl } from '@/lib/s3'
 import { auth } from '@/auth'
 import { IS_STUB, STUB_PARSED_BILL } from '@/lib/stubs'
+import { verifyParseToken } from '@/lib/auth/parse-token'
 import type { ExpenseCategory } from '@prisma/client'
 
 export const runtime = 'nodejs'
@@ -22,7 +23,8 @@ function normalizeCategory(cat: string): ExpenseCategory {
 export async function POST(req: NextRequest) {
   const session = await auth()
 
-  const { reportId } = await req.json() as { reportId: string }
+  const body = await req.json() as { reportId: string; parseToken?: string }
+  const { reportId, parseToken } = body
   if (!reportId) return NextResponse.json({ error: 'reportId required' }, { status: 400 })
 
   const report = await prisma.expenseReport.findUnique({
@@ -31,11 +33,11 @@ export async function POST(req: NextRequest) {
   })
   if (!report) return NextResponse.json({ error: 'Report not found' }, { status: 404 })
 
-  // Allow access for anonymous uploads (uploadedBy null) or the report owner
-  const isAnonymous = !report.uploadedBy
+  // Authorization: authenticated owner OR valid short-lived parse token (for anonymous uploads)
   const isOwner = !!session?.user?.id && report.uploadedBy === session.user.id
-  if (!isAnonymous && !isOwner) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const hasValidToken = !!parseToken && verifyParseToken(parseToken, reportId)
+  if (!isOwner && !hasValidToken) {
+    return NextResponse.json({ error: 'Forbidden — provide parseToken from upload response' }, { status: 403 })
   }
 
   await prisma.expenseReport.update({ where: { id: reportId }, data: { status: 'PROCESSING' } })
