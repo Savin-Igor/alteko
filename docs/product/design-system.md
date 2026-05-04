@@ -29,11 +29,38 @@
 | `primary` | `#2563EB` | `#EFF6FF` | `#1D4ED8` | Основные CTA, активные состояния |
 | `danger` | `#DC2626` | `#FEF2F2` | — | Ошибки, критические отклонения (>20%) |
 | `warning` | `#EA580C` | `#FFF7ED` | — | Предупреждения, умеренные отклонения (5–20%) |
-| `success` | `#16A34A` | `#F0FDF4` | — | Успех, экономия, норма |
+| `success` | `#16A34A` | `#F0FDF4` | — | Успех, готовность, открытое окно финансирования |
 
 ### Нейтральные цвета
 
 Стандартная шкала Tailwind: `gray-50` → `gray-900`. Нестандартные серые не вводятся.
+
+### Токены для статуса окна финансирования
+
+| Токен | Цвет | Применение |
+|-------|------|-----------|
+| `funding-open` | `success` | Окно открыто (ALTUM remonta aizdevums, банк) |
+| `funding-expected` | `warning` | Окно ожидается (SCF 2026-2032) |
+| `funding-closed` | `gray-500` | Окно закрыто (ALTUM 2021-2027) |
+| `funding-unknown` | `gray-400` | Статус неизвестен |
+
+### Токены для достоверности данных (`dataConfidence`)
+
+| Токен | Иконка | Цвет | Применение |
+|-------|--------|------|-----------|
+| `dc-public` | 🌐 | `gray-500` | PUBLIC_DATA — только публичные данные |
+| `dc-user` | ✏️ | `primary` | USER_UPLOADED — загружено пользователем |
+| `dc-board` | ✓ | `success` | BOARD_VERIFIED — подтверждено правлением |
+| `dc-pro` | ★ | `#D97706` (gold) | PROFESSIONAL_VERIFIED — подтверждено специалистом |
+
+### Токены для Readiness Score (0–100)
+
+| Диапазон | Цвет |
+|----------|------|
+| 0–25 | `danger` |
+| 26–50 | `warning` |
+| 51–75 | `primary` |
+| 76–100 | `success` |
 
 ---
 
@@ -103,11 +130,13 @@
 
 - Sticky, `z-50`, белый фон с нижней границей
 - Max-width контейнера: `max-w-5xl`
-- Навигация: **Аудит** (`/`) · **Реновация** (`/renovation`) · **Блог** (`/blog`)
-- CTA-кнопка: «Найти свой дом →» → `/#hero`
+- Навигация (после rewrite): **Mājas gatavība** / **Готовность** (`/`) · **Finansējums** / **Финансирование** (`/financing`) · **Speciālistiem** / **Специалистам** (`/dashboard/portfolio` или маркетинговая `/specialists`) · **Blogs** / **Блог** (`/blog`)
+- CTA-кнопка: «Atrast māju →» / «Найти дом →» → `/#hero`
 - Переключатель языка: `LangToggle` (LV / RU)
 - Мобильное меню: hamburger, раскрывается вниз
 - Активное состояние: `text-primary bg-primary-light` на текущем маршруте
+
+**Никаких английских пунктов меню** — все только LV/RU. См. `docs/reference/readiness-glossary.md`.
 
 #### `SiteFooter`
 
@@ -118,9 +147,9 @@
 
 | Колонка | Содержимое |
 |---------|-----------|
-| Бренд | Лого ALTEKO + описание платформы |
-| Сервисы | Аудит счетов, Реновация, Калькулятор реновации, Блог |
-| Подрядчикам | Для подрядчиков (`/contractors`), Зарегистрироваться, Как это работает |
+| Бренд | Лого ALTEKO + Mājas gatavības platforma / Платформа готовности дома |
+| Сервисы | Mājas gatavība, Finansējuma scenāriji, Izdevumu izpratne, Lēmumu kampaņas, Blogs |
+| Speciālistiem | Speciālista portfelis, Piegādātājiem (`/contractors`), Reģistrēties, Kā tas strādā |
 | Правовое | Политика конфиденциальности, Условия использования, info@alteko.lv |
 
 - Нижняя строка: copyright `© 2025 ALTEKO · Latvija`
@@ -135,11 +164,12 @@
 
 | Маршрут | Страница |
 |---------|---------|
-| `/` | Главная |
-| `/renovation` | Реновация (лендинг) |
+| `/` | Главная (Mājas gatavības platforma) |
+| `/financing` | Финансовые сценарии (новая) |
+| `/specialists` | Лендинг для специалистов (новая, Phase 2) |
 | `/blog` | Список статей |
 | `/blog/[slug]` | Статья |
-| `/contractors` | Лендинг для подрядчиков |
+| `/contractors` | Лендинг для подрядчиков (Tender Room) |
 | `/contractors/register` | Регистрация подрядчика |
 | `/privacy` | Политика конфиденциальности |
 | `/terms` | Условия использования |
@@ -148,15 +178,16 @@
 
 | Маршрут | Заголовок | Причина |
 |---------|-----------|---------|
-| `/audit/upload` | breadcrumb | Мастер-сценарий, без отвлечений |
-| `/audit/preview` | breadcrumb | Мастер-сценарий |
-| `/audit/report/[id]` | breadcrumb | Мастер-сценарий |
-| `/renovation/calculate` | breadcrumb | Мастер-сценарий |
-| `/renovation/preview` | breadcrumb | Мастер-сценарий |
-| `/dashboard/*` | admin | Авторизованная зона |
-| `/voting/[id]` | breadcrumb | Сфокусированное действие |
+| `/audit/upload` | breadcrumb | Мастер-сценарий загрузки счёта |
+| `/audit/preview` | breadcrumb | Ожидание анализа |
+| `/audit/report/[id]` | breadcrumb | Trust artifact: вопросы управляющему + ссылка на готовность |
+| `/financing` | breadcrumb | Финансовые сценарии (5 вариантов) |
+| `/readiness/order` | breadcrumb | Заказ Gatavības atskaite (платный отчёт) |
+| `/dashboard/*` | admin | Valdes darba telpa и Speciālista portfelis |
+| `/voting/[campaignId]` | breadcrumb | Decision Campaign |
 | `/auth/*` | minimal | Минимальный контекст |
-| `/building/[code]` | breadcrumb | Данные конкретного здания |
+| `/building/[code]` | breadcrumb | Карточка дома + readiness score |
+| `/b/[token]` | minimal | Реферальная карточка дома |
 
 #### Компоненты разметки
 
