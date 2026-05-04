@@ -1,23 +1,25 @@
 import { prisma } from '../src/lib/prisma'
 
-// Assigns Building.series using a heuristic based on constructionYear, wallMaterial, floorCount.
+// Assigns Building.series using a heuristic based on constructionYear, wallMaterial, floorCount,
+// and optionally median apt area from BuildingUnit (4th signal for ambiguous overlapping series).
 // No official per-building series registry exists in Latvia.
 //
 // Match logic (ordered by specificity — most specific first):
 //   1. Stalinka:     brick, 3–7 floors, 1945–1958
 //   2. Khrushchevka: brick, 4–5 floors, 1956–1965
 //   3. 103:          brick, 5–9 floors, 1960–1975
-//   4. 467:          panels, exactly 9 floors, 1970–1985
-//   5. 602P:         panels, 9–16 floors, 1972–1985
+//   4. 467:          panels, exactly 9 floors, 1970–1985, avg apt 42–55 m²
+//   5. 602P:         panels, 9–16 floors, 1972–1991, avg apt 40–50 m²
 //   6. 464:          panels, 4–5 floors, 1962–1975
 //   7. 316:          panels, 5–9 floors, 1958–1970
 //   8. 318:          panels, 4–9 floors, 1960–1972
-//   9. 104:          panels, 5–9 floors, 1963–1985
+//   9. 104:          panels, 5–9 floors, 1963–1985, avg apt 36–48 m²
 //  10. 602:          panels, 6–9 floors, 1960–1978
-//  11. 119:          panels, 5–12 floors, 1965–1991
+//  11. 119:          panels, 5–12 floors, 1963–1991, avg apt 44–62 m²
 //
 // Limitations:
-//   - Series 104, 119, 602 overlap heavily in year/floor ranges; match is best-effort.
+//   - Area ranges apply only to the 4 overlapping panel series (467, 602P, 104, 119).
+//   - Area check is skipped when BuildingUnit data is absent (graceful degradation).
 //   - "Dzelzsbetona paneļi" in Building.ZIP covers all reinforced concrete panels,
 //     including series that used keramzite variants. Can't distinguish further without
 //     floor plans or surveyors' notes.
@@ -33,6 +35,8 @@ type SeriesRule = {
   yearTo: number
   floorsMin: number
   floorsMax: number
+  aptAreaMin?: number  // optional: min avg apt area m² (from BuildingUnit)
+  aptAreaMax?: number  // optional: max avg apt area m² (from BuildingUnit)
 }
 
 // Ordered most-specific first to reduce ambiguous assignments.
@@ -47,14 +51,16 @@ const RULES: SeriesRule[] = [
   { code: '103',          materialSubstring: 'Ķieģeļu mūris', yearFrom: 1960, yearTo: 1980, floorsMin: 5,  floorsMax: 9  },
 
   // ── Panel series (most specific by floor/year first) ─────────────────────
-  { code: '467',          materialSubstring: 'Dzelzsbetona',   yearFrom: 1970, yearTo: 1985, floorsMin: 9,  floorsMax: 9  },
-  { code: '602P',         materialSubstring: 'Dzelzsbetona',   yearFrom: 1972, yearTo: 1991, floorsMin: 9,  floorsMax: 16 },
+  // 467 vs 602P: both 9-floor Dzelzsbetona — disambiguate by apt area (467 ~44m², 602P ~46m²)
+  { code: '467',          materialSubstring: 'Dzelzsbetona',   yearFrom: 1970, yearTo: 1985, floorsMin: 9,  floorsMax: 9,  aptAreaMin: 42, aptAreaMax: 55 },
+  { code: '602P',         materialSubstring: 'Dzelzsbetona',   yearFrom: 1972, yearTo: 1991, floorsMin: 9,  floorsMax: 16, aptAreaMin: 40, aptAreaMax: 50 },
   { code: '464',          materialSubstring: 'Dzelzsbetona',   yearFrom: 1960, yearTo: 1980, floorsMin: 4,  floorsMax: 5  },
   { code: '316',          materialSubstring: 'Dzelzsbetona',   yearFrom: 1955, yearTo: 1970, floorsMin: 5,  floorsMax: 9  },
   { code: '318',          materialSubstring: 'Dzelzsbetona',   yearFrom: 1958, yearTo: 1975, floorsMin: 4,  floorsMax: 9  },
-  { code: '104',          materialSubstring: 'Dzelzsbetona',   yearFrom: 1963, yearTo: 1985, floorsMin: 5,  floorsMax: 9  },
+  // 104 vs 119: overlapping year/floor ranges — disambiguate by apt area (104 ~44m², 119 ~52m²)
+  { code: '104',          materialSubstring: 'Dzelzsbetona',   yearFrom: 1963, yearTo: 1985, floorsMin: 5,  floorsMax: 9,  aptAreaMin: 36, aptAreaMax: 48 },
   { code: '602',          materialSubstring: 'Dzelzsbetona',   yearFrom: 1958, yearTo: 1980, floorsMin: 6,  floorsMax: 9  },
-  { code: '119',          materialSubstring: 'Dzelzsbetona',   yearFrom: 1963, yearTo: 1991, floorsMin: 5,  floorsMax: 12 },
+  { code: '119',          materialSubstring: 'Dzelzsbetona',   yearFrom: 1963, yearTo: 1991, floorsMin: 5,  floorsMax: 12, aptAreaMin: 44, aptAreaMax: 62 },
 
   // ── Keramzite/arbolite panels (catch-all for light-panel Soviet buildings) ─
   { code: '602',          materialSubstring: 'paneļi',         yearFrom: 1958, yearTo: 1985, floorsMin: 4,  floorsMax: 9  },
@@ -64,6 +70,7 @@ function matchSeries(
   year: number,
   material: string,
   floors: number,
+  medianAptAreaM2: number | null,
 ): string | null {
   for (const rule of RULES) {
     if (
@@ -73,6 +80,10 @@ function matchSeries(
       floors  <= rule.floorsMax &&
       material.includes(rule.materialSubstring)
     ) {
+      // If rule has area constraints and we have data, apply them as a tiebreaker
+      if (rule.aptAreaMin !== undefined && medianAptAreaM2 !== null) {
+        if (medianAptAreaM2 < rule.aptAreaMin || medianAptAreaM2 > rule.aptAreaMax!) continue
+      }
       return rule.code
     }
   }
@@ -81,6 +92,20 @@ function matchSeries(
 
 async function assignSeries() {
   console.log('Querying buildings eligible for series assignment...')
+
+  // Build map: cadastralCode → avg apt area (null if no BuildingUnit records)
+  // Note: Prisma groupBy does not support median; avg is close enough for disambiguation.
+  const unitGroups = await prisma.buildingUnit.groupBy({
+    by: ['buildingCadastralCode'],
+    _avg: { areaM2: true },
+  })
+  const medianAreaMap = new Map<string, number>()
+  for (const g of unitGroups) {
+    if (g._avg.areaM2 !== null) {
+      medianAreaMap.set(g.buildingCadastralCode, Number(g._avg.areaM2))
+    }
+  }
+  console.log(`[backend] BuildingUnit data available for ${medianAreaMap.size} buildings.`)
 
   // Only process multi-apartment Soviet-era buildings with enough data
   const buildings = await prisma.building.findMany({
@@ -91,11 +116,12 @@ async function assignSeries() {
       floorCount:      { not: null },
     },
     select: {
-      id:              true,
+      id:               true,
+      cadastralCode:    true,  // needed for BuildingUnit lookup
       constructionYear: true,
-      wallMaterial:    true,
-      floorCount:      true,
-      series:          true,
+      wallMaterial:     true,
+      floorCount:       true,
+      series:           true,
     },
   })
 
@@ -104,15 +130,23 @@ async function assignSeries() {
   let assigned = 0
   let unchanged = 0
   let unmatched = 0
+  let withAreaSignal = 0
+  let withoutAreaSignal = 0
   const distribution: Record<string, number> = {}
 
   const updates: { id: string; series: string }[] = []
 
   for (const b of buildings) {
+    const medianAptAreaM2 = medianAreaMap.get(b.cadastralCode) ?? null
+
+    if (medianAptAreaM2 !== null) withAreaSignal++
+    else withoutAreaSignal++
+
     const series = matchSeries(
       b.constructionYear!,
       b.wallMaterial!,
       b.floorCount!,
+      medianAptAreaM2,
     )
 
     if (!series) { unmatched++; continue }
@@ -141,6 +175,8 @@ async function assignSeries() {
   console.log(`  Assigned:  ${assigned}`)
   console.log(`  Unchanged: ${unchanged}`)
   console.log(`  Unmatched: ${unmatched}`)
+  console.log(`  Used area signal: ${withAreaSignal}`)
+  console.log(`  No area data:     ${withoutAreaSignal}`)
   console.log('\nDistribution by series:')
   Object.entries(distribution)
     .sort((a, b) => b[1] - a[1])

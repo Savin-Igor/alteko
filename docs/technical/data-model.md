@@ -118,9 +118,16 @@ model Building {
   district         String?
   lat              Decimal?
   lon              Decimal?
-  vzdUpdatedAt     DateTime?
-  bvkbUpdatedAt    DateTime?
-  createdAt        DateTime     @default(now())
+  vzdUpdatedAt         DateTime?
+  bvkbUpdatedAt        DateTime?
+  postalCode           String?   // из VAR ATRIB[9]; напр. "LV-1050"
+  isPlanAddress        Boolean?  // из VAR PLAN_ADR[15]; true=плановый адрес, false=реальное здание
+  heatingEnergyKwhM2   Decimal?  // из BVKB[20]: потребление тепла кВт·ч/м²/год (до реновации)
+  renovationYear       Int?      // из BVKB[14]: год реновации (null = не реновировано)
+  bvkbCertDate         DateTime? // из BVKB[3]: дата выдачи энергосертификата
+  primaryEnergyKwhM2   Decimal?  // из BVKB[27]: суммарная первичная энергия кВт·ч/м²/год
+  co2KgM2              Decimal?  // из BVKB[34]: выброс CO2 кг/м²/год
+  createdAt            DateTime  @default(now())
 
   apartments       Apartment[]
   reports          ExpenseReport[]
@@ -309,6 +316,7 @@ model ApartmentTransaction {
   floorMin        Int?
   floorMax        Int?
   apartmentAreaM2 Decimal?
+  buildingUseCode String?            // из tg_darjumi BUI_USE_CODE[20]; 1122 = многоквартирный дом
 }
 
 // Кадастровые стоимости — из data.gov.lv, ежегодно
@@ -352,6 +360,22 @@ model BuildingSeries {
   typicalAreaM2   Decimal?
   description     String?
 }
+
+// Данные на уровне квартир из VZD Building.ZIP (элементы PremiseGroupItemData)
+// Связь с Building через buildingCadastralCode — без FK (тот же паттерн, что ApartmentTransaction)
+// Источник: https://data.gov.lv/dati/dataset/kadastra-informacijas-sistemas-atvertie-dati
+// Синхронизация: sync-premises.ts (еженедельно)
+model BuildingUnit {
+  id                    String   @id @default(uuid())
+  cadastralCode         String   @unique  // кадастровый номер квартиры/помещения
+  buildingCadastralCode String            // кадастровый номер здания → Building.cadastralCode
+  areaM2                Decimal?          // площадь квартиры м²
+  floor                 Int?              // этаж
+  roomCount             Int?              // количество комнат
+  syncedAt              DateTime @default(now())
+
+  @@index([buildingCadastralCode])
+}
 ```
 
 ---
@@ -363,8 +387,9 @@ Building ──< Apartment ──< Vote >── VotingCampaign >── Building
 Building ──< ExpenseReport ──< ExpenseItem
 Building ──< RenovationProject >── Contractor
 Building ──< ApartmentTransaction  (через buildingCadNr = cadastralCode)
+Building ──< BuildingUnit          (через buildingCadastralCode = cadastralCode)
 BenchmarkSegment  (производное — агрегация ExpenseItem, без FK)
-ApartmentTransaction, CadastralValue, PriceIndex, UtilityTariff, BuildingSeries
+ApartmentTransaction, CadastralValue, PriceIndex, UtilityTariff, BuildingSeries, BuildingUnit
   — открытые данные, без FK на пользовательские модели
 ```
 
