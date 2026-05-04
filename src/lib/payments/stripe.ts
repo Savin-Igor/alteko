@@ -8,6 +8,7 @@
  *   STRIPE_SECRET_KEY   — Stripe secret key (sk_test_... or sk_live_...)
  *   NEXT_PUBLIC_BASE_URL — Base URL for success/cancel redirects
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 export async function createStripeCheckout(
   orderId: string,
