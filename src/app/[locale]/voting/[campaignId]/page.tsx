@@ -202,6 +202,7 @@ export default function VotingPage({ params }: Props) {
                   >
                     Smart-ID
                   </button>
+                  {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- OAuth redirect requires full browser navigation */}
                   <a
                     href="/api/auth/eparaksts/start"
                     className="flex-1 py-3 min-h-[48px] border-2 border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 text-center flex items-center justify-center transition-colors"

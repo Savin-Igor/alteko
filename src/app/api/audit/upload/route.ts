@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { uploadFile, buildReportKey } from '@/lib/s3'
 import { auth } from '@/auth'
 import { IS_STUB } from '@/lib/stubs'
+import { issueParseToken } from '@/lib/auth/parse-token'
 
 export const runtime = 'nodejs'
 
@@ -56,5 +57,6 @@ export async function POST(req: NextRequest) {
     data: { buildingId, periodYear, periodMonth, rawFileKey, status: 'PENDING', uploadedBy: userId ?? undefined },
   })
 
-  return NextResponse.json({ reportId: report.id })
+  const parseToken = issueParseToken(report.id)
+  return NextResponse.json({ reportId: report.id, parseToken })
 }

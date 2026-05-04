@@ -11,8 +11,8 @@ import { prisma } from '../src/lib/prisma'
 //   4. 467:          panels, exactly 9 floors, 1970–1985, avg apt 42–55 m²
 //   5. 602P:         panels, 9–16 floors, 1972–1991, avg apt 40–50 m²
 //   6. 464:          panels, 4–5 floors, 1962–1975
-//   7. 316:          panels, 5–9 floors, 1958–1970
-//   8. 318:          panels, 4–9 floors, 1960–1972
+//   7. 316:          silicate brick, 5–9 floors, 1955–1970  (fix #39: was wrongly matched as panels)
+//   8. 318:          silicate brick, 4–9 floors, 1958–1975  (fix #39: was wrongly matched as panels)
 //   9. 104:          panels, 5–9 floors, 1963–1985, avg apt 36–48 m²
 //  10. 602:          panels, 6–9 floors, 1960–1978
 //  11. 119:          panels, 5–12 floors, 1963–1991, avg apt 44–62 m²
@@ -41,29 +41,37 @@ type SeriesRule = {
 
 // Ordered most-specific first to reduce ambiguous assignments.
 // materialSubstring is checked with String.includes() against Building.wallMaterial.
-// 'Dzelzsbetona' matches 'Dzelzsbetona paneļi' (panels).
-// 'Ķieģeļu mūris' matches all brick thickness variants.
+// 'Dzelzsbetona' matches 'Dzelzsbetona paneļi' (reinforced concrete panels).
+// 'Silikātķieģeļu' matches 'Silikātķieģeļu mūris' (silicate brick masonry — series 316/318).
+// 'Ķieģeļu mūris' matches all ceramic brick thickness variants (Stalinka, 103).
 // 'paneļi' catches Arbolīta/keramzite panels as a fallback for Soviet light-panel construction.
+//
+// Fix (issue #39): 316/318 are silicate brick buildings, not reinforced concrete panels.
+// Source: docs/research/building-series-energy-benchmarks.md — "318 | Brick"; EM Latvia 2024
+// wallMaterial in VZD XML is MaterialKindName text, e.g. "Silikātķieģeļu mūris"
 const RULES: SeriesRule[] = [
   // ── Brick series (most specific first by year) ───────────────────────────
-  { code: 'Stalinka',     materialSubstring: 'Ķieģeļu mūris', yearFrom: 1945, yearTo: 1958, floorsMin: 3,  floorsMax: 9  },
-  { code: 'Khrushchevka', materialSubstring: 'Ķieģeļu mūris', yearFrom: 1956, yearTo: 1965, floorsMin: 4,  floorsMax: 5  },
-  { code: '103',          materialSubstring: 'Ķieģeļu mūris', yearFrom: 1960, yearTo: 1980, floorsMin: 5,  floorsMax: 9  },
+  { code: 'Stalinka',     materialSubstring: 'Ķieģeļu mūris',   yearFrom: 1945, yearTo: 1958, floorsMin: 3,  floorsMax: 9  },
+  { code: 'Khrushchevka', materialSubstring: 'Ķieģeļu mūris',   yearFrom: 1956, yearTo: 1965, floorsMin: 4,  floorsMax: 5  },
+  { code: '103',          materialSubstring: 'Ķieģeļu mūris',   yearFrom: 1960, yearTo: 1980, floorsMin: 5,  floorsMax: 9  },
+
+  // ── Silicate brick series — 316/318 (issue #39 fix) ──────────────────────
+  // VZD MaterialKindName = "Silikātķieģeļu mūris" for silicate brick masonry
+  { code: '316',          materialSubstring: 'Silikātķieģeļu',  yearFrom: 1955, yearTo: 1970, floorsMin: 5,  floorsMax: 9  },
+  { code: '318',          materialSubstring: 'Silikātķieģeļu',  yearFrom: 1958, yearTo: 1975, floorsMin: 4,  floorsMax: 9  },
 
   // ── Panel series (most specific by floor/year first) ─────────────────────
   // 467 vs 602P: both 9-floor Dzelzsbetona — disambiguate by apt area (467 ~44m², 602P ~46m²)
-  { code: '467',          materialSubstring: 'Dzelzsbetona',   yearFrom: 1970, yearTo: 1985, floorsMin: 9,  floorsMax: 9,  aptAreaMin: 42, aptAreaMax: 55 },
-  { code: '602P',         materialSubstring: 'Dzelzsbetona',   yearFrom: 1972, yearTo: 1991, floorsMin: 9,  floorsMax: 16, aptAreaMin: 40, aptAreaMax: 50 },
-  { code: '464',          materialSubstring: 'Dzelzsbetona',   yearFrom: 1960, yearTo: 1980, floorsMin: 4,  floorsMax: 5  },
-  { code: '316',          materialSubstring: 'Dzelzsbetona',   yearFrom: 1955, yearTo: 1970, floorsMin: 5,  floorsMax: 9  },
-  { code: '318',          materialSubstring: 'Dzelzsbetona',   yearFrom: 1958, yearTo: 1975, floorsMin: 4,  floorsMax: 9  },
+  { code: '467',          materialSubstring: 'Dzelzsbetona',    yearFrom: 1970, yearTo: 1985, floorsMin: 9,  floorsMax: 9,  aptAreaMin: 42, aptAreaMax: 55 },
+  { code: '602P',         materialSubstring: 'Dzelzsbetona',    yearFrom: 1972, yearTo: 1991, floorsMin: 9,  floorsMax: 16, aptAreaMin: 40, aptAreaMax: 50 },
+  { code: '464',          materialSubstring: 'Dzelzsbetona',    yearFrom: 1960, yearTo: 1980, floorsMin: 4,  floorsMax: 5  },
   // 104 vs 119: overlapping year/floor ranges — disambiguate by apt area (104 ~44m², 119 ~52m²)
-  { code: '104',          materialSubstring: 'Dzelzsbetona',   yearFrom: 1963, yearTo: 1985, floorsMin: 5,  floorsMax: 9,  aptAreaMin: 36, aptAreaMax: 48 },
-  { code: '602',          materialSubstring: 'Dzelzsbetona',   yearFrom: 1958, yearTo: 1980, floorsMin: 6,  floorsMax: 9  },
-  { code: '119',          materialSubstring: 'Dzelzsbetona',   yearFrom: 1963, yearTo: 1991, floorsMin: 5,  floorsMax: 12, aptAreaMin: 44, aptAreaMax: 62 },
+  { code: '104',          materialSubstring: 'Dzelzsbetona',    yearFrom: 1963, yearTo: 1985, floorsMin: 5,  floorsMax: 9,  aptAreaMin: 36, aptAreaMax: 48 },
+  { code: '602',          materialSubstring: 'Dzelzsbetona',    yearFrom: 1958, yearTo: 1980, floorsMin: 6,  floorsMax: 9  },
+  { code: '119',          materialSubstring: 'Dzelzsbetona',    yearFrom: 1963, yearTo: 1991, floorsMin: 5,  floorsMax: 12, aptAreaMin: 44, aptAreaMax: 62 },
 
   // ── Keramzite/arbolite panels (catch-all for light-panel Soviet buildings) ─
-  { code: '602',          materialSubstring: 'paneļi',         yearFrom: 1958, yearTo: 1985, floorsMin: 4,  floorsMax: 9  },
+  { code: '602',          materialSubstring: 'paneļi',          yearFrom: 1958, yearTo: 1985, floorsMin: 4,  floorsMax: 9  },
 ]
 
 function matchSeries(

@@ -39,22 +39,25 @@ function StatsTable({ rows }: { rows: StatsRow[] }) {
   )
 }
 
+// Payload block nodes don't have typed fields in the JSX converter API — use unknown with narrowing
+interface BlockNode { fields: Record<string, unknown> }
+
 const blogConverters: JSXConvertersFunction = ({ defaultConverters }) => ({
   ...defaultConverters,
   blocks: {
-    callout: ({ node }: { node: any }) => (
-      <Callout type={node.fields.type} title={node.fields.title}>
-        {node.fields.body}
+    callout: ({ node }: { node: BlockNode }) => (
+      <Callout type={node.fields.type as 'info' | 'warning' | 'success'} title={node.fields.title as string}>
+        {String(node.fields.body ?? '')}
       </Callout>
     ),
-    'stats-table': ({ node }: { node: any }) => (
-      <StatsTable rows={node.fields.rows ?? []} />
+    'stats-table': ({ node }: { node: BlockNode }) => (
+      <StatsTable rows={(node.fields.rows as StatsRow[]) ?? []} />
     ),
-    'inline-cta': ({ node }: { node: any }) => (
+    'inline-cta': ({ node }: { node: BlockNode }) => (
       <div className="bg-gray-50 rounded-xl p-5 my-6 text-center space-y-3 not-prose">
-        {node.fields.note && <p className="text-sm text-gray-500">{node.fields.note}</p>}
-        <Link href={node.fields.href ?? '/#hero'} className="btn-primary inline-block w-auto px-8">
-          {node.fields.label ?? 'Найти свой дом →'}
+        {node.fields.note ? <p className="text-sm text-gray-500">{String(node.fields.note)}</p> : null}
+        <Link href={(node.fields.href as string) ?? '/#hero'} className="btn-primary inline-block w-auto px-8">
+          {(node.fields.label as string) ?? 'Найти свой дом →'}
         </Link>
       </div>
     ),
@@ -68,7 +71,7 @@ interface LexicalContentProps {
 export function LexicalContent({ data }: LexicalContentProps) {
   return (
     <RichText
-      data={data as any}
+      data={data as Parameters<typeof RichText>[0]['data']}
       converters={blogConverters}
       className="prose prose-sm max-w-none"
     />
