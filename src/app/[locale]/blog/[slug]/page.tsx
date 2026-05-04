@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { MDXRemote } from 'next-mdx-remote/rsc'
@@ -9,6 +10,7 @@ import { SiteHeader } from '@/components/ui/SiteHeader'
 import { useMDXComponents } from '@/mdx-components'
 import { routing } from '@/i18n/routing'
 import { prisma } from '@/lib/prisma'
+import { getArticleImage } from '@/lib/articleImages'
 
 interface Props {
   params: Promise<{ locale: string; slug: string }>
@@ -41,6 +43,7 @@ export default async function BlogArticlePage({ params }: Props) {
   })
 
   const components = useMDXComponents({})
+  const heroImage = getArticleImage(slug)
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -74,6 +77,17 @@ export default async function BlogArticlePage({ params }: Props) {
             <span>{post.readMinutes} {t('readMin')}</span>
           </div>
         </header>
+
+        {heroImage && (
+          <Image
+            src={heroImage}
+            alt={post.title}
+            width={1200}
+            height={630}
+            className="w-full h-auto rounded-xl mb-8"
+            priority
+          />
+        )}
 
         <article className="prose prose-sm max-w-none">
           <MDXRemote
