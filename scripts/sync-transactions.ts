@@ -171,17 +171,20 @@ async function syncTransactions() {
       const floorMax        = parseInt10(cols[COL.FLOOR_MAX])
       const apartmentAreaM2 = parseDecimal(cols[COL.APT_AREA])
 
+      const buildingUseCode = cols[COL.BUI_USE_CODE]?.trim() || null
+
       await prisma.apartmentTransaction.upsert({
         where: { deaId },
         create: {
           deaId, objType, propertyCadNr, buildingCadNr, address, district, city,
           transactionDate, priceEur, buildingAreaM2, buildingYear, wallMaterial,
           depreciation, apartmentCadNr, floorMin, floorMax, apartmentAreaM2,
+          buildingUseCode,
         },
         update: {
           address, district, city, transactionDate, priceEur, buildingAreaM2,
           buildingYear, wallMaterial, depreciation, apartmentCadNr, floorMin,
-          floorMax, apartmentAreaM2, syncedAt: new Date(),
+          floorMax, apartmentAreaM2, buildingUseCode, syncedAt: new Date(),
         },
       })
 
