@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "title": "ALTEKO — Jūsu mājas izdevumu audits",
-    "description": "Uzziniet, vai jūsu māja pārmaksā par komunālajiem pakalpojumiem. Bez maksas, 30 sekundēs."
+    "title": "ALTEKO — Mājas gatavības platforma",
+    "description": "Sagatavojiet daudzdzīvokļu māju nākamajam finansējuma logam: dati, dokumenti, īpašnieku lēmumi, piegādātāju izvēle."
   },
   "nav": {
     "audit": "Audits",
@@ -24,9 +24,9 @@
   },
   "home": {
     "hero": {
-      "titleQuestion": "Padomju laika mājas pārmaksā par apkuri.",
-      "titleAnswer": "Vai arī jūsējā?",
-      "description": "Augšupielādējiet rēķinu — salīdzināsim ar normu jūsu sērijai un rajonam. Bez maksas.",
+      "titleQuestion": "Sagatavojiet māju",
+      "titleAnswer": "nākamajam finansējuma logam",
+      "description": "Pārbaudiet mājas gatavību, sagatavojiet dokumentus un īpašnieku lēmumus pirms programmas atvēršanās 2027. gadā.",
       "cta": "Sākt pārbaudi",
       "ctaLoading": "Meklējam māju...",
       "errorNotFound": "Māja nav atrasta datu bāzē. Mēģiniet citu adresi.",
@@ -93,16 +93,16 @@
       ]
     },
     "renovation": {
-      "heading": "Pēc audita — renovācija. Valsts maksā līdz 49%.",
-      "description": "Uzziniet, cik subsidē Altum un ko renovācija atdos tieši jūsu mājai.",
+      "heading": "Remonta finansējums: pieci reāli scenāriji",
+      "description": "ALTUM 2021-2027 ir slēgta jauniem pieteikumiem. Nākamais logs — Sociālā klimata fonds 2026-2032 (MK noteikumi gaidāmi Q4 2026, pieteikumi līdz Q2 2027). Paliek ALTUM remonta aizdevums un komercbanku iespējas.",
       "stats": [
-        { "value": "līdz 49%", "label": "Altum subsīdija" },
-        { "value": "~60%", "label": "vidējais apkures rēķina samazinājums" },
-        { "value": "+10–11%", "label": "dzīvokļa vērtības pieaugums" },
-        { "value": "8–12 gadi", "label": "atmaksāšanās laiks" }
+        { "value": "Slēgts", "label": "ALTUM 2021-2027 — jauni pieteikumi netiek pieņemti" },
+        { "value": "Gaidāms", "label": "Sociālā klimata fonds 2026-2032 — €127M daudzdzīvokļu mājām" },
+        { "value": "3,9% / 20 g.", "label": "ALTUM remonta aizdevums — atvērts līdz 30.06.2031" },
+        { "value": "+10–11%", "label": "dzīvokļa vērtības pieaugums pēc renovācijas (Latvijas Banka)" }
       ],
-      "note": "Precīzs aprēķins jūsu mājai — pēc rēķina augšupielādes.",
-      "cta": "Uzzināt vairāk par renovāciju →"
+      "note": "Provizorisks aprēķins jūsu mājai — pēc rēķina augšupielādes vai gatavības atskaites pasūtīšanas.",
+      "cta": "Finansējuma scenāriji →"
     },
     "boards": {
       "tagline": "Biedrību valdēm",
@@ -295,7 +295,7 @@
     "valuePropTitle": "Saņemiet konkursus no gatavām mājām",
     "valuePropDesc": "Mājas ar ≥50% īpašnieku balsīm meklē darbuzņēmēju. Nekādu auksto zvanu — tikai ienākoši pieprasījumi pēc jūsu specializācijas.",
     "lursoftVerification": "Verifikācija ar Lursoft",
-    "commission": "Komisija 1,5% no līguma",
+    "commission": "Fiksēts abonements — bez komisijas par darījumu",
     "verifiedClients": "Tikai pārbaudīti klienti",
     "companyName": "Uzņēmuma nosaukums",
     "regNumber": "Reģistrācijas numurs",
@@ -303,7 +303,7 @@
     "specializationLabel": "Specializācija",
     "selectAtLeastOne": "Izvēlieties vismaz vienu specializāciju",
     "coverageLabel": "Ģeogrāfiskais pārklājums",
-    "agreementText": "Piekrītu ALTEKO komisijas līguma nosacījumiem — 1,5% no parakstītā līguma summas ar klientu",
+    "agreementText": "Piekrītu ALTEKO darbuzņēmēju abonementa nosacījumiem — fiksēta ikmēneša maksa par profilu un piekļuvi konkursiem, bez komisijas par uzvaru.",
     "errorRegister": "Reģistrācijas kļūda",
     "errorConnection": "Savienojuma kļūda. Mēģiniet vēlreiz.",
     "checkingLursoft": "Pārbaudām Lursoft...",
@@ -312,7 +312,7 @@
       "heroTitle": "Saņemiet konkursus no gatavām mājām",
       "heroSubtitle": "Mājas ar ≥50% dzīvokļu īpašnieku balsīm meklē darbuzņēmēju. Ienākošie pieprasījumi pēc jūsu specializācijas — bez aukstajiem zvaniem.",
       "heroCta": "Reģistrēties",
-      "statsCommissionLabel": "komisija no noslēgtā līguma",
+      "statsCommissionLabel": "fiksēts abonements, bez komisijas par uzvaru",
       "statsDealsLabel": "mājas nepieciešama renovācija",
       "statsLeadsLabel": "tikai ienākošie pieprasījumi",
       "howHeading": "Kā tas darbojas",
