@@ -106,7 +106,6 @@ async function convertMarkdownToLexical(markdown: string): Promise<object> {
     if (listLines.length > 0 && listLines.length === block.split('\n').filter(Boolean).length) {
       children.push({
         type: 'list',
-        tag: 'ul' as const,
         listType: 'bullet',
         start: 1,
         children: listLines.map((line, i) => ({
