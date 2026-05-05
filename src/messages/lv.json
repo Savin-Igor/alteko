@@ -38,7 +38,7 @@
       "journey": {
         "step1": "Augšupielādēt rēķinu",
         "step2": "Saņemt atskaiti",
-        "step3": "Aprēķināt renovāciju"
+        "step3": "Sagatavot māju"
       }
     },
     "problem": {
@@ -83,8 +83,8 @@
         },
         {
           "n": "4",
-          "title": "Aprēķiniet renovāciju",
-          "desc": "Ietaupījums pēc renovācijas, Altum subsīdija līdz 49% un atmaksāšanās laiks — balstoties uz jūsu mājas datiem."
+          "title": "Sagatavot māju finansējumam",
+          "desc": "Mājas gatavības novērtējums, finansējuma scenāriji un nākamais solis — SCF 2026-2032, ALTUM remonta aizdevums vai banka."
         }
       ],
       "cta": "Sākt pārbaudi",
@@ -158,7 +158,7 @@
       "bullets": [
         "Izmaksu dinamika visām portfeļa mājām",
         "Anomālijas un salīdzinājums ar tirgu — argumenti sarunām",
-        "Elektroniskā balsošana ar Smart-ID — savākt ≥50% bez klātienes sapulces",
+        "Lēmumu kampaņu sagatavošana un eksports uz BIS Mājas lieta",
         "Konkurss starp pārbaudītiem darbuzņēmējiem"
       ],
       "cta": "Atvērt paneli →",
