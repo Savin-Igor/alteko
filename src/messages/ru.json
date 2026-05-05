@@ -670,7 +670,28 @@
       "energyScore": "Энергия",
       "documentScore": "Документы",
       "decisionsScore": "Решения",
-      "dataSource": "Источник данных: {source}"
+      "dataSource": "Источник данных: {source}",
+      "ctaPublic": "Заказать Отчёт о готовности",
+      "publicDataNote": "Предварительная оценка — только публичные данные реестров. Закажите Отчёт о готовности для полного анализа.",
+      "partialNote": "Предварительная оценка (публичные данные)",
+      "computedAt": "Вычислено: {date}",
+      "components": {
+        "energyScore": "Энергоэффективность",
+        "fundingEligibilityScore": "Пригодность к финансированию",
+        "documentReadinessScore": "Готовность документов",
+        "ownerDecisionReadinessScore": "Решения собственников",
+        "financialFeasibilityScore": "Финансовая жизнеспособность",
+        "procurementTransparencyScore": "Прозрачность закупок",
+        "legalConfidenceStatus": "Правовой статус",
+        "dataConfidenceStatus": "Источник данных"
+      },
+      "confidence": {
+        "PUBLIC_DATA": "Публичные данные",
+        "USER_UPLOADED": "Загружены пользователем",
+        "BOARD_VERIFIED": "Подтверждено правлением",
+        "PROFESSIONAL_VERIFIED": "Подтверждено специалистом"
+      },
+      "noScore": "Нет данных"
     },
     "renovate": {
       "meta": {
@@ -707,7 +728,8 @@
         "label": "Поделиться с соседями",
         "copied": "Ссылка скопирована"
       }
-    }
+    },
+    "readinessReportCta": "Получить Отчёт о готовности →"
   },
   "renovation": {
     "metadata": {

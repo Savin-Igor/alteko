@@ -670,7 +670,28 @@
       "energyScore": "Enerģija",
       "documentScore": "Dokumenti",
       "decisionsScore": "Lēmumi",
-      "dataSource": "Datu avots: {source}"
+      "dataSource": "Datu avots: {source}",
+      "ctaPublic": "Pasūtīt Gatavības atskaiti",
+      "publicDataNote": "Provizoriskā novērtējums — tikai publiskie reģistru dati. Pasūtiet Gatavības atskaiti pilnai analīzei.",
+      "partialNote": "Provizoriskā novērtējums (publiskie dati)",
+      "computedAt": "Aprēķināts: {date}",
+      "components": {
+        "energyScore": "Energoefektivitāte",
+        "fundingEligibilityScore": "Finansējuma piemērotība",
+        "documentReadinessScore": "Dokumentu gatavība",
+        "ownerDecisionReadinessScore": "Īpašnieku lēmumi",
+        "financialFeasibilityScore": "Finansiālā dzīvotspēja",
+        "procurementTransparencyScore": "Iepirkuma pārredzamība",
+        "legalConfidenceStatus": "Juridiskais statuss",
+        "dataConfidenceStatus": "Datu avots"
+      },
+      "confidence": {
+        "PUBLIC_DATA": "Publiskie dati",
+        "USER_UPLOADED": "Augšupielādēti dati",
+        "BOARD_VERIFIED": "Apstiprināts ar valdi",
+        "PROFESSIONAL_VERIFIED": "Apstiprināts ar speciālistu"
+      },
+      "noScore": "Nav datu"
     },
     "renovate": {
       "meta": {
@@ -707,7 +728,8 @@
         "label": "Kopīgot ar kaimiņiem",
         "copied": "Saite nokopēta"
       }
-    }
+    },
+    "readinessReportCta": "Saņemt Gatavības atskaiti →"
   },
   "renovation": {
     "metadata": {

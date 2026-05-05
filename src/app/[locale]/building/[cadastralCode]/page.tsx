@@ -8,6 +8,11 @@ import { getHeatingBenchmark, deviationBadgeClass } from '@/lib/benchmarks/serie
 import { SiteHeader } from '@/components/ui/SiteHeader'
 import { SiteFooter } from '@/components/ui/SiteFooter'
 import { Badge } from '@/components/ui'
+import { ReadinessScoreCard } from '@/components/readiness/ReadinessScoreCard'
+import {
+  computeEnergyScore,
+  computeFundingEligibilityScore,
+} from '@/lib/readiness/score'
 
 const ENERGY_CLASS_WIDTH: Record<string, string> = {
   A: 'w-[20%]',
@@ -60,8 +65,12 @@ export default async function BuildingPage({ params, searchParams }: Props) {
             nextBestAction: true,
             nextBestActionRu: true,
             energyScore: true,
+            fundingEligibilityScore: true,
             documentReadinessScore: true,
             ownerDecisionReadinessScore: true,
+            financialFeasibilityScore: true,
+            procurementTransparencyScore: true,
+            legalConfidenceStatus: true,
             dataConfidenceStatus: true,
             computedAt: true,
           },
@@ -90,7 +99,7 @@ export default async function BuildingPage({ params, searchParams }: Props) {
   const localeCode = locale === 'lv' ? 'lv-LV' : 'ru-RU'
   const isRu = locale === 'ru'
 
-  // Heating benchmark (issue #11)
+  // Heating benchmark
   const heatingBenchmark = building
     ? await getHeatingBenchmark(
         building.series,
@@ -106,11 +115,22 @@ export default async function BuildingPage({ params, searchParams }: Props) {
     }
   }
 
-  const nextAction = building?.readinessScore
-    ? (isRu && building.readinessScore.nextBestActionRu)
-      ? building.readinessScore.nextBestActionRu
-      : building.readinessScore.nextBestAction
-    : null
+  // Derive partial inline score from public data when full score not in DB.
+  // This ensures ReadinessScoreCard always has something to show.
+  const partialScore =
+    building && !building.readinessScore
+      ? {
+          energyScore: building.energyClass
+            ? computeEnergyScore(building.energyClass)
+            : null,
+          fundingEligibilityScore:
+            building.scenarios.length > 0
+              ? computeFundingEligibilityScore(
+                  building.scenarios.map((s) => s.eligibility)
+                )
+              : null,
+        }
+      : null
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -183,7 +203,7 @@ export default async function BuildingPage({ params, searchParams }: Props) {
                   </div>
                 )}
 
-                {/* Heating benchmark (issue #11) */}
+                {/* Heating benchmark */}
                 {heatingBenchmark && (
                   <div className="border-t border-gray-100 pt-3 space-y-1.5">
                     <p className="text-xs font-medium text-gray-500">{t('heating.heading')}</p>
@@ -219,19 +239,19 @@ export default async function BuildingPage({ params, searchParams }: Props) {
               </div>
             )}
 
-            {/* Next best action */}
-            {nextAction && (
-              <div className="bg-primary-light border border-primary/20 rounded-lg p-4">
-                <p className="text-xs font-medium text-primary mb-1">{t('readiness.nextAction')}</p>
-                <p className="text-sm text-gray-800 leading-snug">{nextAction}</p>
-              </div>
-            )}
-
             {/* CTAs */}
             <div className="pt-2 space-y-3">
+              {/* Primary: Gatavības atskaite — always first */}
+              <Link
+                href={`/readiness-report/order?cadastralCode=${building?.cadastralCode ?? cadastralCode}&address=${encodeURIComponent(displayAddress)}`}
+                className="btn-primary text-center block"
+              >
+                {t('readinessReportCta')}
+              </Link>
+
               <Link
                 href={`/audit/upload?building=${building?.id ?? ''}&cadastralCode=${building?.cadastralCode ?? ''}&address=${encodeURIComponent(displayAddress)}`}
-                className="btn-primary text-center block"
+                className="btn-secondary text-center block"
               >
                 {t('uploadCta')}
               </Link>
@@ -245,6 +265,17 @@ export default async function BuildingPage({ params, searchParams }: Props) {
             </div>
           </div>
         </div>
+
+        {/* Readiness Score Card — shown for all buildings */}
+        {building && (
+          <ReadinessScoreCard
+            score={building.readinessScore}
+            partialScore={partialScore}
+            cadastralCode={cadastralCode}
+            address={displayAddress}
+            isRu={isRu}
+          />
+        )}
 
         {/* Financing scenarios preview */}
         {building?.scenarios && building.scenarios.length > 0 && (
@@ -276,36 +307,6 @@ export default async function BuildingPage({ params, searchParams }: Props) {
                 )
               })}
             </div>
-          </div>
-        )}
-
-        {/* Readiness score mini-block */}
-        {building?.readinessScore && (
-          <div className="bg-white border border-gray-200 rounded-xl p-5 space-y-3">
-            <h2 className="text-sm font-semibold text-gray-900">{t('readiness.scoreHeading')}</h2>
-            <div className="grid grid-cols-2 gap-3">
-              {building.readinessScore.energyScore !== null && (
-                <div className="text-center">
-                  <p className="text-xl font-bold text-primary">{building.readinessScore.energyScore}</p>
-                  <p className="text-xs text-gray-500">{t('readiness.energyScore')}</p>
-                </div>
-              )}
-              {building.readinessScore.documentReadinessScore !== null && (
-                <div className="text-center">
-                  <p className="text-xl font-bold text-primary">{building.readinessScore.documentReadinessScore}</p>
-                  <p className="text-xs text-gray-500">{t('readiness.documentScore')}</p>
-                </div>
-              )}
-              {building.readinessScore.ownerDecisionReadinessScore !== null && (
-                <div className="text-center">
-                  <p className="text-xl font-bold text-primary">{building.readinessScore.ownerDecisionReadinessScore}</p>
-                  <p className="text-xs text-gray-500">{t('readiness.decisionsScore')}</p>
-                </div>
-              )}
-            </div>
-            <p className="text-xs text-gray-400">
-              {t('readiness.dataSource', { source: building.readinessScore.dataConfidenceStatus })}
-            </p>
           </div>
         )}
       </main>
