@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const STATS = [
-  { valueKey: '1,5%', labelKey: 'statsCommissionLabel' },
+  { valueKey: '€50–200', labelKey: 'statsCommissionLabel' },
   { valueKey: '23 500+', labelKey: 'statsDealsLabel' },
   { valueKey: '100%', labelKey: 'statsLeadsLabel' },
 ] as const

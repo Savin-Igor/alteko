@@ -24,13 +24,13 @@ export function SiteFooter() {
               {t('servicesTitle')}
             </p>
             <nav className="space-y-2 text-sm">
-              <Link href="/" className="block text-gray-500 hover:text-gray-900 transition-colors">
+              <Link href="/audit" className="block text-gray-500 hover:text-gray-900 transition-colors">
                 {t('auditLink')}
               </Link>
               <Link href="/renovation" className="block text-gray-500 hover:text-gray-900 transition-colors">
                 {t('renovationLink')}
               </Link>
-              <Link href="/renovation/calculate" className="block text-gray-500 hover:text-gray-900 transition-colors">
+              <Link href="/financing" className="block text-gray-500 hover:text-gray-900 transition-colors">
                 {t('calculatorLink')}
               </Link>
               <Link href="/blog" className="block text-gray-500 hover:text-gray-900 transition-colors">

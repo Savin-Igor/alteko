@@ -6,7 +6,7 @@
   "nav": {
     "audit": "Audits",
     "renovation": "Renovācija",
-    "blog": "Blogs",
+    "blog": "Blogi",
     "findHome": "Atrast savu māju →",
     "login": "Ieiet"
   },
@@ -45,10 +45,22 @@
       "heading": "7 no 10 padomju laika mājām pārmaksā",
       "description": "Apsaimniekotāji izraksta rēķinus pēc saviem standartiem — iedzīvotāji nepārbauda. Mēs salīdzinām.",
       "stats": [
-        { "value": "+23%", "label": "vidējā pārmaksa par apkuri" },
-        { "value": "+15%", "label": "vidējā pārmaksa par karsto ūdeni" },
-        { "value": "+47%", "label": "lielākā pārmaksa par uzkopšanu" },
-        { "value": "~€840", "label": "pārmaksa gadā no vienas mājas" }
+        {
+          "value": "+23%",
+          "label": "vidējā pārmaksa par apkuri"
+        },
+        {
+          "value": "+15%",
+          "label": "vidējā pārmaksa par karsto ūdeni"
+        },
+        {
+          "value": "+47%",
+          "label": "lielākā pārmaksa par uzkopšanu"
+        },
+        {
+          "value": "~€840",
+          "label": "pārmaksa gadā no vienas mājas"
+        }
       ]
     },
     "steps": {
@@ -86,20 +98,56 @@
       "yearOverpayValue": "~€3 900",
       "perApartment": "Tas ir ~€78 no katra dzīvokļa gadā",
       "rows": [
-        { "label": "Apkure", "value": "€1.82/m²", "norm": "€1.09/m²", "dev": "+67%", "variant": "danger" },
-        { "label": "Karstais ūdens", "value": "€3.41/m²", "norm": "€2.89/m²", "dev": "+18%", "variant": "warning" },
-        { "label": "Uzkopšana", "value": "€0.33/m²", "norm": "€0.23/m²", "dev": "+43%", "variant": "danger" },
-        { "label": "Apsaimniekošana", "value": "€0.19/m²", "norm": "€0.20/m²", "dev": "−5%", "variant": "success" }
+        {
+          "label": "Apkure",
+          "value": "€1.82/m²",
+          "norm": "€1.09/m²",
+          "dev": "+67%",
+          "variant": "danger"
+        },
+        {
+          "label": "Karstais ūdens",
+          "value": "€3.41/m²",
+          "norm": "€2.89/m²",
+          "dev": "+18%",
+          "variant": "warning"
+        },
+        {
+          "label": "Uzkopšana",
+          "value": "€0.33/m²",
+          "norm": "€0.23/m²",
+          "dev": "+43%",
+          "variant": "danger"
+        },
+        {
+          "label": "Apsaimniekošana",
+          "value": "€0.19/m²",
+          "norm": "€0.20/m²",
+          "dev": "−5%",
+          "variant": "success"
+        }
       ]
     },
     "renovation": {
       "heading": "Remonta finansējums: pieci reāli scenāriji",
       "description": "ALTUM 2021-2027 ir slēgta jauniem pieteikumiem. Nākamais logs — Sociālā klimata fonds 2026-2032 (MK noteikumi gaidāmi Q4 2026, pieteikumi līdz Q2 2027). Paliek ALTUM remonta aizdevums un komercbanku iespējas.",
       "stats": [
-        { "value": "Slēgts", "label": "ALTUM 2021-2027 — jauni pieteikumi netiek pieņemti" },
-        { "value": "Gaidāms", "label": "Sociālā klimata fonds 2026-2032 — €127M daudzdzīvokļu mājām" },
-        { "value": "3,9% / 20 g.", "label": "ALTUM remonta aizdevums — atvērts līdz 30.06.2031" },
-        { "value": "+10–11%", "label": "dzīvokļa vērtības pieaugums pēc renovācijas (Latvijas Banka)" }
+        {
+          "value": "Slēgts",
+          "label": "ALTUM 2021-2027 — jauni pieteikumi netiek pieņemti"
+        },
+        {
+          "value": "Gaidāms",
+          "label": "Sociālā klimata fonds 2026-2032 — €127M daudzdzīvokļu mājām"
+        },
+        {
+          "value": "3,9% / 20 g.",
+          "label": "ALTUM remonta aizdevums — atvērts līdz 30.06.2031"
+        },
+        {
+          "value": "+10–11%",
+          "label": "dzīvokļa vērtības pieaugums pēc renovācijas (Latvijas Banka)"
+        }
       ],
       "note": "Provizorisks aprēķins jūsu mājai — pēc rēķina augšupielādes vai gatavības atskaites pasūtīšanas.",
       "cta": "Finansējuma scenāriji →"
@@ -156,7 +204,7 @@
         },
         {
           "q": "Vai tas ir maksas pakalpojums?",
-          "a": "Izmaksu audits un pamata atskaite — bez maksas. Personīgais renovācijas aprēķins — bez maksas. Maksas pakalpojums: darījuma pavadīšana ar darbuzņēmēju (komisija 1–2% no līguma summas)."
+          "a": "Izmaksu audits un pamata atskaite — bez maksas. Personīgais gatavības pārskats — bez maksas. Maksas pakalpojumi: Gatavības atskaite (€300–900), Valdes darba telpa (€30–100/mēn.) un Projekta sagatavošanas pakete (€2000–8000)."
         },
         {
           "q": "Es esmu valdes priekšsēdētājs. Ko tas man dod?",
@@ -190,17 +238,17 @@
       ]
     },
     "footer": {
-      "description": "Platforma padomju laika māju iedzīvotājiem Latvijā",
+      "description": "Mājas gatavības platforma Latvijā",
       "servicesTitle": "Pakalpojumi",
-      "auditLink": "Rēķinu audits",
+      "auditLink": "Izdevumu izpratne",
       "renovationLink": "Renovācija",
-      "blogLink": "Blogs",
+      "blogLink": "Blogi",
       "partnersTitle": "Partneriem",
       "contractorsLink": "Darbuzņēmējiem",
       "contactsTitle": "Kontakti",
       "privacyLink": "Konfidencialitātes politika",
       "termsLink": "Lietošanas noteikumi",
-      "copyright": "© 2025 ALTEKO"
+      "copyright": "© 2026 ALTEKO"
     }
   },
   "components": {
@@ -284,8 +332,15 @@
       "Kompleksa renovācija"
     ],
     "districts": [
-      "Rīga", "Jūrmala", "Jelgava", "Daugavpils", "Rēzekne",
-      "Liepāja", "Ventspils", "Valmiera", "Jēkabpils"
+      "Rīga",
+      "Jūrmala",
+      "Jelgava",
+      "Daugavpils",
+      "Rēzekne",
+      "Liepāja",
+      "Ventspils",
+      "Valmiera",
+      "Jēkabpils"
     ],
     "applicationSent": "Pieteikums nosūtīts",
     "verifiedMessage": "Uzņēmums verificēts Lursoft. Pieteikums tiek izskatīts ALTEKO administratoram — atbilde 2 darbdienu laikā.",
@@ -319,12 +374,12 @@
       "step1Title": "Reģistrācija",
       "step1Desc": "Norādiet uzņēmumu, specializāciju un reģionus. Pārbaude caur Lursoft — 2 darba dienas.",
       "step2Title": "Verifikācija",
-      "step2Desc": "Pēc pārbaudes jūs parādāties tirgū. Bez priekšapmaksas un abonēšanas maksas.",
+      "step2Desc": "Pēc pārbaudes jūs parādāties tirgū. Abonements no €50/mēn.",
       "step3Title": "Konkursi",
       "step3Desc": "Mājas, kas gatavas renovācijai, patstāvīgi atrod jūs. Jūs iesniedzat piedāvājumu — mēs pavadām darījumu.",
       "ctaHeading": "Sāciet saņemt konkursus",
       "ctaButton": "Reģistrēties →",
-      "ctaNote": "Bez maksas · Bez abonēšanas maksas"
+      "ctaNote": "No €50/mēn. · Bez komisijas par uzvaru"
     }
   },
   "share": {
@@ -430,7 +485,20 @@
       "ELEVATOR": "Lifts",
       "OTHER": "Cits"
     },
-    "months": ["Janvāris", "Februāris", "Marts", "Aprīlis", "Maijs", "Jūnijs", "Jūlijs", "Augusts", "Septembris", "Oktobris", "Novembris", "Decembris"],
+    "months": [
+      "Janvāris",
+      "Februāris",
+      "Marts",
+      "Aprīlis",
+      "Maijs",
+      "Jūnijs",
+      "Jūlijs",
+      "Augusts",
+      "Septembris",
+      "Oktobris",
+      "Novembris",
+      "Decembris"
+    ],
     "upload": {
       "title": "Augšupielādējiet rēķinu",
       "subtitle": "no apsaimniekotāja",
@@ -498,10 +566,22 @@
         "heading": "Ko pārbauda izmaksu audits",
         "description": "Katrs eiro rēķinā tiek normēts uz m² un salīdzināts ar mediānu līdzīgām mājām: sērija, gads, rajons.",
         "categories": [
-          { "label": "Apkure", "desc": "60% no visām pārmaksām. Salīdzinām pēc ēkas sērijas — 103., 119., 467. u.c." },
-          { "label": "Karstais ūdens", "desc": "Kopīgā skaitītāja rādījums vs. dzīvokļu summa — noplūdes vai aprēķina kļūdas pazīme." },
-          { "label": "Uzkopšana un pārvaldība", "desc": "Necaurspīdīgas pozīcijas. Salīdzinām ar tirgu jūsu rajonā." },
-          { "label": "Remonta fonds", "desc": "Uzkrātais vs. plānotie darbi. Anomālijas ir uzreiz redzamas." }
+          {
+            "label": "Apkure",
+            "desc": "60% no visām pārmaksām. Salīdzinām pēc ēkas sērijas — 103., 119., 467. u.c."
+          },
+          {
+            "label": "Karstais ūdens",
+            "desc": "Kopīgā skaitītāja rādījums vs. dzīvokļu summa — noplūdes vai aprēķina kļūdas pazīme."
+          },
+          {
+            "label": "Uzkopšana un pārvaldība",
+            "desc": "Necaurspīdīgas pozīcijas. Salīdzinām ar tirgu jūsu rajonā."
+          },
+          {
+            "label": "Remonta fonds",
+            "desc": "Uzkrātais vs. plānotie darbi. Anomālijas ir uzreiz redzamas."
+          }
         ]
       },
       "boards": {
@@ -519,10 +599,22 @@
       "faq": {
         "heading": "Biežāk uzdotie jautājumi",
         "items": [
-          { "q": "Ko tieši pārbauda?", "a": "Visas rēķina pozīcijas: apkure, karstais un aukstais ūdens, kanalizācija, uzkopšana, pārvaldība, remonta fonds, lifts. Katra tiek normēta uz m² un salīdzināta ar P25/P50/P75 pēc līdzīgām mājām." },
-          { "q": "No kurienes ņem normas datus?", "a": "No rēķiniem, ko augšupielādē iedzīvotāji visā Latvijā — plus SPRK tarifi un VZD reģistrs. Jo vairāk māju augšupielādē rēķinus, jo precīzāka norma jūsu segmentam." },
-          { "q": "Vai tas ir bez maksas?", "a": "Audits un priekšskatījuma atskaite — bez maksas. Pilna atskaite ar sadalījumu — pēc e-pasta. Maksas pakalpojums: renovācijas pavadīšana (1–2% no līguma summas)." },
-          { "q": "Vai PDF augšupielāde ir droša?", "a": "Fails tiek izmantots tikai analīzei un dzēsts pēc apstrādes. Dati tiek publicēti apkopotā veidā bez saiknes ar konkrētiem iedzīvotājiem vai adresēm." }
+          {
+            "q": "Ko tieši pārbauda?",
+            "a": "Visas rēķina pozīcijas: apkure, karstais un aukstais ūdens, kanalizācija, uzkopšana, pārvaldība, remonta fonds, lifts. Katra tiek normēta uz m² un salīdzināta ar P25/P50/P75 pēc līdzīgām mājām."
+          },
+          {
+            "q": "No kurienes ņem normas datus?",
+            "a": "No rēķiniem, ko augšupielādē iedzīvotāji visā Latvijā — plus SPRK tarifi un VZD reģistrs. Jo vairāk māju augšupielādē rēķinus, jo precīzāka norma jūsu segmentam."
+          },
+          {
+            "q": "Vai tas ir bez maksas?",
+            "a": "Audits un priekšskatījuma atskaite — bez maksas. Pilna atskaite ar sadalījumu — pēc e-pasta. Maksas pakalpojums: renovācijas pavadīšana (1–2% no līguma summas)."
+          },
+          {
+            "q": "Vai PDF augšupielāde ir droša?",
+            "a": "Fails tiek izmantots tikai analīzei un dzēsts pēc apstrādes. Dati tiek publicēti apkopotā veidā bez saiknes ar konkrētiem iedzīvotājiem vai adresēm."
+          }
         ]
       },
       "cta": {
@@ -632,10 +724,22 @@
       "body": "Programma slēgta 2025. gada 13. maijā: visi €173M ir rezervēti 338 jau iesniegtajiem pieteikumiem. Iesniegt jaunu māju šajā programmā vairs nav iespējams. Nākamais logs — Sociālā klimata fonds 2026-2032: MK noteikumi gaidāmi Q4 2026, pieteikumu pieņemšana — līdz Q2 2027. Līdz tam māju var sagatavot un/vai izmantot ALTUM remonta aizdevumu."
     },
     "stats": [
-      { "value": "Slēgts", "label": "ALTUM 2021-2027 — jauni pieteikumi netiek pieņemti" },
-      { "value": "Q2 2027", "label": "Sociālā klimata fonds — pieteikumu pieņemšana" },
-      { "value": "3,9% / 20 g.", "label": "ALTUM remonta aizdevums — atvērts līdz 30.06.2031" },
-      { "value": "+10–11%", "label": "dzīvokļa vērtības pieaugums pēc renovācijas" }
+      {
+        "value": "Slēgts",
+        "label": "ALTUM 2021-2027 — jauni pieteikumi netiek pieņemti"
+      },
+      {
+        "value": "Q2 2027",
+        "label": "Sociālā klimata fonds — pieteikumu pieņemšana"
+      },
+      {
+        "value": "3,9% / 20 g.",
+        "label": "ALTUM remonta aizdevums — atvērts līdz 30.06.2031"
+      },
+      {
+        "value": "+10–11%",
+        "label": "dzīvokļa vērtības pieaugums pēc renovācijas"
+      }
     ],
     "sourcesNote": "Avoti: altum.lv, likumi.lv/ta/id/361681 (SCF plāns), Latvijas Banka DP 3/2025, fi-compass 2024",
     "process": {
@@ -677,7 +781,7 @@
       "note": "Bez maksas · 30 sekundes"
     },
     "footer": {
-      "blog": "Blogs",
+      "blog": "Blogi",
       "contractors": "Darbuzņēmējiem"
     },
     "calculate": {
@@ -768,11 +872,26 @@
     "faq": {
       "heading": "Biežāk uzdotie jautājumi par renovāciju",
       "items": [
-        { "q": "Kam ir tiesības uz Altum subsīdiju?", "a": "Daudzdzīvokļu mājām ar energoklasi D–G. Lielākā daļa padomju laika paneļu māju ir piemērotas. Jūsu mājas precīzā klase ir mājas kartītē pēc adreses meklēšanas." },
-        { "q": "Cik balsu jāsavāc?", "a": "Vismaz 50% no kopējām īpašuma daļām. Ne no dzīvokļu skaita, bet no daļām — kā reģistrēts Zemesgrāmatā." },
-        { "q": "Kā notiek balsošana?", "a": "Katrs īpašnieks saņem saiti un balso ar Smart-ID vai eParaksts. Tas ir likumīgi saskaņā ar Dzīvokļa īpašuma likumu, 20.(7-8) pantu, 2022. g." },
-        { "q": "Cik ilgs ir viss process?", "a": "No audita līdz līguma parakstīšanai ar darbuzņēmēju — parasti 3–6 mēneši. Altum pieteikuma izskatīšana — vēl 2–3 mēneši." },
-        { "q": "Ko darīt, ja kaimiņi ir pret?", "a": "Nepieciešamas tikai 50%+. Ja jūs sasniedzat slieksni pēc īpašuma daļām — process turpinās. Balsošana ar Smart-ID ievērojami palielina apmeklētību salīdzinājumā ar papīra paziņojumiem." }
+        {
+          "q": "Kam ir tiesības uz Altum subsīdiju?",
+          "a": "Daudzdzīvokļu mājām ar energoklasi D–G. Lielākā daļa padomju laika paneļu māju ir piemērotas. Jūsu mājas precīzā klase ir mājas kartītē pēc adreses meklēšanas."
+        },
+        {
+          "q": "Cik balsu jāsavāc?",
+          "a": "Vismaz 50% no kopējām īpašuma daļām. Ne no dzīvokļu skaita, bet no daļām — kā reģistrēts Zemesgrāmatā."
+        },
+        {
+          "q": "Kā notiek balsošana?",
+          "a": "Katrs īpašnieks saņem saiti un balso ar Smart-ID vai eParaksts. Tas ir likumīgi saskaņā ar Dzīvokļa īpašuma likumu, 20.(7-8) pantu, 2022. g."
+        },
+        {
+          "q": "Cik ilgs ir viss process?",
+          "a": "No audita līdz līguma parakstīšanai ar darbuzņēmēju — parasti 3–6 mēneši. Altum pieteikuma izskatīšana — vēl 2–3 mēneši."
+        },
+        {
+          "q": "Ko darīt, ja kaimiņi ir pret?",
+          "a": "Nepieciešamas tikai 50%+. Ja jūs sasniedzat slieksni pēc īpašuma daļām — process turpinās. Balsošana ar Smart-ID ievērojami palielina apmeklētību salīdzinājumā ar papīra paziņojumiem."
+        }
       ]
     },
     "findHome": {
@@ -785,7 +904,7 @@
     }
   },
   "blog": {
-    "title": "Blogs",
+    "title": "Blogi",
     "subtitle": "Komunālie izdevumi, subsīdijas un renovācija Latvijā — tikai konkrēti fakti.",
     "readMore": "Lasiet arī",
     "readMin": "min.",
@@ -795,11 +914,11 @@
     "checkHomeArticleSub": "Bez maksas. 30 sekundes.",
     "translationPending": "Tulkojums tiek gatavots",
     "metadata": {
-      "title": "Blogs — ALTEKO",
+      "title": "Blogi — ALTEKO",
       "description": "Raksti par komunālajiem izdevumiem un renovāciju Latvijā."
     },
     "footer": {
-      "blog": "Blogs",
+      "blog": "Blogi",
       "contractors": "Darbuzņēmējiem"
     }
   },
@@ -823,12 +942,12 @@
     "backToMainShort": "← Uz sākumu"
   },
   "footer": {
-    "description": "Platforma padomju laika māju iedzīvotājiem Latvijā",
+    "description": "Mājas gatavības platforma Latvijā",
     "servicesTitle": "Pakalpojumi",
-    "auditLink": "Rēķinu audits",
+    "auditLink": "Izdevumu izpratne",
     "renovationLink": "Renovācija",
-    "calculatorLink": "Renovācijas kalkulators",
-    "blogLink": "Blogs",
+    "calculatorLink": "Finansējuma scenāriji",
+    "blogLink": "Blogi",
     "contractorsTitle": "Darbuzņēmējiem",
     "contractorsLandingLink": "Darbuzņēmējiem",
     "contractorsRegisterLink": "Reģistrēties",
@@ -837,7 +956,7 @@
     "privacyLink": "Konfidencialitātes politika",
     "termsLink": "Lietošanas noteikumi",
     "contactsEmail": "info@alteko.lv",
-    "copyright": "© 2025 ALTEKO · Latvija"
+    "copyright": "© 2026 ALTEKO · Latvija"
   },
   "readinessReport": {
     "title": "Pasūtīt Gatavības atskaiti",
