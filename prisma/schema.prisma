@@ -35,6 +35,8 @@ enum ExpenseCategory {
 
 enum UserRole {
   OWNER
+  BOARD_MEMBER
+  PROFESSIONAL
   ASSOCIATION_ADMIN
   CONTRACTOR
   PLATFORM_ADMIN
@@ -76,6 +78,70 @@ enum ProjectStatus {
   CONTRACTED
   IN_PROGRESS
   COMPLETED
+}
+
+// v2 enums — Readiness Platform
+
+enum FundingWindowStatus {
+  CLOSED
+  EXPECTED
+  OPEN
+  UNKNOWN
+}
+
+enum DataConfidence {
+  PUBLIC_DATA
+  USER_UPLOADED
+  BOARD_VERIFIED
+  PROFESSIONAL_VERIFIED
+}
+
+enum LegalConfidence {
+  DRAFT
+  NEEDS_REVIEW
+  VALIDATED
+}
+
+enum BuildingProjectStatus {
+  NOT_READY
+  READY_FOR_LOAN
+  READY_FOR_FUTURE_GRANT
+  IN_APPLICATION
+  APPROVED
+  IN_CONSTRUCTION
+  COMPLETED
+}
+
+enum DecisionType {
+  PREPARATION_DECISION
+  REPRESENTATIVE_AUTHORIZATION
+  DATA_COLLECTION_CONSENT
+  ENERGY_AUDIT_DECISION
+  PROGRAM_APPLICATION_DECISION
+  LOAN_DECISION
+  SUPPLIER_SELECTION_DECISION
+}
+
+enum FinancingScenarioType {
+  SCF_2026_2032
+  ALTUM_REMONTA_AIZDEVUMS
+  COMMERCIAL_BANK
+  OWN_FUND
+  MIXED
+}
+
+enum FinancingEligibility {
+  ELIGIBLE
+  LIKELY_ELIGIBLE
+  UNLIKELY
+  NOT_ELIGIBLE
+  UNKNOWN
+}
+
+enum ContractorSubscriptionTier {
+  NONE
+  BASIC
+  PLUS
 }
 
 // ─── MODELS ───────────────────────────────────────────────────
@@ -163,10 +229,14 @@ model Building {
   co2KgM2              Decimal?  // from BVKB[34]: CO2 emissions kg/m²/year
   createdAt            DateTime  @default(now())
 
-  apartments Apartment[]
-  reports    ExpenseReport[]
-  campaigns  VotingCampaign[]
-  projects   RenovationProject[]
+  apartments        Apartment[]
+  reports           ExpenseReport[]
+  campaigns         VotingCampaign[]
+  projects          RenovationProject[]
+  readinessScore    BuildingReadinessScore?
+  scenarios         FinancingScenario[]
+  decisionCampaigns DecisionCampaign[]
+  readinessOrders   ReadinessReportOrder[]
 
   @@index([district])
   @@index([series])
@@ -256,9 +326,10 @@ model VotingCampaign {
   protocolKey       String?
   createdAt         DateTime       @default(now())
 
-  building Building            @relation(fields: [buildingId], references: [id])
-  votes    Vote[]
-  projects RenovationProject[]
+  building         Building            @relation(fields: [buildingId], references: [id])
+  votes            Vote[]
+  projects         RenovationProject[]
+  decisionCampaign DecisionCampaign?
 
   @@index([buildingId])
 }
@@ -283,38 +354,24 @@ model Vote {
 }
 
 model Contractor {
-  id                 String   @id @default(uuid())
-  userId             String   @unique
-  companyName        String
-  registrationNumber String   @unique
-  luroftVerified     Boolean  @default(false)
-  specializations    String[]
-  geographicCoverage String[]
-  rating             Decimal?
-  ratingCount        Int      @default(0)
-  active             Boolean  @default(true)
-  createdAt          DateTime @default(now())
+  id                    String                     @id @default(uuid())
+  userId                String                     @unique
+  companyName           String
+  registrationNumber    String                     @unique
+  luroftVerified        Boolean                    @default(false)
+  specializations       String[]
+  geographicCoverage    String[]
+  rating                Decimal?
+  ratingCount           Int                        @default(0)
+  active                Boolean                    @default(true)
+  subscriptionTier      ContractorSubscriptionTier @default(NONE)
+  subscriptionStartedAt DateTime?
+  subscriptionExpiresAt DateTime?
+  createdAt             DateTime                   @default(now())
 
   projects RenovationProject[]
 }
 
-model BlogPost {
-  id          String   @id @default(uuid())
-  slug        String
-  locale      String
-  title       String
-  description String
-  content     String   @db.Text
-  publishedAt DateTime
-  readMinutes Int
-  tags        String[]
-  published   Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@unique([slug, locale])
-  @@index([locale, published])
-}
 
 model RenovationProject {
   id                  String        @id @default(uuid())
@@ -323,13 +380,128 @@ model RenovationProject {
   campaignId          String?
   contractorId        String?
   contractValue       Decimal?
-  commissionAmount    Decimal?
   altumApplicationRef String?
   createdAt           DateTime      @default(now())
 
   building   Building        @relation(fields: [buildingId], references: [id])
   campaign   VotingCampaign? @relation(fields: [campaignId], references: [id])
   contractor Contractor?     @relation(fields: [contractorId], references: [id])
+}
+
+// ─── v2 READINESS PLATFORM MODELS ─────────────────────────────
+
+model BuildingReadinessScore {
+  id                          String          @id @default(uuid())
+  buildingId                  String          @unique
+  energyScore                 Int?
+  fundingEligibilityScore     Int?
+  documentReadinessScore      Int?
+  ownerDecisionReadinessScore Int?
+  financialFeasibilityScore   Int?
+  supplierSelectionStatus     String?
+  legalConfidenceStatus       LegalConfidence @default(DRAFT)
+  dataConfidenceStatus        DataConfidence  @default(PUBLIC_DATA)
+  nextBestAction              String
+  nextBestActionRu            String?
+  procurementTransparencyScore Int?
+  supplierConflictRisk        Int?
+  decisionQuality             Int?
+  ownerUnderstandingScore     Int?
+  documentCompleteness        Int?
+  priceBenchmarkDeviation     Decimal?
+  rulesEngineVersion          String
+  computedAt                  DateTime        @default(now())
+  expiresAt                   DateTime?
+
+  building Building @relation(fields: [buildingId], references: [id])
+
+  @@index([buildingId])
+}
+
+model FinancingScenario {
+  id                         String                @id @default(uuid())
+  buildingId                 String
+  scenarioType               FinancingScenarioType
+  windowStatus               FundingWindowStatus
+  eligibility                FinancingEligibility
+  confidence                 String
+  estimatedCostEur           Decimal?
+  estimatedSubsidyPercent    Decimal?
+  estimatedSubsidyEur        Decimal?
+  monthlyPaymentPerApartment Decimal?
+  paybackYears               Decimal?
+  reasoningLv                String
+  reasoningRu                String?
+  rulesEngineVersion         String
+  computedAt                 DateTime              @default(now())
+
+  building Building @relation(fields: [buildingId], references: [id])
+
+  @@unique([buildingId, scenarioType])
+  @@index([buildingId])
+  @@index([scenarioType])
+}
+
+model DecisionCampaign {
+  id                     String          @id @default(uuid())
+  buildingId             String
+  decisionType           DecisionType
+  title                  String
+  questionTextLv         String
+  questionTextRu         String?
+  explanationTextLv      String
+  explanationTextRu      String?
+  intentionsCollected    Boolean         @default(false)
+  intentionsYesCount     Int             @default(0)
+  intentionsNoCount      Int             @default(0)
+  intentionsAbstainCount Int             @default(0)
+  formalCampaignId       String?         @unique
+  bisExportedAt          DateTime?
+  bisExportRef           String?
+  legalConfidence        LegalConfidence @default(DRAFT)
+  status                 CampaignStatus  @default(DRAFT)
+  deadline               DateTime?
+  createdAt              DateTime        @default(now())
+
+  building       Building        @relation(fields: [buildingId], references: [id])
+  formalCampaign VotingCampaign? @relation(fields: [formalCampaignId], references: [id])
+
+  @@index([buildingId])
+  @@index([decisionType])
+}
+
+model ReadinessReportOrder {
+  id                 String   @id @default(uuid())
+  buildingId         String
+  orderedByEmail     String
+  orderedByUserId    String?
+  amountEur          Decimal
+  currency           String   @default("EUR")
+  paymentProviderRef String?
+  paymentStatus      String   @default("pending")
+  reportFileKey      String?
+  emailSentAt        DateTime?
+  language           Language @default(LV)
+  createdAt          DateTime @default(now())
+  paidAt             DateTime?
+
+  building Building @relation(fields: [buildingId], references: [id])
+
+  @@index([buildingId])
+  @@index([orderedByEmail])
+}
+
+model RulesEngineVersion {
+  version         String                @id
+  scenarioType    FinancingScenarioType
+  rulesJson       Json
+  effectiveFrom   DateTime
+  effectiveUntil  DateTime?
+  description     String?
+  createdAt       DateTime              @default(now())
+  createdByUserId String?
+
+  @@index([scenarioType, effectiveFrom])
 }
 
 // ─── OPEN DATA SYNC MODELS ────────────────────────────────────
@@ -420,14 +592,14 @@ model UtilityTariff {
 // Building series reference — static seed from academic sources
 // No official registry exists; heuristic match via year + material + floors
 model BuildingSeries {
-  code              String  @id
-  wallMaterialKey   String
-  floorsMin         Int?
-  floorsMax         Int?
-  yearFrom          Int
-  yearTo            Int
-  typicalAreaM2     Decimal?
-  description       String?
+  code            String   @id
+  wallMaterialKey String
+  floorsMin       Int?
+  floorsMax       Int?
+  yearFrom        Int
+  yearTo          Int
+  typicalAreaM2   Decimal?
+  description     String?
 }
 
 // Apartment-level records from VZD PremiseGroup data (PremiseGroupItemData elements)
@@ -446,4 +618,16 @@ model BuildingUnit {
   syncedAt              DateTime @default(now())
 
   @@index([buildingCadastralCode])
+}
+
+// Heating energy norms by building series — seeded from verified research data
+// Source: ALTUM program portfolio (627 buildings), University of Latvia, Ministry of Economics Latvia 2023
+// Used for benchmark comparison on building page and audit report
+model BuildingSeriesBenchmark {
+  seriesCode              String   @id   // "103", "316", "467", "NATIONAL_AVERAGE", etc.
+  heatingKwhM2Year        Decimal        // pre-renovation heating norm kWh/m²/year
+  hotWaterKwhM2Year       Decimal?       // hot water norm kWh/m²/year (null = use national average)
+  afterRenovationTargetKwhM2Year Decimal? // target after renovation (~50-54 kWh/m²/year)
+  sourceDescription       String         // citation / source
+  updatedAt               DateTime @updatedAt
 }

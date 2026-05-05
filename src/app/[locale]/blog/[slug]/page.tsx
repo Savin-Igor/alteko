@@ -10,6 +10,13 @@ import { SiteHeader } from '@/components/ui/SiteHeader'
 import { LexicalContent } from '@/components/blog/LexicalContent'
 import { routing } from '@/i18n/routing'
 
+// Payload CMS blog post fields — partial typing for dynamic collection
+interface PayloadBlogPost {
+  meta?: { title?: string; description?: string }
+  heroImage?: { url?: string; alt?: string; width?: number; height?: number } | null
+  [key: string]: unknown
+}
+
 interface Props {
   params: Promise<{ locale: string; slug: string }>
 }
@@ -27,8 +34,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = docs[0]
   if (!post) return {}
 
-  const meta = (post as any).meta
-  const heroImage = post.heroImage as any
+  const typedPost = post as unknown as PayloadBlogPost
+  const meta = typedPost.meta
+  const heroImage = typedPost.heroImage
 
   return {
     title: meta?.title ?? `${post.title} — ALTEKO`,
@@ -79,7 +87,7 @@ export default async function BlogArticlePage({ params }: Props) {
   })
 
   const tags = (post.tags as Array<{ tag: string }> ?? []).map((item) => item.tag)
-  const heroImage = post.heroImage as any
+  const heroImage = (post as unknown as PayloadBlogPost).heroImage
   const heroImageUrl: string | null = heroImage?.url ?? null
 
   return (

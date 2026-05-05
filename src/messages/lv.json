@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "title": "ALTEKO — Jūsu mājas izdevumu audits",
-    "description": "Uzziniet, vai jūsu māja pārmaksā par komunālajiem pakalpojumiem. Bez maksas, 30 sekundēs."
+    "title": "ALTEKO — Mājas gatavības platforma",
+    "description": "Sagatavojiet daudzdzīvokļu māju nākamajam finansējuma logam: dati, dokumenti, īpašnieku lēmumi, piegādātāju izvēle."
   },
   "nav": {
     "audit": "Audits",
@@ -24,9 +24,9 @@
   },
   "home": {
     "hero": {
-      "titleQuestion": "Padomju laika mājas pārmaksā par apkuri.",
-      "titleAnswer": "Vai arī jūsējā?",
-      "description": "Augšupielādējiet rēķinu — salīdzināsim ar normu jūsu sērijai un rajonam. Bez maksas.",
+      "titleQuestion": "Sagatavojiet māju",
+      "titleAnswer": "nākamajam finansējuma logam",
+      "description": "Pārbaudiet mājas gatavību, sagatavojiet dokumentus un īpašnieku lēmumus pirms programmas atvēršanās 2027. gadā.",
       "cta": "Sākt pārbaudi",
       "ctaLoading": "Meklējam māju...",
       "errorNotFound": "Māja nav atrasta datu bāzē. Mēģiniet citu adresi.",
@@ -93,16 +93,16 @@
       ]
     },
     "renovation": {
-      "heading": "Pēc audita — renovācija. Valsts maksā līdz 49%.",
-      "description": "Uzziniet, cik subsidē Altum un ko renovācija atdos tieši jūsu mājai.",
+      "heading": "Remonta finansējums: pieci reāli scenāriji",
+      "description": "ALTUM 2021-2027 ir slēgta jauniem pieteikumiem. Nākamais logs — Sociālā klimata fonds 2026-2032 (MK noteikumi gaidāmi Q4 2026, pieteikumi līdz Q2 2027). Paliek ALTUM remonta aizdevums un komercbanku iespējas.",
       "stats": [
-        { "value": "līdz 49%", "label": "Altum subsīdija" },
-        { "value": "~60%", "label": "vidējais apkures rēķina samazinājums" },
-        { "value": "+10–11%", "label": "dzīvokļa vērtības pieaugums" },
-        { "value": "8–12 gadi", "label": "atmaksāšanās laiks" }
+        { "value": "Slēgts", "label": "ALTUM 2021-2027 — jauni pieteikumi netiek pieņemti" },
+        { "value": "Gaidāms", "label": "Sociālā klimata fonds 2026-2032 — €127M daudzdzīvokļu mājām" },
+        { "value": "3,9% / 20 g.", "label": "ALTUM remonta aizdevums — atvērts līdz 30.06.2031" },
+        { "value": "+10–11%", "label": "dzīvokļa vērtības pieaugums pēc renovācijas (Latvijas Banka)" }
       ],
-      "note": "Precīzs aprēķins jūsu mājai — pēc rēķina augšupielādes.",
-      "cta": "Uzzināt vairāk par renovāciju →"
+      "note": "Provizorisks aprēķins jūsu mājai — pēc rēķina augšupielādes vai gatavības atskaites pasūtīšanas.",
+      "cta": "Finansējuma scenāriji →"
     },
     "boards": {
       "tagline": "Biedrību valdēm",
@@ -295,7 +295,7 @@
     "valuePropTitle": "Saņemiet konkursus no gatavām mājām",
     "valuePropDesc": "Mājas ar ≥50% īpašnieku balsīm meklē darbuzņēmēju. Nekādu auksto zvanu — tikai ienākoši pieprasījumi pēc jūsu specializācijas.",
     "lursoftVerification": "Verifikācija ar Lursoft",
-    "commission": "Komisija 1,5% no līguma",
+    "commission": "Fiksēts abonements — bez komisijas par darījumu",
     "verifiedClients": "Tikai pārbaudīti klienti",
     "companyName": "Uzņēmuma nosaukums",
     "regNumber": "Reģistrācijas numurs",
@@ -303,7 +303,7 @@
     "specializationLabel": "Specializācija",
     "selectAtLeastOne": "Izvēlieties vismaz vienu specializāciju",
     "coverageLabel": "Ģeogrāfiskais pārklājums",
-    "agreementText": "Piekrītu ALTEKO komisijas līguma nosacījumiem — 1,5% no parakstītā līguma summas ar klientu",
+    "agreementText": "Piekrītu ALTEKO darbuzņēmēju abonementa nosacījumiem — fiksēta ikmēneša maksa par profilu un piekļuvi konkursiem, bez komisijas par uzvaru.",
     "errorRegister": "Reģistrācijas kļūda",
     "errorConnection": "Savienojuma kļūda. Mēģiniet vēlreiz.",
     "checkingLursoft": "Pārbaudām Lursoft...",
@@ -312,7 +312,7 @@
       "heroTitle": "Saņemiet konkursus no gatavām mājām",
       "heroSubtitle": "Mājas ar ≥50% dzīvokļu īpašnieku balsīm meklē darbuzņēmēju. Ienākošie pieprasījumi pēc jūsu specializācijas — bez aukstajiem zvaniem.",
       "heroCta": "Reģistrēties",
-      "statsCommissionLabel": "komisija no noslēgtā līguma",
+      "statsCommissionLabel": "fiksēts abonements, bez komisijas par uzvaru",
       "statsDealsLabel": "mājas nepieciešama renovācija",
       "statsLeadsLabel": "tikai ienākošie pieprasījumi",
       "howHeading": "Kā tas darbojas",
@@ -560,6 +560,24 @@
     "uploadCta": "Augšupielādēt apsaimniekotāja rēķinu",
     "noBillReminder": "Nav rēķina pa rokai? Atcerēties adresi — atsūtīsim atgādinājumu",
     "renovateCta": "Iniciēt renovāciju →",
+    "financingCta": "Finansējuma scenāriji →",
+    "heating": {
+      "heading": "Apkures norma pēc sērijas",
+      "norm": "Norma ({series})",
+      "actual": "Jūsu māja",
+      "deviation": "Novirze",
+      "fallbackNote": "Sērija nav noteikta — izmantota vidējā norma Latvijā",
+      "source": "Avots: ALTUM portfelis (627 mājas), Latvijas Universitāte, EM 2023"
+    },
+    "readiness": {
+      "nextAction": "Nākamais solis",
+      "financingHeading": "Finansējuma scenāriji",
+      "scoreHeading": "Mājas gatavības rādītāji",
+      "energyScore": "Enerģija",
+      "documentScore": "Dokumenti",
+      "decisionsScore": "Lēmumi",
+      "dataSource": "Datu avots: {source}"
+    },
     "renovate": {
       "meta": {
         "title": "Renovācija — {address}",
@@ -603,19 +621,23 @@
       "description": "Altum subsīdija līdz 49%, ietaupījuma aprēķins apkurei, elektroniskā iedzīvotāju balsošana un darbuzņēmēju tirgus."
     },
     "hero": {
-      "titleStart": "Renovācija ar Altum subsīdiju.",
-      "titleEnd": "Mēs vadām visu procesu.",
-      "description": "No pirmā rēķina līdz parakstītam līgumam ar darbuzņēmēju. Valsts sedz līdz 49% no izmaksām.",
+      "titleStart": "Renovācijas finansējums:",
+      "titleEnd": "pieci reāli scenāriji",
+      "description": "ALTUM 2021-2027 ir slēgta jauniem pieteikumiem (€173M rezervēti, 338 pieteikumi līdz 2025. gada maijam). Nākamais logs — Sociālā klimata fonds 2026-2032; MK noteikumi gaidāmi Q4 2026, pieteikumi līdz Q2 2027. ALTUM remonta aizdevums paliek atvērts.",
       "cta": "Sākt ar izmaksu auditu →",
-      "note": "Precīzs aprēķins jūsu mājai — pēc rēķina augšupielādes."
+      "note": "Provizorisks aprēķins jūsu mājai — pēc rēķina augšupielādes. Precīzi SCF noteikumi tiks publicēti Q4 2026."
+    },
+    "closureNotice": {
+      "title": "ALTUM 2021-2027 — jauni pieteikumi netiek pieņemti.",
+      "body": "Programma slēgta 2025. gada 13. maijā: visi €173M ir rezervēti 338 jau iesniegtajiem pieteikumiem. Iesniegt jaunu māju šajā programmā vairs nav iespējams. Nākamais logs — Sociālā klimata fonds 2026-2032: MK noteikumi gaidāmi Q4 2026, pieteikumu pieņemšana — līdz Q2 2027. Līdz tam māju var sagatavot un/vai izmantot ALTUM remonta aizdevumu."
     },
     "stats": [
-      { "value": "līdz 49%", "label": "subsidē Altum" },
-      { "value": "~60%", "label": "vidējais samazinājums pēc ALTUM programmas" },
-      { "value": "+10–11%", "label": "dzīvokļa vērtības pieaugums" },
-      { "value": "8–12 gadi", "label": "vidējais atmaksāšanās laiks" }
+      { "value": "Slēgts", "label": "ALTUM 2021-2027 — jauni pieteikumi netiek pieņemti" },
+      { "value": "Q2 2027", "label": "Sociālā klimata fonds — pieteikumu pieņemšana" },
+      { "value": "3,9% / 20 g.", "label": "ALTUM remonta aizdevums — atvērts līdz 30.06.2031" },
+      { "value": "+10–11%", "label": "dzīvokļa vērtības pieaugums pēc renovācijas" }
     ],
-    "sourcesNote": "Avoti: Altum, Latvijas Banka DP 3/2025, fi-compass 2024",
+    "sourcesNote": "Avoti: altum.lv, likumi.lv/ta/id/361681 (SCF plāns), Latvijas Banka DP 3/2025, fi-compass 2024",
     "process": {
       "heading": "Kā tas darbojas",
       "steps": [
@@ -643,9 +665,9 @@
       ]
     },
     "altum": {
-      "heading": "Kas ir Altum subsīdija",
-      "p1": "Altum — Latvijas valsts attīstības banka. Kopš 2009. gada īsteno daudzdzīvokļu māju renovācijas subsidēšanas programmu. Valsts sedz līdz 49–50% no darbu izmaksām — tas nav kredīts, tā ir neatmaksājama subsīdija.",
-      "p2": "20 gadu laikā programmu izgājušas tikai 624 mājas no ~23 500, kurām tā nepieciešama (2,7%). Galvenais zemā pārklājuma iemesls — procesa sarežģītība: iedzīvotāju balsošana, dokumenti, darbuzņēmēja izvēle. ALTEKO automatizē katru soli.",
+      "heading": "Kas notiek ar Altum programmu",
+      "p1": "Altum — Latvijas valsts finanšu institūcija. Daudzdzīvokļu māju energoefektivitātes programma 2021-2027 (apjoms €173M) ir slēgta jauniem projektu pieteikumiem kopš 2025. gada maija — viss finansējums ir rezervēts 338 jau iesniegtajiem pieteikumiem. Iesniegt jaunu māju šajā programmā vairs nav iespējams.",
+      "p2": "Nākamais lielais logs — Sociālā klimata fonds 2026-2032. Daudzdzīvokļu mājām tajā paredzēts €127M publiskā finansējuma. MK noteikumi gaidāmi 2026. gada IV ceturksnī, pieteikumu pieņemšana — līdz 2027. gada II ceturksnim, projektu īstenošana — līdz 31.07.2032. Līdz loga atvēršanai ir vērts sagatavot māju: dati, īpašnieku lēmumi, dokumenti. ALTUM remonta aizdevums (€10k+, 3,9%, līdz 30.06.2031) paliek pieejama alternatīva.",
       "guideLink": "Pilns Altum subsīdijas ceļvedis →"
     },
     "cta": {
@@ -817,11 +839,138 @@
     "contactsEmail": "info@alteko.lv",
     "copyright": "© 2025 ALTEKO · Latvija"
   },
+  "readinessReport": {
+    "title": "Pasūtīt Gatavības atskaiti",
+    "subtitle": "Pilna mājas gatavības analīze ar nākamajiem soļiem",
+    "back": "Atpakaļ",
+    "includes": {
+      "heading": "Kas ir iekļauts:",
+      "items": [
+        "Mājas kartīte ar visiem reģistru datiem",
+        "Building Readiness Score — 8 komponentu novērtējums",
+        "Finansējuma scenāriji: SCF, ALTUM remonta aizdevums, banka",
+        "Trūkstošo dokumentu saraksts",
+        "Īpašnieku balsošanas plāns",
+        "Sapulces dienaskārtības šablons"
+      ]
+    },
+    "pricingNote": "Cena: €300 (līdz 30 dzīvokļiem) · €600 (30–60 dzīvokļi) · €900 (vairāk par 60). Jūsu mājas cena tiks aprēķināta automātiski.",
+    "emailLabel": "E-pasts atskaites saņemšanai",
+    "emailPlaceholder": "jusu@epasts.lv",
+    "languageLabel": "Atskaites valoda",
+    "submit": "Pasūtīt atskaiti →",
+    "submitting": "Apstrādā...",
+    "legalNote": "Nospiežot «Pasūtīt», jūs piekrītat, ka ALTEKO apstrādā jūsu mājas datus atskaites sagatavošanai.",
+    "success": {
+      "title": "Pasūtījums saņemts!",
+      "description": "Atsūtīsim atskaiti uz {email} 1–3 darba dienu laikā.",
+      "orderId": "Pasūtījuma ID: {id}",
+      "amount": "Summa apmaksai: €{amount}",
+      "backHome": "Uz sākumu"
+    }
+  },
   "errors": {
     "notFound": "Lapa nav atrasta",
     "notFoundDesc": "Iespējams, saite ir novecojusi vai mainīta.",
     "serverError": "Kaut kas nogāja greizi",
     "serverErrorDesc": "Radās kļūda. Mēģiniet atsvaidzināt lapu.",
     "tryAgain": "Mēģināt vēlreiz"
+  },
+  "financing": {
+    "metadata": {
+      "title": "Finansējuma scenāriji — ALTEKO",
+      "description": "Pieci reāli finansējuma ceļi daudzdzīvokļu mājas renovācijai Latvijā: SCF 2026-2032, ALTUM remonta aizdevums, banka, pašu uzkrājumi, jauktais."
+    },
+    "windowStatus": {
+      "OPEN": "Atvērts",
+      "EXPECTED": "Gaidāms",
+      "CLOSED": "Slēgts",
+      "UNKNOWN": "Neskaidrs"
+    },
+    "scenarioType": {
+      "SCF_2026_2032": "Sociālā klimata fonds 2026-2032",
+      "ALTUM_REMONTA_AIZDEVUMS": "ALTUM remonta aizdevums",
+      "COMMERCIAL_BANK": "Komercbanka",
+      "OWN_FUND": "Pašu uzkrājumu fonds",
+      "MIXED": "Jauktais scenārijs"
+    },
+    "hero": {
+      "title": "Finansējuma scenāriji: pieci reāli ceļi",
+      "description": "ALTEKO parāda katras programmas statusu un provizoriskas piemērotības novērtējumu. Mēs negarantējam finansējumu — garantijām ir jāgaida MK noteikumi (Q4 2026)."
+    },
+    "altumClosureNotice": {
+      "title": "ALTUM 2021-2027 — jauni pieteikumi netiek pieņemti.",
+      "body": "Programma slēgta 2025. gada 13. maijā (€173M rezervēti). Nākamais logs — Sociālā klimata fonds 2026-2032: MK noteikumi gaidāmi Q4 2026, pieteikumi — līdz Q2 2027. ALTUM remonta aizdevums paliek atvērts."
+    },
+    "scenarios": {
+      "heading": "Pieci finansējuma ceļi",
+      "0": {
+        "key": "Sociālā klimata fonds 2026-2032",
+        "windowBadge": "pending",
+        "windowLabel": "Gaidāms",
+        "amountNote": "€186M kopā (€127M ES + €31,75M nac.) — renovācijai un enerģijas nabadzības mazināšanai",
+        "conditionItems": [
+          "Māja uzbūvēta pirms 1991. gada",
+          "D–G energoklase (augsti enerģijas zudumi)",
+          "Nav renovēta",
+          "MK noteikumi gaidāmi Q4 2026 — precīzie kritēriji vēl nav apstiprināti"
+        ],
+        "reasonNote": "Avots: likumi.lv/ta/id/361681 (MK rīkojums Nr.393, 02.07.2025). SCF plāns — Eiropas Komisijas izvērtēšanā."
+      },
+      "1": {
+        "key": "ALTUM remonta aizdevums",
+        "windowBadge": "active",
+        "windowLabel": "Atvērts",
+        "amountNote": "No €10 000, 3,9% gadā, līdz 20 gadiem — pieejams līdz 30.06.2031",
+        "conditionItems": [
+          "Nepieciešams īpašnieku lēmums par aizdevumu (≥51% atbalsts)",
+          "Jāiesniedz vismaz 2 neatkarīgi darbuzņēmēju piedāvājumi",
+          "Pieteicējs — apsaimniekotājs, biedrība vai ESCO"
+        ],
+        "reasonNote": "Avots: altum.lv — Daudzdzīvokļu māju remonta aizdevums."
+      },
+      "2": {
+        "key": "Komercbanka",
+        "windowBadge": "active",
+        "windowLabel": "Atvērts",
+        "amountNote": "Indikatīvā likme ~4,5–7%, līdz 25 gadiem — atkarīgs no konkrētās bankas",
+        "conditionItems": [
+          "Parasti dārgāk nekā ALTUM remonta aizdevums",
+          "Piemērots, ja ALTUM aizdevums neaptver visu projekta apjomu",
+          "Nepieciešams biedrības vai kopīpašnieku solidārā garantija"
+        ],
+        "reasonNote": "Indikatīvs — konkrēts piedāvājums jāapspriež ar banku."
+      },
+      "3": {
+        "key": "Pašu uzkrājumu fonds",
+        "windowBadge": "active",
+        "windowLabel": "Vienmēr pieejams",
+        "amountNote": "Bez parādsaistībām — piemērots daļējai remontam",
+        "conditionItems": [
+          "Jumts, logi, inženiertīkli — bez lieliem enerģijas ietaupījumiem",
+          "Ieteicamais iemaksa — no €0,50/m² mēnesī",
+          "Var kombinēt ar ALTUM aizdevumu"
+        ],
+        "reasonNote": "Iekšējs novērtējums. Nav ārēja avota."
+      },
+      "4": {
+        "key": "Jauktais scenārijs",
+        "windowBadge": "active",
+        "windowLabel": "Atvērts",
+        "amountNote": "~70% ALTUM remonta aizdevums + ~30% pašu uzkrājumi",
+        "conditionItems": [
+          "Visizplatītākais reālais ceļš pirms SCF atvēršanas",
+          "Kad atvērsies SCF — daļu var refinansēt ar grantu",
+          "Mazāks ikmēneša slogs salīdzinājumā ar pilnu aizdevumu"
+        ],
+        "reasonNote": "Iekšējs kombinētais novērtējums."
+      }
+    },
+    "cta": {
+      "heading": "Pārbaudiet savas mājas gatavību",
+      "description": "Ievadiet adresi — parādīsim, kurš finansējuma ceļš ir piemērotākais jūsu mājai un kas vēl jāsagatavo.",
+      "button": "Sākt pārbaudi →",
+      "note": "Bez maksas. Provizorisks novērtējums, pamatojoties uz reģistru datiem."
+    }
   }
 }

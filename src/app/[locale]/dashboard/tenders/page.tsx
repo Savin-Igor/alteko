@@ -114,24 +114,14 @@ export default async function TendersPage() {
                   <p className="text-sm text-gray-400 italic">{t('noContractor')}</p>
                 )}
 
-                {(project.contractValue || project.commissionAmount) && (
+                {project.contractValue && (
                   <div className="space-y-1.5 text-sm border-t border-gray-100 pt-3">
-                    {project.contractValue && (
-                      <div className="flex justify-between">
-                        <span className="text-gray-500">{t('contractValue')}</span>
-                        <span className="font-medium text-gray-900">
-                          €{Number(project.contractValue).toLocaleString()}
-                        </span>
-                      </div>
-                    )}
-                    {project.commissionAmount && (
-                      <div className="flex justify-between">
-                        <span className="text-gray-500">{t('commission')}</span>
-                        <span className="text-gray-600">
-                          €{Number(project.commissionAmount).toLocaleString()}
-                        </span>
-                      </div>
-                    )}
+                    <div className="flex justify-between">
+                      <span className="text-gray-500">{t('contractValue')}</span>
+                      <span className="font-medium text-gray-900">
+                        €{Number(project.contractValue).toLocaleString()}
+                      </span>
+                    </div>
                   </div>
                 )}
 

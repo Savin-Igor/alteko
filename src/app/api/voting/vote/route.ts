@@ -1,13 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { auth } from '@/auth'
 import { z } from 'zod'
 
 export const runtime = 'nodejs'
 
+// ownerId is NOT accepted from the request body — it must come from the authenticated session.
+// Smart-ID / eParaksts flows set a signed HttpOnly cookie at verification time; the cookie
+// contains the verified ownerId and is read server-side. Until that cookie flow is wired,
+// we require a valid session and use session.user.id.
 const schema = z.object({
   campaignId: z.string().uuid(),
   apartmentId: z.string().uuid(),
-  ownerId: z.string().uuid(),
   decision: z.enum(['YES', 'NO', 'ABSTAIN']),
   signature: z.string().min(1),
   signedAt: z.string().datetime(),
@@ -15,13 +19,20 @@ const schema = z.object({
 })
 
 export async function POST(req: NextRequest) {
+  const session = await auth()
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const body = await req.json()
   const parsed = schema.safeParse(body)
   if (!parsed.success) {
     return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
   }
 
-  const { campaignId, apartmentId, ownerId, decision, signature, signedAt, authMethod } = parsed.data
+  // ownerId comes from the verified session — not from the request body
+  const ownerId = session.user.id
+  const { campaignId, apartmentId, decision, signature, signedAt, authMethod } = parsed.data
 
   const campaign = await prisma.votingCampaign.findUnique({
     where: { id: campaignId },
@@ -37,9 +48,14 @@ export async function POST(req: NextRequest) {
 
   const apartment = await prisma.apartment.findUnique({
     where: { id: apartmentId },
-    select: { buildingId: true, ownershipShare: true },
+    select: { buildingId: true, ownershipShare: true, ownerId: true },
   })
   if (!apartment) return NextResponse.json({ error: 'Apartment not found' }, { status: 404 })
+
+  // Verify the authenticated user owns this apartment
+  if (apartment.ownerId !== ownerId) {
+    return NextResponse.json({ error: 'Forbidden — not the apartment owner' }, { status: 403 })
+  }
 
   // Snapshot ownership share at vote time — immutable
   const ownershipShare = apartment.ownershipShare
@@ -73,7 +89,6 @@ export async function POST(req: NextRequest) {
       where: { id: campaignId },
       data: {
         currentYesShare,
-        // Auto-complete if threshold reached
         ...(currentYesShare >= Number(campaign.requiredThreshold) ? { status: 'COMPLETED' } : {}),
       },
     })
@@ -84,7 +99,6 @@ export async function POST(req: NextRequest) {
       thresholdReached: currentYesShare >= Number(campaign.requiredThreshold),
     }, { status: 201 })
   } catch (err) {
-    // Unique constraint violation = already voted
     if (err instanceof Error && err.message.includes('Unique constraint')) {
       return NextResponse.json({ error: 'Вы уже проголосовали' }, { status: 409 })
     }
