@@ -73,14 +73,19 @@ export async function GET(req: NextRequest) {
   const cadastralCode = await fetchCadastralCode(lat, lon)
   if (!cadastralCode) return NextResponse.json({ found: false, address })
 
-  const building = await prisma.building.findUnique({
-    where: { cadastralCode },
-    select: {
-      id: true, address: true, cadastralCode: true, series: true,
-      constructionYear: true, totalAreaM2: true, apartmentCount: true,
-      energyClass: true, district: true,
-    },
-  })
+  let building = null
+  try {
+    building = await prisma.building.findUnique({
+      where: { cadastralCode },
+      select: {
+        id: true, address: true, cadastralCode: true, series: true,
+        constructionYear: true, totalAreaM2: true, apartmentCount: true,
+        energyClass: true, district: true,
+      },
+    })
+  } catch {
+    return NextResponse.json({ found: false, cadastralCode, address })
+  }
 
   if (!building) return NextResponse.json({ found: false, cadastralCode, address })
   return NextResponse.json({ ...building, found: true })

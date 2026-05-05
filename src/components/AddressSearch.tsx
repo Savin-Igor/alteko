@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
+import { useLocale, useTranslations } from 'next-intl'
+import { filterSettlements, type Settlement } from '@/lib/latvia-settlements'
 
 interface Suggestion {
   id: string
@@ -13,42 +15,48 @@ interface Props {
   onSelect: (suggestion: Suggestion) => void
 }
 
-const CITIES = [
-  'Rīga',
-  'Daugavpils',
-  'Liepāja',
-  'Jelgava',
-  'Jūrmala',
-  'Rēzekne',
-  'Valmiera',
-  'Ventspils',
-  'Ogre',
-  'Salaspils',
-]
-
 export function AddressSearch({ onSelect }: Props) {
-  const [city, setCity] = useState('Rīga')
-  const [query, setQuery] = useState('')
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([])
-  const [open, setOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const locale = useLocale()
+  const isRu = locale === 'ru'
+  const t = useTranslations('components.addressSearch')
 
-  const search = useCallback(async (q: string, selectedCity: string) => {
-    if (q.trim().length < 2) {
+  // City field state
+  const [cityInput, setCityInput] = useState('')
+  const [cityMatches, setCityMatches] = useState<Settlement[]>([])
+  const [cityOpen, setCityOpen] = useState(false)
+  const [selectedCity, setSelectedCity] = useState<Settlement | null>(null)
+
+  // Street field state
+  const [streetQuery, setStreetQuery] = useState('')
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([])
+  const [streetOpen, setStreetOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  const containerRef = useRef<HTMLDivElement>(null)
+  const streetRef = useRef<HTMLInputElement>(null)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // City filtering
+  useEffect(() => {
+    const matches = filterSettlements(cityInput)
+    setCityMatches(matches)
+    setCityOpen(matches.length > 0 && cityInput.length > 0 && !selectedCity)
+  }, [cityInput, selectedCity])
+
+  // Street search
+  const search = useCallback(async (q: string, city: string) => {
+    if (q.trim().length < 3) {
       setSuggestions([])
-      setOpen(false)
+      setStreetOpen(false)
       return
     }
     setLoading(true)
     try {
-      const params = new URLSearchParams({ q, city: selectedCity })
+      const params = new URLSearchParams({ q, city })
       const res = await fetch(`/api/address/search?${params}`)
       const data = await res.json()
       setSuggestions(Array.isArray(data) ? data : [])
-      setOpen(true)
+      setStreetOpen(true)
     } catch {
       setSuggestions([])
     } finally {
@@ -57,61 +65,97 @@ export function AddressSearch({ onSelect }: Props) {
   }, [])
 
   useEffect(() => {
+    if (!selectedCity) return
     if (debounceRef.current) clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(() => search(query, city), 250)
+    debounceRef.current = setTimeout(() => search(streetQuery, selectedCity.lv), 300)
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
     }
-  }, [query, city, search])
+  }, [streetQuery, selectedCity, search])
 
+  // Close on outside click
   useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
+    function onClickOutside(e: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setOpen(false)
+        setCityOpen(false)
+        setStreetOpen(false)
       }
     }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
+    document.addEventListener('mousedown', onClickOutside)
+    return () => document.removeEventListener('mousedown', onClickOutside)
   }, [])
 
-  function handleCityChange(newCity: string) {
-    setCity(newCity)
-    setQuery('')
+  function selectCity(s: Settlement) {
+    setSelectedCity(s)
+    setCityInput(isRu ? s.ru : s.lv)
+    setCityOpen(false)
+    setStreetQuery('')
     setSuggestions([])
-    setOpen(false)
-    inputRef.current?.focus()
+    streetRef.current?.focus()
   }
 
-  function handleSelect(s: Suggestion) {
-    setQuery(s.address)
-    setOpen(false)
+  function handleCityInputChange(val: string) {
+    setCityInput(val)
+    setSelectedCity(null)
+    setStreetQuery('')
+    setSuggestions([])
+  }
+
+  function handleStreetSelect(s: Suggestion) {
+    setStreetQuery(s.address)
+    setStreetOpen(false)
     onSelect(s)
   }
+
+  const cityPlaceholder = t('cityPlaceholder')
+  const streetPlaceholder = selectedCity ? t('streetPlaceholderActive') : t('streetPlaceholderInactive')
 
   return (
     <div ref={containerRef} className="relative w-full">
       <div className="flex gap-2">
-        <select
-          value={city}
-          onChange={(e) => handleCityChange(e.target.value)}
-          className="input-field w-36 flex-shrink-0 cursor-pointer"
-          aria-label="Город"
-        >
-          {CITIES.map((c) => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
 
+        {/* City autocomplete */}
+        <div className="relative w-40 flex-shrink-0">
+          <input
+            type="text"
+            value={cityInput}
+            onChange={(e) => handleCityInputChange(e.target.value)}
+            onFocus={() => cityInput && !selectedCity && setCityOpen(cityMatches.length > 0)}
+            placeholder={cityPlaceholder}
+            className="input-field w-full"
+            autoComplete="off"
+            aria-label={t('cityLabel')}
+          />
+          {cityOpen && cityMatches.length > 0 && (
+            <ul className="absolute z-50 w-56 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+              {cityMatches.map((s) => (
+                <li key={s.lv}>
+                  <button
+                    type="button"
+                    onMouseDown={(e) => { e.preventDefault(); selectCity(s) }}
+                    className="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 border-b border-gray-100 last:border-0 min-h-[44px] flex flex-col justify-center"
+                  >
+                    <span className="font-medium">{isRu ? s.ru : s.lv}</span>
+                    {isRu && <span className="text-xs text-gray-400">{s.lv}</span>}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* Street + house number */}
         <div className="relative flex-1">
           <input
-            ref={inputRef}
+            ref={streetRef}
             type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Brīvības iela 55"
-            className="input-field w-full pr-10"
+            value={streetQuery}
+            onChange={(e) => setStreetQuery(e.target.value)}
+            disabled={!selectedCity}
+            placeholder={streetPlaceholder}
+            className="input-field w-full pr-10 disabled:opacity-50 disabled:cursor-not-allowed"
             autoComplete="off"
-            aria-label="Улица и номер дома"
+            aria-label={t('streetLabel')}
           />
           {loading && (
             <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -121,13 +165,14 @@ export function AddressSearch({ onSelect }: Props) {
         </div>
       </div>
 
-      {open && suggestions.length > 0 && (
+      {/* Street suggestions */}
+      {streetOpen && suggestions.length > 0 && (
         <ul className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
           {suggestions.map((s) => (
             <li key={s.id}>
               <button
                 type="button"
-                onClick={() => handleSelect(s)}
+                onClick={() => handleStreetSelect(s)}
                 className="w-full text-left px-4 py-3 text-sm hover:bg-gray-50 border-b border-gray-100 last:border-0 min-h-[48px] flex items-center"
               >
                 {s.address}
@@ -137,9 +182,9 @@ export function AddressSearch({ onSelect }: Props) {
         </ul>
       )}
 
-      {open && !loading && suggestions.length === 0 && query.trim().length >= 2 && (
+      {streetOpen && !loading && suggestions.length === 0 && streetQuery.trim().length >= 3 && (
         <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg px-4 py-3 text-sm text-gray-500">
-          Адрес не найден. Проверьте улицу и номер дома.
+          {t('addressNotFound')}
         </div>
       )}
     </div>

@@ -1,0 +1,104 @@
+name: Sync Open Data
+
+# Syncs Latvian government open datasets into PostgreSQL.
+# All sources are CC-BY-4.0 and free to bulk-download from data.gov.lv.
+#
+# Schedule:
+#   Weekly (Mon 03:00 UTC): Building.ZIP, BVKB energy certs, VAR addresses
+#   Monthly (12th 04:00 UTC): Apartment transaction prices (tg_darjumi)
+#   Manual: apartment transactions full historical backfill, cadastral values
+on:
+  schedule:
+    # Weekly — building metadata, energy certs, address register
+    - cron: '0 3 * * 1'
+    # Monthly on 12th — apartment transaction prices (VZD publishes on 10th)
+    - cron: '0 4 12 * *'
+  workflow_dispatch:
+    inputs:
+      job:
+        description: 'Which sync job to run'
+        required: true
+        type: choice
+        options:
+          - all-weekly
+          - transactions
+          - buildings
+          - addresses
+          - energy-certs
+
+jobs:
+  weekly-sync:
+    name: Weekly — buildings, addresses, energy certs
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'schedule' && github.event.schedule == '0 3 * * 1' ||
+      github.event_name == 'workflow_dispatch' && (inputs.job == 'all-weekly' || inputs.job == 'buildings' || inputs.job == 'addresses' || inputs.job == 'energy-certs')
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      VZD_DATA_URL: ${{ secrets.VZD_DATA_URL }}
+      BVKB_DATA_URL: ${{ secrets.BVKB_DATA_URL }}
+      SKIP_ENV_VALIDATION: "true"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Run migrations
+        run: npx prisma migrate deploy
+
+      - name: Sync VAR building addresses
+        if: >
+          inputs.job == 'all-weekly' || inputs.job == 'addresses' ||
+          github.event_name == 'schedule'
+        run: npx tsx scripts/sync-vzd.ts
+
+      - name: Sync BVKB energy certificates
+        if: >
+          inputs.job == 'all-weekly' || inputs.job == 'energy-certs' ||
+          github.event_name == 'schedule'
+        run: npx tsx scripts/sync-bvkb.ts
+
+  monthly-transactions:
+    name: Monthly — apartment transaction prices
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'schedule' && github.event.schedule == '0 4 12 * *' ||
+      github.event_name == 'workflow_dispatch' && inputs.job == 'transactions'
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      # Full historical CSV (2016–present, ~200MB); set VZD_TRANSACTIONS_URL in repo secrets
+      # URL: https://data.gov.lv/dati/dataset/ab6b043f-9824-4f7f-afa2-c97d3cb1ed4b/resource/ee3a262f-dfc2-4e87-b74b-440629ee1e31/download/tg_darjumi_01012016-31032026.csv
+      VZD_TRANSACTIONS_URL: ${{ secrets.VZD_TRANSACTIONS_URL }}
+      SKIP_ENV_VALIDATION: "true"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Run migrations
+        run: npx prisma migrate deploy
+
+      - name: Sync apartment transactions
+        run: npx tsx scripts/sync-transactions.ts

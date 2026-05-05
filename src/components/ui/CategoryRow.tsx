@@ -1,3 +1,5 @@
+import { useTranslations } from 'next-intl'
+
 interface CategoryRowProps {
   label: string
   valuePerM2: number
@@ -6,6 +8,8 @@ interface CategoryRowProps {
 }
 
 export function CategoryRow({ label, valuePerM2, deviationPct, hasData }: CategoryRowProps) {
+  const t = useTranslations('components.categoryRow')
+
   const dotClass =
     deviationPct > 20
       ? 'status-dot-danger'
@@ -28,7 +32,7 @@ export function CategoryRow({ label, valuePerM2, deviationPct, hasData }: Catego
       </div>
       <div className="text-right flex-shrink-0 ml-3">
         <span className="text-sm font-medium text-gray-900">
-          €{valuePerM2.toFixed(2)}/м²
+          {t('perM2', { value: valuePerM2.toFixed(2) })}
         </span>
         {hasData && (
           <span className={`text-xs ml-2 ${devClass}`}>

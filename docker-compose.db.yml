@@ -14,3 +14,29 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  # One-off runner for sync scripts and seeds.
+  # Usage: docker compose -f docker-compose.db.yml run --rm scripts npx tsx scripts/sync-vzd.ts
+  # Source + node_modules are bind-mounted from host (works on linux/amd64 with libc6-compat).
+  scripts:
+    build:
+      context: .
+      dockerfile: Dockerfile.scripts
+    volumes:
+      - .:/app
+    working_dir: /app
+    env_file:
+      - path: .env.local
+        required: false
+    environment:
+      # Override DATABASE_URL from .env.local — inside Docker, db is reachable via service name
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/alteko
+      SKIP_ENV_VALIDATION: "true"
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles:
+      - scripts

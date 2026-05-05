@@ -1,4 +1,5 @@
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 
 interface PageHeaderProps {
   variant?: 'minimal' | 'breadcrumb' | 'admin'
@@ -7,6 +8,8 @@ interface PageHeaderProps {
 }
 
 export function PageHeader({ variant = 'minimal', backHref, backLabel }: PageHeaderProps) {
+  const t = useTranslations('components.pageHeader')
+
   if (variant === 'breadcrumb' && backHref) {
     return (
       <header className="flex items-center px-4 py-3 border-b border-gray-100 bg-white gap-3">
@@ -17,7 +20,7 @@ export function PageHeader({ variant = 'minimal', backHref, backLabel }: PageHea
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M10 12L6 8l4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          <span className="truncate">{backLabel ?? 'Назад'}</span>
+          <span className="truncate">{backLabel ?? t('back')}</span>
         </Link>
         <Link href="/" className="text-lg font-bold text-gray-900 flex-shrink-0">
           ALTEKO
@@ -31,7 +34,7 @@ export function PageHeader({ variant = 'minimal', backHref, backLabel }: PageHea
     return (
       <header className="bg-white flex items-center justify-between px-4 py-4 border-b border-gray-100">
         <Link href="/" className="text-xl font-bold text-gray-900">ALTEKO</Link>
-        <span className="text-sm text-gray-500">Панель правления</span>
+        <span className="text-sm text-gray-500">{t('boardPanel')}</span>
       </header>
     )
   }

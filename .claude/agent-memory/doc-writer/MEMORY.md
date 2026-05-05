@@ -1,1 +1,3 @@
 - [Design system document created](project_design_system.md) — design-system.md created 2026-05-02; Tailwind tokens, 11 components, CSS classes, prohibited patterns
+- [VZD open data sources added](project_data_sources_vzd.md) — 6 new datasets in data-sources.md (2026-05-02); NITIS, apartment transactions, PremiseGroup, cadastral values, zoning SHP, CSP API; all [НЕ ВЕРИФИЦИРОВАНО]
+- [Architecture docs major update May 2026](project_architecture_update_2026_05.md) — architecture.md rewritten from code; OCR bug fixed in diagrams; 3 new diagrams (auth/voting/sync)

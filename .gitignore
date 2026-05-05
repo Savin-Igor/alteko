@@ -28,3 +28,20 @@ build/
 # Data — DB files and backups live on host, not in repo
 data/
 backups/
+
+# Temp files kept by KEEP_TEMP_FILES=true (sync scripts)
+tmp/
+
+# Local tooling
+.playwright-mcp/
+.claude/worktrees/
+.claude/agent-memory/
+.firecrawl/
+
+# Screenshots and local review artifacts
+*.png
+*.jpeg
+*.jpg
+
+# Payload MCP config (contains API key)
+.mcp.json

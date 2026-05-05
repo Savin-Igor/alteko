@@ -1,4 +1,8 @@
 {
+  "metadata": {
+    "title": "ALTEKO — Mājas gatavības platforma",
+    "description": "Sagatavojiet daudzdzīvokļu māju nākamajam finansējuma logam: dati, dokumenti, īpašnieku lēmumi, piegādātāju izvēle."
+  },
   "nav": {
     "audit": "Audits",
     "renovation": "Renovācija",
@@ -12,12 +16,773 @@
   },
   "common": {
     "free": "Bez maksas",
-
     "seconds30": "30 sekundes",
     "findHome": "Atrast savu māju →",
     "checkBill": "Pārbaudīt rēķinu bez maksas",
     "back": "Atpakaļ",
     "backToMain": "Uz sākumu"
+  },
+  "home": {
+    "hero": {
+      "titleQuestion": "Sagatavojiet māju",
+      "titleAnswer": "nākamajam finansējuma logam",
+      "description": "Pārbaudiet mājas gatavību, sagatavojiet dokumentus un īpašnieku lēmumus pirms programmas atvēršanās 2027. gadā.",
+      "cta": "Sākt pārbaudi",
+      "ctaLoading": "Meklējam māju...",
+      "errorNotFound": "Māja nav atrasta datu bāzē. Mēģiniet citu adresi.",
+      "errorConnection": "Savienojuma kļūda. Pārbaudiet internetu un mēģiniet vēlreiz.",
+      "stats": {
+        "free": "Bez maksas",
+        "buildings": "Oficiālie dati no Latvijas reģistriem"
+      },
+      "journey": {
+        "step1": "Augšupielādēt rēķinu",
+        "step2": "Saņemt atskaiti",
+        "step3": "Aprēķināt renovāciju"
+      }
+    },
+    "problem": {
+      "heading": "7 no 10 padomju laika mājām pārmaksā",
+      "description": "Apsaimniekotāji izraksta rēķinus pēc saviem standartiem — iedzīvotāji nepārbauda. Mēs salīdzinām.",
+      "stats": [
+        { "value": "+23%", "label": "vidējā pārmaksa par apkuri" },
+        { "value": "+15%", "label": "vidējā pārmaksa par karsto ūdeni" },
+        { "value": "+47%", "label": "lielākā pārmaksa par uzkopšanu" },
+        { "value": "~€840", "label": "pārmaksa gadā no vienas mājas" }
+      ]
+    },
+    "steps": {
+      "heading": "Kā tas darbojas",
+      "items": [
+        {
+          "n": "1",
+          "title": "Atrodiet savu māju",
+          "desc": "Ievadiet adresi — parādīsim datus no VZD reģistra: sēriju, celtniecības gadu, energoklasi."
+        },
+        {
+          "n": "2",
+          "title": "Augšupielādējiet rēķinu",
+          "desc": "PDF no apsaimniekotāja. Sistēma analizēs dokumentu un salīdzinās izdevumus ar normu jūsu sērijai."
+        },
+        {
+          "n": "3",
+          "title": "Saņemiet atskaiti",
+          "desc": "Pārmaksa katrai pozīcijai procentos un eiro — ar salīdzinājumu pret normu jūsu sērijai un rajonam."
+        },
+        {
+          "n": "4",
+          "title": "Aprēķiniet renovāciju",
+          "desc": "Ietaupījums pēc renovācijas, Altum subsīdija līdz 49% un atmaksāšanās laiks — balstoties uz jūsu mājas datiem."
+        }
+      ],
+      "cta": "Sākt pārbaudi",
+      "ctaNote": "Rezultāts — 30 sekundēs"
+    },
+    "sample": {
+      "heading": "Atskaites paraugs",
+      "subtitle": "Reāls anonīms piemērs · 119. sērija · Purvciems · 5 400 m²",
+      "normLabel": "norma",
+      "yearOverpay": "Pārmaksa gadā",
+      "yearOverpayValue": "~€3 900",
+      "perApartment": "Tas ir ~€78 no katra dzīvokļa gadā",
+      "rows": [
+        { "label": "Apkure", "value": "€1.82/m²", "norm": "€1.09/m²", "dev": "+67%", "variant": "danger" },
+        { "label": "Karstais ūdens", "value": "€3.41/m²", "norm": "€2.89/m²", "dev": "+18%", "variant": "warning" },
+        { "label": "Uzkopšana", "value": "€0.33/m²", "norm": "€0.23/m²", "dev": "+43%", "variant": "danger" },
+        { "label": "Apsaimniekošana", "value": "€0.19/m²", "norm": "€0.20/m²", "dev": "−5%", "variant": "success" }
+      ]
+    },
+    "renovation": {
+      "heading": "Remonta finansējums: pieci reāli scenāriji",
+      "description": "ALTUM 2021-2027 ir slēgta jauniem pieteikumiem. Nākamais logs — Sociālā klimata fonds 2026-2032 (MK noteikumi gaidāmi Q4 2026, pieteikumi līdz Q2 2027). Paliek ALTUM remonta aizdevums un komercbanku iespējas.",
+      "stats": [
+        { "value": "Slēgts", "label": "ALTUM 2021-2027 — jauni pieteikumi netiek pieņemti" },
+        { "value": "Gaidāms", "label": "Sociālā klimata fonds 2026-2032 — €127M daudzdzīvokļu mājām" },
+        { "value": "3,9% / 20 g.", "label": "ALTUM remonta aizdevums — atvērts līdz 30.06.2031" },
+        { "value": "+10–11%", "label": "dzīvokļa vērtības pieaugums pēc renovācijas (Latvijas Banka)" }
+      ],
+      "note": "Provizorisks aprēķins jūsu mājai — pēc rēķina augšupielādes vai gatavības atskaites pasūtīšanas.",
+      "cta": "Finansējuma scenāriji →"
+    },
+    "boards": {
+      "tagline": "Biedrību valdēm",
+      "heading": "Pārvaldiet vairākas mājas vienā panelī",
+      "bullets": [
+        "Izmaksu dinamika visām portfeļa mājām",
+        "Anomālijas un salīdzinājums ar tirgu — argumenti sarunām",
+        "Elektroniskā balsošana ar Smart-ID — savākt ≥50% bez klātienes sapulces",
+        "Konkurss starp pārbaudītiem darbuzņēmējiem"
+      ],
+      "cta": "Atvērt paneli →",
+      "ctaNote": "Nepieciešama reģistrācija"
+    },
+    "trust": {
+      "heading": "Datu avoti",
+      "sources": [
+        {
+          "name": "VZD (Valsts zemes dienests)",
+          "desc": "Kadastra reģistrs: ēkas tips, platība, būvniecības gads."
+        },
+        {
+          "name": "BVKB (Būvniecības valsts kontroles birojs)",
+          "desc": "Energoefektivitātes sertifikāti: klase un siltuma patēriņš. Dati tiek atjaunināti katru dienu."
+        },
+        {
+          "name": "SPRK",
+          "desc": "Latvijas komunālo pakalpojumu tarifi un normas."
+        },
+        {
+          "name": "Altum",
+          "desc": "Oficiālie renovācijas subsīdiju nosacījumi."
+        }
+      ],
+      "privacyLabel": "Konfidencialitāte:",
+      "privacy": "PDF tiek dzēsts pēc analīzes. Māju dati tiek publicēti tikai apkopotā veidā — bez saiknes ar konkrētiem iedzīvotājiem."
+    },
+    "faq": {
+      "heading": "Biežāk uzdotie jautājumi",
+      "items": [
+        {
+          "q": "No kurienes jūs zināt, cik «vajadzētu būt»?",
+          "a": "Mēs apkopojam datus no simtiem Latvijas māju augšupielādētajiem rēķiniem un veidojam etalonus pēc ēkas sērijas, būvniecības gada, platības un rajona. Jo vairāk datu — jo precīzāka norma. Jūs redzat tieši savas mājas atšķirību no normas, nevis abstraktu vidējo rādītāju."
+        },
+        {
+          "q": "Mana māja nav atrasta datu bāzē — ko darīt?",
+          "a": "Augšupielādējiet rēķinu jebkurā gadījumā. Mēs salīdzināsim jūsu datus ar vidējiem rādītājiem rajonā un pēc sērijas. Mājas kartīte tiks papildināta vēlāk, kad VZD atjauninās reģistru."
+        },
+        {
+          "q": "Kas notiks ar manu e-pastu?",
+          "a": "Atskaite un paziņojumi par jūsu māju. Jūs paši izvēlaties, ko saņemt — ievadot e-pastu, varat izvēlēties tēmas, kas jūs interesē."
+        },
+        {
+          "q": "Vai tas ir maksas pakalpojums?",
+          "a": "Izmaksu audits un pamata atskaite — bez maksas. Personīgais renovācijas aprēķins — bez maksas. Maksas pakalpojums: darījuma pavadīšana ar darbuzņēmēju (komisija 1–2% no līguma summas)."
+        },
+        {
+          "q": "Es esmu valdes priekšsēdētājs. Ko tas man dod?",
+          "a": "Augšupielādējiet rēķinus par visām portfeļa mājām — saņemsiet izmaksu dinamiku, anomālijas, salīdzinājumu ar normu. Rīks sarunām ar apsaimniekotāju un argumenti īpašniekiem, balsojot par renovāciju."
+        }
+      ]
+    },
+    "blogPreview": {
+      "heading": "No bloga",
+      "all": "Visi raksti →",
+      "min": "min.",
+      "posts": [
+        {
+          "href": "/blog/subsidiya-altum-renovaciya-2025",
+          "title": "Altum subsīdija: pilnīgs ceļvedis 2025",
+          "tag": "renovācija",
+          "mins": 8
+        },
+        {
+          "href": "/blog/norma-rashoda-tepla-latviya",
+          "title": "Siltuma patēriņa norma: cik vajadzētu būt",
+          "tag": "apkure",
+          "mins": 6
+        },
+        {
+          "href": "/blog/seriya-119-latviya",
+          "title": "119. sērijas mājas: kāpēc pārmaksā",
+          "tag": "apkure",
+          "mins": 7
+        }
+      ]
+    },
+    "footer": {
+      "description": "Platforma padomju laika māju iedzīvotājiem Latvijā",
+      "servicesTitle": "Pakalpojumi",
+      "auditLink": "Rēķinu audits",
+      "renovationLink": "Renovācija",
+      "blogLink": "Blogs",
+      "partnersTitle": "Partneriem",
+      "contractorsLink": "Darbuzņēmējiem",
+      "contactsTitle": "Kontakti",
+      "privacyLink": "Konfidencialitātes politika",
+      "termsLink": "Lietošanas noteikumi",
+      "copyright": "© 2025 ALTEKO"
+    }
+  },
+  "components": {
+    "siteHeader": {
+      "openMenu": "Atvērt izvēlni",
+      "closeMenu": "Aizvērt izvēlni"
+    },
+    "fileDropzone": {
+      "uploadFile": "Augšupielādēt failu",
+      "wrongType": "Nepieciešams {accept} fails.",
+      "tooLarge": "Fails ir pārāk liels. Maksimums — {size} MB.",
+      "fileSize": "{size} KB · noklikšķiniet, lai aizstātu",
+      "dropOrClick": "Velciet PDF vai noklikšķiniet, lai izvēlētos",
+      "supports": "Atbalstīts: PDF līdz {size} MB"
+    },
+    "addressSearch": {
+      "cityLabel": "Pilsēta",
+      "cityPlaceholder": "Pilsēta / ciems",
+      "streetLabel": "Iela un mājas numurs",
+      "streetPlaceholderActive": "Iela un mājas numurs",
+      "streetPlaceholderInactive": "Vispirms izvēlieties pilsētu",
+      "addressNotFound": "Adrese nav atrasta. Pārbaudiet ielas nosaukumu."
+    },
+    "addressAutocomplete": {
+      "label": "Mājas adrese",
+      "placeholder": "Ievadiet jūsu mājas adresi",
+      "notFound": "Adrese nav atrasta. Pārbaudiet pareizrakstību."
+    },
+    "pageHeader": {
+      "back": "Atpakaļ",
+      "boardPanel": "Valdes panelis"
+    },
+    "categoryRow": {
+      "perM2": "€{value}/m²"
+    }
+  },
+  "voting": {
+    "campaignNotFound": "Kampaņa nav atrasta.",
+    "backHome": "Uz sākumu",
+    "deadlinePrefix": "Līdz ",
+    "votedLabel": "Nobalsojuši:",
+    "votedCount": "{voted} no {total}",
+    "totalUnknown": "?",
+    "shareLabel": "Par: {yes}% · Vajag: {required}%",
+    "yesLabel": "Par",
+    "noLabel": "Pret",
+    "abstainLabel": "Atturas",
+    "thresholdReached": "Lēmums pieņemts — sasniegts nepieciešamais slieksnis. Protokols sagatavots.",
+    "cancelled": "Balsošana pabeigta. Slieksnis nav sasniegts.",
+    "yourVote": "Jūsu balss",
+    "errorRequest": "Pieprasījuma kļūda",
+    "errorConnection": "Savienojuma kļūda",
+    "signWith": "Parakstiet ar:",
+    "personalCodeLabel": "Personas kods",
+    "personalCodePlaceholder": "XXXXXX-XXXXX",
+    "back": "Atpakaļ",
+    "continue": "Turpināt",
+    "smartIdLoading": "Sūtām pieprasījumu uz Smart-ID...",
+    "smartIdConfirm": "Atveriet Smart-ID lietotni un apstipriniet:",
+    "waitingConfirm": "Gaidām apstiprinājumu...",
+    "smartIdTimeout": "Smart-ID neatbildēja 90 sekunžu laikā. Mēģiniet vēlreiz.",
+    "identityConfirmed": "Identitāte apstiprināta. Izvēlieties lēmumu:",
+    "voteYes": "Atbalstu renovāciju",
+    "voteNo": "Pret",
+    "voteAbstain": "Atturos",
+    "voteRecorded": "Balss reģistrēta",
+    "yourDecision": "Jūsu lēmums:",
+    "decisionYes": "Par renovāciju",
+    "decisionNo": "Pret",
+    "decisionAbstain": "Atturējās",
+    "signedNote": "Dati parakstīti ar elektronisko parakstu"
+  },
+  "contractors": {
+    "specializations": [
+      "Fasādes siltināšana",
+      "Logu nomaiņa",
+      "Jumta darbi",
+      "Apkures sistēmas nomaiņa",
+      "Ventilācija",
+      "Pagrabs un pamati",
+      "Kompleksa renovācija"
+    ],
+    "districts": [
+      "Rīga", "Jūrmala", "Jelgava", "Daugavpils", "Rēzekne",
+      "Liepāja", "Ventspils", "Valmiera", "Jēkabpils"
+    ],
+    "applicationSent": "Pieteikums nosūtīts",
+    "verifiedMessage": "Uzņēmums verificēts Lursoft. Pieteikums tiek izskatīts ALTEKO administratoram — atbilde 2 darbdienu laikā.",
+    "unverifiedMessage": "Pieteikums saņemts. Mēs sazināsimies ar jums 2 darbdienu laikā, lai pārbaudītu datus.",
+    "applicationId": "Pieteikuma ID: {id}",
+    "backHome": "Uz sākumu",
+    "valuePropTitle": "Saņemiet konkursus no gatavām mājām",
+    "valuePropDesc": "Mājas ar ≥50% īpašnieku balsīm meklē darbuzņēmēju. Nekādu auksto zvanu — tikai ienākoši pieprasījumi pēc jūsu specializācijas.",
+    "lursoftVerification": "Verifikācija ar Lursoft",
+    "commission": "Fiksēts abonements — bez komisijas par darījumu",
+    "verifiedClients": "Tikai pārbaudīti klienti",
+    "companyName": "Uzņēmuma nosaukums",
+    "regNumber": "Reģistrācijas numurs",
+    "checkedVia": "Tiek pārbaudīts ar ",
+    "specializationLabel": "Specializācija",
+    "selectAtLeastOne": "Izvēlieties vismaz vienu specializāciju",
+    "coverageLabel": "Ģeogrāfiskais pārklājums",
+    "agreementText": "Piekrītu ALTEKO darbuzņēmēju abonementa nosacījumiem — fiksēta ikmēneša maksa par profilu un piekļuvi konkursiem, bez komisijas par uzvaru.",
+    "errorRegister": "Reģistrācijas kļūda",
+    "errorConnection": "Savienojuma kļūda. Mēģiniet vēlreiz.",
+    "checkingLursoft": "Pārbaudām Lursoft...",
+    "submitButton": "Iesniegt pieteikumu",
+    "landing": {
+      "heroTitle": "Saņemiet konkursus no gatavām mājām",
+      "heroSubtitle": "Mājas ar ≥50% dzīvokļu īpašnieku balsīm meklē darbuzņēmēju. Ienākošie pieprasījumi pēc jūsu specializācijas — bez aukstajiem zvaniem.",
+      "heroCta": "Reģistrēties",
+      "statsCommissionLabel": "fiksēts abonements, bez komisijas par uzvaru",
+      "statsDealsLabel": "mājas nepieciešama renovācija",
+      "statsLeadsLabel": "tikai ienākošie pieprasījumi",
+      "howHeading": "Kā tas darbojas",
+      "step1Title": "Reģistrācija",
+      "step1Desc": "Norādiet uzņēmumu, specializāciju un reģionus. Pārbaude caur Lursoft — 2 darba dienas.",
+      "step2Title": "Verifikācija",
+      "step2Desc": "Pēc pārbaudes jūs parādāties tirgū. Bez priekšapmaksas un abonēšanas maksas.",
+      "step3Title": "Konkursi",
+      "step3Desc": "Mājas, kas gatavas renovācijai, patstāvīgi atrod jūs. Jūs iesniedzat piedāvājumu — mēs pavadām darījumu.",
+      "ctaHeading": "Sāciet saņemt konkursus",
+      "ctaButton": "Reģistrēties →",
+      "ctaNote": "Bez maksas · Bez abonēšanas maksas"
+    }
+  },
+  "share": {
+    "linkExpired": "Saite ir novecojusi vai māja nav atrasta.",
+    "findHome": "Atrast savu māju",
+    "neighborShared": "Jūsu kaimiņš dalījās ar rezultātu",
+    "noDataYet": "Vēl neviens nav augšupielādējis rēķinu par šo māju",
+    "beFirst": "Esiet pirmais — uzziniet, kā jūsu māja salīdzinās ar normu",
+    "normalLabel": "Māja tērē normas robežās",
+    "normalDesc": "Detalizēta kategoriju analīze — pilnajā atskaitē",
+    "overpayLabel": "Pārmaksa par apkuri:",
+    "comparedTo": "salīdzinājumā ar normu līdzīgām mājām",
+    "uploadCta": "Augšupielādēt savu rēķinu — bez maksas →",
+    "ctaNote": "Bez maksas · 30 sekundes",
+    "differentBuilding": "Dzīvojat citā mājā?",
+    "findYour": "Atrodiet savu →",
+    "seriesPrefix": "Sērija {series}",
+    "yearSuffix": "{year}. g.",
+    "classLabel": "Klase {class}"
+  },
+  "dashboard": {
+    "tabs": {
+      "myBuildings": "Manas mājas",
+      "projects": "Projekti",
+      "voting": "Balsošana"
+    },
+    "main": {
+      "heading": "Manas mājas",
+      "emptyTitle": "Nav datu par mājām",
+      "emptyDescription": "Augšupielādējiet pirmo rēķinu, lai sāktu izdevumu uzraudzību.",
+      "emptyAction": "Atrast māju un augšupielādēt rēķinu",
+      "seriesPrefix": "Sērija {series}",
+      "classLabel": "Klase {class}",
+      "reportsCount": "{count} atsk.",
+      "latestHeating": "Apkure (pēdējais periods)",
+      "perM2": "€{value}/m²",
+      "trendLabel": "Apkures tendence, €/m²:",
+      "buildingCard": "Mājas kartīte",
+      "votingLink": "Balsošana"
+    },
+    "voting": {
+      "heading": "Īpašnieku balsošana",
+      "step1Title": "1. solis. Īpašnieku saraksts",
+      "step1Hint": "CSV fails: dzīvoklis;platība_m2;daļa_%;zemesgramata_ref (pēc izvēles)",
+      "selectCsv": "Izvēlieties CSV failu",
+      "csvFromZG": "Saņemiet no Zemesgrāmata",
+      "uploadOwners": "Augšupielādēt īpašnieku sarakstu",
+      "uploadingButton": "Augšupielādējam...",
+      "csvSizeLabel": "{size} KB",
+      "extractFrom": "Izraksts no ",
+      "orManualCsv": " vai apsaimniekotāja manuālais CSV",
+      "step2Title": "2. solis. Izveidot kampaņu",
+      "voteTitleLabel": "Balsošanas jautājums",
+      "voteTitlePlaceholder": "Ēkas renovācija 2025. gadā",
+      "deadlineLabel": "Balsošanas termiņš (pēc izvēles)",
+      "createButton": "Atvērt balsošanu",
+      "creating": "Izveidojam...",
+      "afterCreate": "Pēc izveides īpašnieki saņem saiti balsošanai ar Smart-ID vai eParaksts. Nepieciešami ≥50% «par» balsu.",
+      "campaignsHeading": "Kampaņas",
+      "openCampaign": "Atvērt →",
+      "yesShare": "Par: {percent}%",
+      "campaignCreatedSuccess": "Balsošana izveidota. Saite iedzīvotājiem: {link}",
+      "uploadedSuccess": "Augšupielādēti {upserted} no {total} īpašniekiem",
+      "errorCreate": "Izveides kļūda",
+      "errorUpload": "Augšupielādes kļūda",
+      "errorConnection": "Savienojuma kļūda",
+      "campaignStatus": {
+        "DRAFT": "Melnraksts",
+        "ACTIVE": "Aktīva",
+        "COMPLETED": "Pabeigta",
+        "CANCELLED": "Atcelta"
+      }
+    },
+    "tenders": {
+      "heading": "Renovācijas projekti",
+      "emptyTitle": "Projektu vēl nav",
+      "emptyDescription": "Projekti parādās automātiski, kad balsošana sasniedz ≥50% «par» balsu.",
+      "emptyAction": "Sākt balsošanu",
+      "lursoftVerified": "Lursoft pārbaudīts",
+      "noContractor": "Darbuzņēmējs vēl nav izvēlēts",
+      "contractValue": "Līguma summa:",
+      "commission": "ALTEKO komisija:",
+      "campaignYesShare": "Balsojums «par»: {percent}%",
+      "status": {
+        "INITIATED": "Izveidots",
+        "VOTING": "Balsošana",
+        "CONTRACTED": "Līgums",
+        "IN_PROGRESS": "Izpildē",
+        "COMPLETED": "Pabeigts"
+      }
+    }
+  },
+  "audit": {
+    "categories": {
+      "HEATING": "Apkure",
+      "COLD_WATER": "Aukstais ūdens",
+      "HOT_WATER": "Karstais ūdens",
+      "WASTEWATER": "Kanalizācija",
+      "WASTE": "Atkritumu izvešana",
+      "CLEANING": "Uzkopšana",
+      "REPAIR_FUND": "Remonta fonds",
+      "ADMINISTRATION": "Apsaimniekošana",
+      "ELEVATOR": "Lifts",
+      "OTHER": "Cits"
+    },
+    "months": ["Janvāris", "Februāris", "Marts", "Aprīlis", "Maijs", "Jūnijs", "Jūlijs", "Augusts", "Septembris", "Oktobris", "Novembris", "Decembris"],
+    "upload": {
+      "title": "Augšupielādējiet rēķinu",
+      "subtitle": "no apsaimniekotāja",
+      "yearLabel": "Rēķina gads",
+      "monthLabel": "Mēnesis",
+      "fileHint": "Namsaimnieks, RNP, Latio rēķini u.c. · PDF līdz 10 MB",
+      "privacyInfo": "Fails tiek izmantots tikai jūsu mājas analīzei un netiek nodots trešajām personām.",
+      "submitButton": "Analizēt rēķinu",
+      "uploadingButton": "Augšupielādējam...",
+      "errorUpload": "Augšupielādes kļūda. Mēģiniet vēlreiz.",
+      "errorConnection": "Savienojuma kļūda. Pārbaudiet internetu un mēģiniet vēlreiz.",
+      "back": "Atpakaļ"
+    },
+    "preview": {
+      "title": "Analizējam jūsu rēķinu",
+      "stepParsing": "Lasām rēķina datus...",
+      "stepComparing": "Salīdzinām ar līdzīgām mājām...",
+      "stepDone": "Rezultāts gatavs",
+      "timeEstimate": "Parasti aizņem 15–30 sekundes",
+      "waitingTip": "Kamēr gaidāt: 119. sērijas mājas patērē apkurei vidēji par 38% vairāk nekā tādas pašas platības mājas pēc renovācijas.",
+      "toMedian": "salīdzinot ar līdzīgu māju mediānu",
+      "viewReport": "Skatīt atskaiti →",
+      "tryAgain": "Mēģināt vēlreiz",
+      "errorParse": "Neizdevās izlasīt rēķinu.",
+      "errorConnection": "Savienojuma kļūda. Pārbaudiet internetu un mēģiniet vēlreiz."
+    },
+    "report": {
+      "label": "Atskaite",
+      "summaryLabel": "Kopā",
+      "summaryUnit": "no normas",
+      "summaryOverpay": "Potenciāla pārmaksa: ~€{amount} gadā",
+      "gateTitle": "Pilna atskaite ietver:",
+      "gateBullet1": "Izdevumu sadalījumu pa {count} kategorijām",
+      "gateBullet2": "Anomālijas pēdējo 12 mēnešu laikā",
+      "gateBullet3": "Salīdzinājumu pēc jūsu rajona",
+      "gateBullet4": "Ieteikumus, ko pārbaudīt",
+      "gateSpamNote": "Bez surogātpasta. Tikai dati par jūsu māju. Atrakstīties ar vienu klikšķi.",
+      "categoriesTitle": "Pa kategorijām:",
+      "whatToDo": "Ko ar to darīt?",
+      "losingMoneyPrefix": "Jūsu māja zaudē ",
+      "losingMoneySuffix": ". Renovācija novērš iemeslu — un valsts sedz līdz 49% no izmaksām.",
+      "losingMoneyAmount": "~€{amount} gadā",
+      "calcRenovation": "Aprēķināt renovāciju ar Altum subsīdiju →",
+      "howAltum": "Kā darbojas Altum subsīdija?",
+      "shareTitle": "Vai kaimiņi arī pārmaksā?",
+      "shareSubtitle": "Padalieties — lai pārbauda",
+      "shareMessage": "Pārbaudīju mūsu mājas izdevumus ALTEKO. Pārmaksājam par apkuri {deviation}%. Apskaties: {url}",
+      "shareShortMessage": "Pārmaksājam par apkuri {deviation}%"
+    },
+    "marketing": {
+      "metadata": {
+        "title": "Mājas komunālo izdevumu audits — ALTEKO",
+        "description": "Pārbaudiet, vai jūsu māja pārmaksā par apkuri un komunālajiem pakalpojumiem. Salīdzinām pēc sērijas un rajona."
+      },
+      "hero": {
+        "title": "Vai jūsu māja pārmaksā?",
+        "titleAccent": "Pārbaudīsim 30 sekundēs.",
+        "description": "Augšupielādējiet rēķinu — salīdzināsim ar normu līdzīgām mājām jūsu rajonā.",
+        "cta": "Atrast savu māju",
+        "ctaLoading": "Meklējam māju...",
+        "errorNotFound": "Māja nav atrasta datu bāzē. Mēģiniet citu adresi.",
+        "errorConnection": "Savienojuma kļūda. Pārbaudiet internetu un mēģiniet vēlreiz."
+      },
+      "whatIs": {
+        "heading": "Ko pārbauda izmaksu audits",
+        "description": "Katrs eiro rēķinā tiek normēts uz m² un salīdzināts ar mediānu līdzīgām mājām: sērija, gads, rajons.",
+        "categories": [
+          { "label": "Apkure", "desc": "60% no visām pārmaksām. Salīdzinām pēc ēkas sērijas — 103., 119., 467. u.c." },
+          { "label": "Karstais ūdens", "desc": "Kopīgā skaitītāja rādījums vs. dzīvokļu summa — noplūdes vai aprēķina kļūdas pazīme." },
+          { "label": "Uzkopšana un pārvaldība", "desc": "Necaurspīdīgas pozīcijas. Salīdzinām ar tirgu jūsu rajonā." },
+          { "label": "Remonta fonds", "desc": "Uzkrātais vs. plānotie darbi. Anomālijas ir uzreiz redzamas." }
+        ]
+      },
+      "boards": {
+        "tagline": "Valdēm",
+        "heading": "Argumenti sarunām ar apsaimniekotāju",
+        "description": "Viens panelis visam māju portfelim. Anomālijas, tendences, salīdzinājums ar tirgu.",
+        "bullets": [
+          "Augšupielādējiet rēķinus par vairākām mājām vienuviet",
+          "Redziet izdevumu tendences katrai kategorijai",
+          "Atklājiet anomālijas automātiski",
+          "Sagatavojiet argumentus īpašniekiem, balsojot par renovāciju"
+        ],
+        "cta": "Atvērt paneli →"
+      },
+      "faq": {
+        "heading": "Biežāk uzdotie jautājumi",
+        "items": [
+          { "q": "Ko tieši pārbauda?", "a": "Visas rēķina pozīcijas: apkure, karstais un aukstais ūdens, kanalizācija, uzkopšana, pārvaldība, remonta fonds, lifts. Katra tiek normēta uz m² un salīdzināta ar P25/P50/P75 pēc līdzīgām mājām." },
+          { "q": "No kurienes ņem normas datus?", "a": "No rēķiniem, ko augšupielādē iedzīvotāji visā Latvijā — plus SPRK tarifi un VZD reģistrs. Jo vairāk māju augšupielādē rēķinus, jo precīzāka norma jūsu segmentam." },
+          { "q": "Vai tas ir bez maksas?", "a": "Audits un priekšskatījuma atskaite — bez maksas. Pilna atskaite ar sadalījumu — pēc e-pasta. Maksas pakalpojums: renovācijas pavadīšana (1–2% no līguma summas)." },
+          { "q": "Vai PDF augšupielāde ir droša?", "a": "Fails tiek izmantots tikai analīzei un dzēsts pēc apstrādes. Dati tiek publicēti apkopotā veidā bez saiknes ar konkrētiem iedzīvotājiem vai adresēm." }
+        ]
+      },
+      "cta": {
+        "heading": "Sāciet pārbaudi tūlīt",
+        "sub": "Bez maksas · 30 sekundes · Bez reģistrācijas"
+      },
+      "footer": {
+        "renovation": "Renovācija",
+        "blog": "Blogs"
+      }
+    }
+  },
+  "building": {
+    "energyClass": {
+      "A": "A — Augsta",
+      "B": "B",
+      "C": "C",
+      "D": "D",
+      "E": "E — Vidēja",
+      "F": "F",
+      "G": "G — Zema"
+    },
+    "backToSearch": "Adreses meklēšana",
+    "seriesUnknown": "Sērija nav noteikta",
+    "seriesPrefix": "Sērija {series}",
+    "yearSuffix": "{year}. g.",
+    "apartments": "{count} dzīv.",
+    "district": "Rajons",
+    "totalArea": "Kopējā platība",
+    "cadastralNumber": "Kadastra Nr.",
+    "energyEfficiency": "Energoefektivitāte:",
+    "classLabel": "Klase {label}",
+    "similarBuildings": "Līdzīgu māju datu bāzē: {count}",
+    "fallbackPending": "Dati par šo māju tiek precizēti",
+    "uploadCta": "Augšupielādēt apsaimniekotāja rēķinu",
+    "noBillReminder": "Nav rēķina pa rokai? Atcerēties adresi — atsūtīsim atgādinājumu",
+    "renovateCta": "Iniciēt renovāciju →",
+    "financingCta": "Finansējuma scenāriji →",
+    "heating": {
+      "heading": "Apkures norma pēc sērijas",
+      "norm": "Norma ({series})",
+      "actual": "Jūsu māja",
+      "deviation": "Novirze",
+      "fallbackNote": "Sērija nav noteikta — izmantota vidējā norma Latvijā",
+      "source": "Avots: ALTUM portfelis (627 mājas), Latvijas Universitāte, EM 2023"
+    },
+    "readiness": {
+      "nextAction": "Nākamais solis",
+      "financingHeading": "Finansējuma scenāriji",
+      "scoreHeading": "Mājas gatavības rādītāji",
+      "energyScore": "Enerģija",
+      "documentScore": "Dokumenti",
+      "decisionsScore": "Lēmumi",
+      "dataSource": "Datu avots: {source}"
+    },
+    "renovate": {
+      "meta": {
+        "title": "Renovācija — {address}",
+        "description": "Mājas renovācijas iniciatīva. Balsošana ar Smart-ID."
+      },
+      "backToBuilding": "Uz mājas kartīti",
+      "activeTitle": "Notiek balsošana par renovāciju",
+      "completedTitle": "Balsošana pabeigta",
+      "noActive": {
+        "title": "Renovācija vēl nav uzsākta",
+        "description": "Lai sāktu renovāciju, mājas valdei jāatver īpašnieku balsošana. Ja vēlaties uzsākt procesu — ieejiet sistēmā kā valdes pārstāvis.",
+        "auditCta": "Sākt ar izmaksu auditu →",
+        "boardCta": "Ieiet panelī →"
+      },
+      "progress": {
+        "votedLabel": "«Par» balsis:",
+        "requiredLabel": "Nepieciešams lēmumam:",
+        "thresholdReached": "Slieksnis sasniegts. Dokumenti tiek sagatavoti iesniegšanai Altum.",
+        "deadlineLabel": "Balsošanas termiņš:"
+      },
+      "voteCta": "Doties uz balsošanu →",
+      "howItWorks": {
+        "heading": "Kā notiek balsošana",
+        "items": [
+          "Valde augšupielādē īpašnieku sarakstu no Zemesgrāmatas",
+          "Katrs īpašnieks saņem balsošanas saiti (SMS / e-pasts)",
+          "Balss tiek parakstīta ar Smart-ID vai eParaksts",
+          "Pie ≥50% «par» balsu sistēma sagatavo juridiski nozīmīgu protokolu"
+        ]
+      },
+      "legal": "Balsošana ir likumīga saskaņā ar Dzīvokļa īpašuma likumu, 20.(7-8) pantu, 2022. g.",
+      "share": {
+        "label": "Kopīgot ar kaimiņiem",
+        "copied": "Saite nokopēta"
+      }
+    }
+  },
+  "renovation": {
+    "metadata": {
+      "title": "Daudzdzīvokļu mājas renovācija — ALTEKO",
+      "description": "Altum subsīdija līdz 49%, ietaupījuma aprēķins apkurei, elektroniskā iedzīvotāju balsošana un darbuzņēmēju tirgus."
+    },
+    "hero": {
+      "titleStart": "Renovācijas finansējums:",
+      "titleEnd": "pieci reāli scenāriji",
+      "description": "ALTUM 2021-2027 ir slēgta jauniem pieteikumiem (€173M rezervēti, 338 pieteikumi līdz 2025. gada maijam). Nākamais logs — Sociālā klimata fonds 2026-2032; MK noteikumi gaidāmi Q4 2026, pieteikumi līdz Q2 2027. ALTUM remonta aizdevums paliek atvērts.",
+      "cta": "Sākt ar izmaksu auditu →",
+      "note": "Provizorisks aprēķins jūsu mājai — pēc rēķina augšupielādes. Precīzi SCF noteikumi tiks publicēti Q4 2026."
+    },
+    "closureNotice": {
+      "title": "ALTUM 2021-2027 — jauni pieteikumi netiek pieņemti.",
+      "body": "Programma slēgta 2025. gada 13. maijā: visi €173M ir rezervēti 338 jau iesniegtajiem pieteikumiem. Iesniegt jaunu māju šajā programmā vairs nav iespējams. Nākamais logs — Sociālā klimata fonds 2026-2032: MK noteikumi gaidāmi Q4 2026, pieteikumu pieņemšana — līdz Q2 2027. Līdz tam māju var sagatavot un/vai izmantot ALTUM remonta aizdevumu."
+    },
+    "stats": [
+      { "value": "Slēgts", "label": "ALTUM 2021-2027 — jauni pieteikumi netiek pieņemti" },
+      { "value": "Q2 2027", "label": "Sociālā klimata fonds — pieteikumu pieņemšana" },
+      { "value": "3,9% / 20 g.", "label": "ALTUM remonta aizdevums — atvērts līdz 30.06.2031" },
+      { "value": "+10–11%", "label": "dzīvokļa vērtības pieaugums pēc renovācijas" }
+    ],
+    "sourcesNote": "Avoti: altum.lv, likumi.lv/ta/id/361681 (SCF plāns), Latvijas Banka DP 3/2025, fi-compass 2024",
+    "process": {
+      "heading": "Kā tas darbojas",
+      "steps": [
+        {
+          "n": "01",
+          "title": "Izmaksu audits",
+          "desc": "Augšupielādējiet rēķinu — parādīsim, kur un cik daudz jūsu māja pārmaksā. Tas ir sākumpunkts.",
+          "cta": "Sākt auditu"
+        },
+        {
+          "n": "02",
+          "title": "Renovācijas aprēķins",
+          "desc": "Aprēķināsim ietaupījumu apkurei un Altum subsīdijas daļu jūsu konkrētajai mājai."
+        },
+        {
+          "n": "03",
+          "title": "Iedzīvotāju balsošana",
+          "desc": "Elektroniskā balsošana ar Smart-ID — likumīga kopš 2022. gada. Savākt ≥50% bez klātienes sapulces."
+        },
+        {
+          "n": "04",
+          "title": "Darbuzņēmēju tirgus",
+          "desc": "Konkurss starp pārbaudītiem uzņēmumiem. Jūs izvēlaties — mēs pavadām darījumu."
+        }
+      ]
+    },
+    "altum": {
+      "heading": "Kas notiek ar Altum programmu",
+      "p1": "Altum — Latvijas valsts finanšu institūcija. Daudzdzīvokļu māju energoefektivitātes programma 2021-2027 (apjoms €173M) ir slēgta jauniem projektu pieteikumiem kopš 2025. gada maija — viss finansējums ir rezervēts 338 jau iesniegtajiem pieteikumiem. Iesniegt jaunu māju šajā programmā vairs nav iespējams.",
+      "p2": "Nākamais lielais logs — Sociālā klimata fonds 2026-2032. Daudzdzīvokļu mājām tajā paredzēts €127M publiskā finansējuma. MK noteikumi gaidāmi 2026. gada IV ceturksnī, pieteikumu pieņemšana — līdz 2027. gada II ceturksnim, projektu īstenošana — līdz 31.07.2032. Līdz loga atvēršanai ir vērts sagatavot māju: dati, īpašnieku lēmumi, dokumenti. ALTUM remonta aizdevums (€10k+, 3,9%, līdz 30.06.2031) paliek pieejama alternatīva.",
+      "guideLink": "Pilns Altum subsīdijas ceļvedis →"
+    },
+    "cta": {
+      "heading": "Sāciet ar izmaksu auditu",
+      "description": "Pirms aprēķināt renovāciju, jāsaprot, kur šobrīd tiek zaudēta nauda.",
+      "button": "Atrast savu māju un augšupielādēt rēķinu →",
+      "note": "Bez maksas · 30 sekundes"
+    },
+    "footer": {
+      "blog": "Blogs",
+      "contractors": "Darbuzņēmējiem"
+    },
+    "calculate": {
+      "title": "Renovācijas aprēķins",
+      "errorLoad": "Ielādes kļūda",
+      "errorGenerate": "Dokumentu ģenerēšanas kļūda",
+      "errorConnection": "Savienojuma kļūda",
+      "warningGeneric": "Aprēķins balstīts uz vidējiem sērijas datiem. Augšupielādējiet rēķinu precīzam aprēķinam.",
+      "savingsTitle": "Apkures ietaupījums",
+      "currentLabel": "Šobrīd:",
+      "afterRenovationLabel": "Pēc renovācijas:",
+      "savingsLabel": "Ietaupījums:",
+      "perMonthValue": "€{amount} mēnesī",
+      "perMonthPerAptValue": "€{amount} mēnesī/dz.",
+      "financingTitle": "Finansējums",
+      "renovationCost": "Renovācijas izmaksas:",
+      "altumSubsidy": "Altum subsīdija ({percent}%):",
+      "yourShare": "Jūsu daļa (uz dzīvokli):",
+      "paybackPeriod": "Atmaksāšanās laiks:",
+      "yearsValue": "{years} gadi",
+      "documentsReady": "Dokumenti gatavi:",
+      "downloadDocs": "Lejupielādēt dokumentus Altum",
+      "preparingDocs": "Sagatavojam dokumentus...",
+      "startVoting": "Sākt īpašnieku balsošanu →",
+      "docs": {
+        "intentRu": {
+          "label": "Заявление о намерении (RU)",
+          "description": "Nepieciešams iesniegšanai Altum"
+        },
+        "intentLv": {
+          "label": "Nodomu pieteikums (LV)",
+          "description": "Nepieciešams iesniegšanai Altum"
+        },
+        "agendaRu": {
+          "label": "Повестка собрания (RU)",
+          "description": "Īpašnieku sapulcei"
+        },
+        "agendaLv": {
+          "label": "Sapulces darba kārtība (LV)",
+          "description": "Īpašnieku sapulcei"
+        }
+      }
+    },
+    "preview": {
+      "yourBuilding": "Jūsu māja",
+      "seriesPrefix": "{series}. sērija",
+      "classLabel": "Klase {label}",
+      "headingWithSeries": "Ko renovācija dod {series}. sērijas mājām?",
+      "headingGeneric": "Ko renovācija dod?",
+      "avgSavingsLabel": "Apkures rēķina samazinājums",
+      "savingsCaption": "pēc renovācijas, pēc ALTUM datiem",
+      "exampleLine": "Piemēram, {size} m² dzīvoklim — ~€{amount} mēnesī ietaupījuma",
+      "perM2Line": "~€{rate}/m² mēnesī (gada vidējais)",
+      "financingTitle": "Finansējums",
+      "subsidyLabel": "Altum subsīdija",
+      "subsidyValue": "līdz 49% no izmaksām",
+      "paybackLabel": "Atmaksāšanās laiks",
+      "paybackValue": "{range} gadi",
+      "valueGrowthLabel": "Dzīvokļa vērtības pieaugums",
+      "valueGrowthValue": "+10–11%",
+      "infoNotePrefix": "Šie ir vidējie dati par līdzīgām mājām. Aprēķins ",
+      "infoNoteSuffix": " — precīzāks.",
+      "ctaCalculate": "Aprēķināt renovāciju {address} →",
+      "howAltum": "Kā darbojas Altum subsīdija?",
+      "sourcesNote": "Avoti: Altum, fi-compass 2024, Latvijas Banka DP 3/2025"
+    },
+    "comparison": {
+      "heading": "Kā tas notiek šobrīd — un kā ar ALTEKO",
+      "without": {
+        "label": "Bez ALTEKO",
+        "items": [
+          "Papīra paziņojumi — daudzi nelasa",
+          "Klātienes sapulce — kvorumu ir grūti savākt",
+          "Dokumenti — 12+ soļi manuāli",
+          "Konversija: 2,7% no 23 500 mājām"
+        ]
+      },
+      "with": {
+        "label": "Ar ALTEKO",
+        "items": [
+          "Balsošana ar Smart-ID — telefonā",
+          "Bez klātienes sapulces — juridiski nozīmīgi",
+          "Visu dokumentu automātiskā ģenerēšana",
+          "Vadām no pirmā rēķina līdz līgumam"
+        ]
+      }
+    },
+    "faq": {
+      "heading": "Biežāk uzdotie jautājumi par renovāciju",
+      "items": [
+        { "q": "Kam ir tiesības uz Altum subsīdiju?", "a": "Daudzdzīvokļu mājām ar energoklasi D–G. Lielākā daļa padomju laika paneļu māju ir piemērotas. Jūsu mājas precīzā klase ir mājas kartītē pēc adreses meklēšanas." },
+        { "q": "Cik balsu jāsavāc?", "a": "Vismaz 50% no kopējām īpašuma daļām. Ne no dzīvokļu skaita, bet no daļām — kā reģistrēts Zemesgrāmatā." },
+        { "q": "Kā notiek balsošana?", "a": "Katrs īpašnieks saņem saiti un balso ar Smart-ID vai eParaksts. Tas ir likumīgi saskaņā ar Dzīvokļa īpašuma likumu, 20.(7-8) pantu, 2022. g." },
+        { "q": "Cik ilgs ir viss process?", "a": "No audita līdz līguma parakstīšanai ar darbuzņēmēju — parasti 3–6 mēneši. Altum pieteikuma izskatīšana — vēl 2–3 mēneši." },
+        { "q": "Ko darīt, ja kaimiņi ir pret?", "a": "Nepieciešamas tikai 50%+. Ja jūs sasniedzat slieksni pēc īpašuma daļām — process turpinās. Balsošana ar Smart-ID ievērojami palielina apmeklētību salīdzinājumā ar papīra paziņojumiem." }
+      ]
+    },
+    "findHome": {
+      "heading": "Atrodiet savu māju",
+      "description": "Ievadiet adresi, lai pārbaudītu izdevumus un skatītu renovācijas iniciatīvas statusu.",
+      "cta": "Pārbaudīt manu māju →",
+      "ctaLoading": "Meklējam māju...",
+      "errorNotFound": "Māja nav atrasta datu bāzē. Mēģiniet citu adresi.",
+      "errorConnection": "Savienojuma kļūda. Pārbaudiet internetu un mēģiniet vēlreiz."
+    }
   },
   "blog": {
     "title": "Blogs",
@@ -26,7 +791,17 @@
     "readMin": "min.",
     "checkHome": "Pārbaudiet savas mājas izdevumus",
     "checkHomeSub": "Bez maksas. 30 sekundes.",
-    "translationPending": "Tulkojums tiek gatavots"
+    "checkHomeArticle": "Pārbaudiet savas mājas izdevumus tūlīt",
+    "checkHomeArticleSub": "Bez maksas. 30 sekundes.",
+    "translationPending": "Tulkojums tiek gatavots",
+    "metadata": {
+      "title": "Blogs — ALTEKO",
+      "description": "Raksti par komunālajiem izdevumiem un renovāciju Latvijā."
+    },
+    "footer": {
+      "blog": "Blogs",
+      "contractors": "Darbuzņēmējiem"
+    }
   },
   "auth": {
     "signIn": "Ieiet panelī",
@@ -40,7 +815,59 @@
     "linkExpiry": "Saite ir derīga 24 stundas. Neatradāt? Pārbaudiet mēstuļu mapi.",
     "requestNew": "Pieprasīt jaunu saiti",
     "noPassword": "Mēs nosūtīsim vienreizēju saiti — bez paroles.",
-    "tryAnother": "Mēģināt citu e-pastu"
+    "tryAnother": "Mēģināt citu e-pastu",
+    "errorSendFailed": "Neizdevās nosūtīt saiti. Pārbaudiet e-pastu un mēģiniet vēlreiz.",
+    "emailSentBody": "Mēs nosūtījām pieteikšanās saiti uz {email}. Noklikšķiniet uz tās — un jūs uzreiz nokļūsiet panelī.",
+    "spamCheck": "Neatradāt? Pārbaudiet mēstuļu mapi.",
+    "backToMain": "← Atgriezties sākumlapā",
+    "backToMainShort": "← Uz sākumu"
+  },
+  "footer": {
+    "description": "Platforma padomju laika māju iedzīvotājiem Latvijā",
+    "servicesTitle": "Pakalpojumi",
+    "auditLink": "Rēķinu audits",
+    "renovationLink": "Renovācija",
+    "calculatorLink": "Renovācijas kalkulators",
+    "blogLink": "Blogs",
+    "contractorsTitle": "Darbuzņēmējiem",
+    "contractorsLandingLink": "Darbuzņēmējiem",
+    "contractorsRegisterLink": "Reģistrēties",
+    "contractorsHowLink": "Kā tas darbojas",
+    "legalTitle": "Juridiskais",
+    "privacyLink": "Konfidencialitātes politika",
+    "termsLink": "Lietošanas noteikumi",
+    "contactsEmail": "info@alteko.lv",
+    "copyright": "© 2025 ALTEKO · Latvija"
+  },
+  "readinessReport": {
+    "title": "Pasūtīt Gatavības atskaiti",
+    "subtitle": "Pilna mājas gatavības analīze ar nākamajiem soļiem",
+    "back": "Atpakaļ",
+    "includes": {
+      "heading": "Kas ir iekļauts:",
+      "items": [
+        "Mājas kartīte ar visiem reģistru datiem",
+        "Building Readiness Score — 8 komponentu novērtējums",
+        "Finansējuma scenāriji: SCF, ALTUM remonta aizdevums, banka",
+        "Trūkstošo dokumentu saraksts",
+        "Īpašnieku balsošanas plāns",
+        "Sapulces dienaskārtības šablons"
+      ]
+    },
+    "pricingNote": "Cena: €300 (līdz 30 dzīvokļiem) · €600 (30–60 dzīvokļi) · €900 (vairāk par 60). Jūsu mājas cena tiks aprēķināta automātiski.",
+    "emailLabel": "E-pasts atskaites saņemšanai",
+    "emailPlaceholder": "jusu@epasts.lv",
+    "languageLabel": "Atskaites valoda",
+    "submit": "Pasūtīt atskaiti →",
+    "submitting": "Apstrādā...",
+    "legalNote": "Nospiežot «Pasūtīt», jūs piekrītat, ka ALTEKO apstrādā jūsu mājas datus atskaites sagatavošanai.",
+    "success": {
+      "title": "Pasūtījums saņemts!",
+      "description": "Atsūtīsim atskaiti uz {email} 1–3 darba dienu laikā.",
+      "orderId": "Pasūtījuma ID: {id}",
+      "amount": "Summa apmaksai: €{amount}",
+      "backHome": "Uz sākumu"
+    }
   },
   "errors": {
     "notFound": "Lapa nav atrasta",
@@ -48,5 +875,102 @@
     "serverError": "Kaut kas nogāja greizi",
     "serverErrorDesc": "Radās kļūda. Mēģiniet atsvaidzināt lapu.",
     "tryAgain": "Mēģināt vēlreiz"
+  },
+  "financing": {
+    "metadata": {
+      "title": "Finansējuma scenāriji — ALTEKO",
+      "description": "Pieci reāli finansējuma ceļi daudzdzīvokļu mājas renovācijai Latvijā: SCF 2026-2032, ALTUM remonta aizdevums, banka, pašu uzkrājumi, jauktais."
+    },
+    "windowStatus": {
+      "OPEN": "Atvērts",
+      "EXPECTED": "Gaidāms",
+      "CLOSED": "Slēgts",
+      "UNKNOWN": "Neskaidrs"
+    },
+    "scenarioType": {
+      "SCF_2026_2032": "Sociālā klimata fonds 2026-2032",
+      "ALTUM_REMONTA_AIZDEVUMS": "ALTUM remonta aizdevums",
+      "COMMERCIAL_BANK": "Komercbanka",
+      "OWN_FUND": "Pašu uzkrājumu fonds",
+      "MIXED": "Jauktais scenārijs"
+    },
+    "hero": {
+      "title": "Finansējuma scenāriji: pieci reāli ceļi",
+      "description": "ALTEKO parāda katras programmas statusu un provizoriskas piemērotības novērtējumu. Mēs negarantējam finansējumu — garantijām ir jāgaida MK noteikumi (Q4 2026)."
+    },
+    "altumClosureNotice": {
+      "title": "ALTUM 2021-2027 — jauni pieteikumi netiek pieņemti.",
+      "body": "Programma slēgta 2025. gada 13. maijā (€173M rezervēti). Nākamais logs — Sociālā klimata fonds 2026-2032: MK noteikumi gaidāmi Q4 2026, pieteikumi — līdz Q2 2027. ALTUM remonta aizdevums paliek atvērts."
+    },
+    "scenarios": {
+      "heading": "Pieci finansējuma ceļi",
+      "0": {
+        "key": "Sociālā klimata fonds 2026-2032",
+        "windowBadge": "pending",
+        "windowLabel": "Gaidāms",
+        "amountNote": "€186M kopā (€127M ES + €31,75M nac.) — renovācijai un enerģijas nabadzības mazināšanai",
+        "conditionItems": [
+          "Māja uzbūvēta pirms 1991. gada",
+          "D–G energoklase (augsti enerģijas zudumi)",
+          "Nav renovēta",
+          "MK noteikumi gaidāmi Q4 2026 — precīzie kritēriji vēl nav apstiprināti"
+        ],
+        "reasonNote": "Avots: likumi.lv/ta/id/361681 (MK rīkojums Nr.393, 02.07.2025). SCF plāns — Eiropas Komisijas izvērtēšanā."
+      },
+      "1": {
+        "key": "ALTUM remonta aizdevums",
+        "windowBadge": "active",
+        "windowLabel": "Atvērts",
+        "amountNote": "No €10 000, 3,9% gadā, līdz 20 gadiem — pieejams līdz 30.06.2031",
+        "conditionItems": [
+          "Nepieciešams īpašnieku lēmums par aizdevumu (≥51% atbalsts)",
+          "Jāiesniedz vismaz 2 neatkarīgi darbuzņēmēju piedāvājumi",
+          "Pieteicējs — apsaimniekotājs, biedrība vai ESCO"
+        ],
+        "reasonNote": "Avots: altum.lv — Daudzdzīvokļu māju remonta aizdevums."
+      },
+      "2": {
+        "key": "Komercbanka",
+        "windowBadge": "active",
+        "windowLabel": "Atvērts",
+        "amountNote": "Indikatīvā likme ~4,5–7%, līdz 25 gadiem — atkarīgs no konkrētās bankas",
+        "conditionItems": [
+          "Parasti dārgāk nekā ALTUM remonta aizdevums",
+          "Piemērots, ja ALTUM aizdevums neaptver visu projekta apjomu",
+          "Nepieciešams biedrības vai kopīpašnieku solidārā garantija"
+        ],
+        "reasonNote": "Indikatīvs — konkrēts piedāvājums jāapspriež ar banku."
+      },
+      "3": {
+        "key": "Pašu uzkrājumu fonds",
+        "windowBadge": "active",
+        "windowLabel": "Vienmēr pieejams",
+        "amountNote": "Bez parādsaistībām — piemērots daļējai remontam",
+        "conditionItems": [
+          "Jumts, logi, inženiertīkli — bez lieliem enerģijas ietaupījumiem",
+          "Ieteicamais iemaksa — no €0,50/m² mēnesī",
+          "Var kombinēt ar ALTUM aizdevumu"
+        ],
+        "reasonNote": "Iekšējs novērtējums. Nav ārēja avota."
+      },
+      "4": {
+        "key": "Jauktais scenārijs",
+        "windowBadge": "active",
+        "windowLabel": "Atvērts",
+        "amountNote": "~70% ALTUM remonta aizdevums + ~30% pašu uzkrājumi",
+        "conditionItems": [
+          "Visizplatītākais reālais ceļš pirms SCF atvēršanas",
+          "Kad atvērsies SCF — daļu var refinansēt ar grantu",
+          "Mazāks ikmēneša slogs salīdzinājumā ar pilnu aizdevumu"
+        ],
+        "reasonNote": "Iekšējs kombinētais novērtējums."
+      }
+    },
+    "cta": {
+      "heading": "Pārbaudiet savas mājas gatavību",
+      "description": "Ievadiet adresi — parādīsim, kurš finansējuma ceļš ir piemērotākais jūsu mājai un kas vēl jāsagatavo.",
+      "button": "Sākt pārbaudi →",
+      "note": "Bez maksas. Provizorisks novērtējums, pamatojoties uz reģistru datiem."
+    }
   }
 }

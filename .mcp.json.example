@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "payload": {
+      "type": "http",
+      "url": "http://localhost:3002/api/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR_MCP_API_KEY"
+      }
+    }
+  }
+}

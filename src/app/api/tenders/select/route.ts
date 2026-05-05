@@ -38,14 +38,12 @@ export async function POST(req: NextRequest) {
   })
   if (!project) return NextResponse.json({ error: 'Project not found' }, { status: 404 })
 
+  // v2: no success fee. See docs/business/monetization.md.
   const updated = await prisma.renovationProject.update({
     where: { id: projectId },
     data: {
       contractorId,
       status: 'CONTRACTED',
-      commissionAmount: project.contractValue
-        ? Math.round(Number(project.contractValue) * 0.015)
-        : null,
     },
   })
 
@@ -53,6 +51,5 @@ export async function POST(req: NextRequest) {
     projectId,
     contractorId,
     status: updated.status,
-    commissionAmount: updated.commissionAmount,
   })
 }

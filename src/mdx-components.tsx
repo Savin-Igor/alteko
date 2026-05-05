@@ -59,15 +59,16 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         </Link>
       </div>
     ),
-    // Stats table
-    StatsTable: ({ rows }: { rows: Array<{ label: string; value: string; color?: string }> }) => (
-      <div className="card overflow-hidden p-0 my-4 not-prose">
-        {rows.map((row, i) => (
-          <div key={i} className="flex justify-between px-5 py-3 text-sm border-t border-gray-100 first:border-t-0">
-            <span className="text-gray-500">{row.label}</span>
-            <span className={`font-medium ${row.color ?? 'text-gray-900'}`}>{row.value}</span>
-          </div>
-        ))}
+    // Stats table — uses child <StatsRow> elements to avoid MDX RSC serialization issues with array props
+    StatsTable: ({ children }: { children?: ReactNode }) => (
+      <div className="card overflow-hidden p-0 my-4 not-prose divide-y divide-gray-100">
+        {children}
+      </div>
+    ),
+    StatsRow: ({ label, value, color }: { label: string; value: string; color?: string }) => (
+      <div className="flex justify-between px-5 py-3 text-sm">
+        <span className="text-gray-500">{label}</span>
+        <span className={`font-medium ${color ?? 'text-gray-900'}`}>{value}</span>
       </div>
     ),
     ...components,

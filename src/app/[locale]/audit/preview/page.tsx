@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { PageHeader, StepProgress, InfoBanner } from '@/components/ui'
 
 type StepStatus = 'done' | 'active' | 'pending' | 'error'
@@ -13,17 +14,8 @@ interface ProgressStep {
   status: StepStatus
 }
 
-function buildSteps(current: string): ProgressStep[] {
-  const order = ['parsing', 'comparing', 'done']
-  const idx = order.indexOf(current)
-  return [
-    { key: 'parsing', label: 'Читаем данные счёта...', status: idx > 0 ? 'done' : idx === 0 ? 'active' : 'pending' },
-    { key: 'comparing', label: 'Сравниваем с похожими домами...', status: idx > 1 ? 'done' : idx === 1 ? 'active' : 'pending' },
-    { key: 'done', label: 'Результат готов', status: current === 'done' ? 'done' : 'pending' },
-  ]
-}
-
 function PreviewContent() {
+  const t = useTranslations('audit.preview')
   const searchParams = useSearchParams()
   const reportId = searchParams.get('reportId') ?? ''
   const buildingId = searchParams.get('building') ?? ''
@@ -34,6 +26,16 @@ function PreviewContent() {
   const [error, setError] = useState<string | null>(null)
   const ranRef = useRef(false)
 
+  function buildSteps(current: string): ProgressStep[] {
+    const order = ['parsing', 'comparing', 'done']
+    const idx = order.indexOf(current)
+    return [
+      { key: 'parsing', label: t('stepParsing'), status: idx > 0 ? 'done' : idx === 0 ? 'active' : 'pending' },
+      { key: 'comparing', label: t('stepComparing'), status: idx > 1 ? 'done' : idx === 1 ? 'active' : 'pending' },
+      { key: 'done', label: t('stepDone'), status: current === 'done' ? 'done' : 'pending' },
+    ]
+  }
+
   useEffect(() => {
     if (!reportId || ranRef.current) return
     ranRef.current = true
@@ -41,7 +43,6 @@ function PreviewContent() {
     // Guard against re-running on browser back
     const guardKey = `alteko_preview_ran_${reportId}`
     if (sessionStorage.getItem(guardKey)) {
-      // Already ran — jump straight to report
       setStep('done')
       return
     }
@@ -56,7 +57,7 @@ function PreviewContent() {
 
       if (!parseRes.ok) {
         const data = await parseRes.json()
-        setError(data.error ?? 'Не удалось прочитать счёт.')
+        setError(data.error ?? t('errorParse'))
         setStep('failed')
         return
       }
@@ -74,10 +75,10 @@ function PreviewContent() {
 
     run().catch((e) => {
       console.error(e)
-      setError('Ошибка соединения. Проверьте интернет и попробуйте снова.')
+      setError(t('errorConnection'))
       setStep('failed')
     })
-  }, [reportId])
+  }, [reportId, t])
 
   const uploadHref = cadastralCode
     ? `/audit/upload?building=${buildingId}&cadastralCode=${cadastralCode}`
@@ -88,25 +89,24 @@ function PreviewContent() {
       <PageHeader variant="minimal" />
 
       <main className="flex-1 px-4 py-12 max-w-md mx-auto w-full">
-        <h1 className="text-xl font-semibold text-gray-900 mb-8">Анализируем ваш счёт</h1>
+        <h1 className="text-xl font-semibold text-gray-900 mb-8">{t('title')}</h1>
 
         {step === 'failed' ? (
           <div className="space-y-4">
             <InfoBanner variant="error">{error}</InfoBanner>
             <Link href={uploadHref} className="btn-primary text-center block">
-              Попробовать снова
+              {t('tryAgain')}
             </Link>
           </div>
         ) : (
           <div className="space-y-6">
             <StepProgress steps={buildSteps(step)} />
 
-            <p className="text-xs text-gray-400">Обычно занимает 15–30 секунд</p>
+            <p className="text-xs text-gray-400">{t('timeEstimate')}</p>
 
             {step !== 'done' && (
               <InfoBanner variant="info">
-                Пока ждёте: дома серии 119 тратят в среднем на 38% больше на отопление,
-                чем дома после реновации той же площади.
+                {t('waitingTip')}
               </InfoBanner>
             )}
 
@@ -117,14 +117,14 @@ function PreviewContent() {
                     <p className={`text-metric-xl font-bold ${deviation > 0 ? 'text-danger' : 'text-success'}`}>
                       {deviation > 0 ? '+' : ''}{deviation}%
                     </p>
-                    <p className="text-sm text-gray-500">к медиане похожих домов</p>
+                    <p className="text-sm text-gray-500">{t('toMedian')}</p>
                   </div>
                 )}
                 <Link
                   href={`/audit/report/${reportId}`}
                   className="btn-primary text-center block"
                 >
-                  Смотреть отчёт →
+                  {t('viewReport')}
                 </Link>
               </div>
             )}

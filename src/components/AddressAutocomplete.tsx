@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
+import { useTranslations } from 'next-intl'
 
 interface Suggestion {
   id: string
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export function AddressAutocomplete({ onSelect, placeholder }: Props) {
+  const t = useTranslations('components.addressAutocomplete')
   const [query, setQuery] = useState('')
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
   const [open, setOpen] = useState(false)
@@ -72,10 +74,10 @@ export function AddressAutocomplete({ onSelect, placeholder }: Props) {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder={placeholder ?? 'Введите адрес вашего дома'}
+          placeholder={placeholder ?? t('placeholder')}
           className="input-field pr-10"
           autoComplete="off"
-          aria-label="Адрес дома"
+          aria-label={t('label')}
         />
         {loading && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -102,7 +104,7 @@ export function AddressAutocomplete({ onSelect, placeholder }: Props) {
 
       {open && !loading && suggestions.length === 0 && query.trim().length >= 3 && (
         <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg px-4 py-3 text-sm text-gray-500">
-          Адрес не найден. Проверьте написание.
+          {t('notFound')}
         </div>
       )}
     </div>
