@@ -2,6 +2,11 @@ import type { Config } from 'tailwindcss'
 
 const config: Config = {
   content: ['./src/**/*.{ts,tsx}'],
+  corePlugins: {
+    // Payload CMS has its own CSS design system and breaks when Tailwind's
+    // Preflight reset is applied globally (Next.js CSS is not route-scoped).
+    preflight: false,
+  },
   theme: {
     extend: {
       colors: {

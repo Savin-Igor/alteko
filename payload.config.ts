@@ -15,6 +15,7 @@ const dirname = path.dirname(filename)
 export default buildConfig({
   admin: {
     user: Users.slug,
+    suppressHydrationWarning: true,
   },
   collections: [Users, Media, BlogPosts],
   editor: lexicalEditor(),
