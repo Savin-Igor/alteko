@@ -169,8 +169,14 @@ export async function computeReadinessScore(buildingId: string): Promise<ScoreCo
         take: 1,
         select: { status: true, offerCount: true },
       },
-      // Issue #105: actual document checklist
+      // Issue #105: actual document checklist — exclude expired documents
       documents: {
+        where: {
+          OR: [
+            { expiresAt: null },
+            { expiresAt: { gt: new Date() } },
+          ],
+        },
         select: { documentType: true },
       },
     },
