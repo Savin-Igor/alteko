@@ -15,6 +15,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
+import { sendAdminNewOrderNotification } from '@/lib/email'
 
 export const runtime = 'nodejs'
 
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest) {
 
   const building = await prisma.building.findUnique({
     where: { cadastralCode },
-    select: { id: true, apartmentCount: true },
+    select: { id: true, apartmentCount: true, address: true },
   })
   if (!building) {
     return NextResponse.json({ error: 'Building not found' }, { status: 404 })
@@ -70,6 +71,11 @@ export async function POST(req: NextRequest) {
       // Fall through to manual flow if Stripe fails
     }
   }
+
+  // Notify admin of new order — fire-and-forget
+  sendAdminNewOrderNotification(order.id, email, amountEur, building.address ?? '').catch(
+    (err) => console.error('Admin notification failed:', err)
+  )
 
   // Manual flow: mark as awaiting payment confirmation
   return NextResponse.json({

@@ -62,3 +62,7 @@ export function buildDocumentKey(projectId: string, docType: string, lang: strin
 export function buildProtocolKey(campaignId: string): string {
   return `protocols/${campaignId}/protocol.pdf`
 }
+
+export function buildReadinessReportKey(orderId: string, lang: string): string {
+  return `readiness-reports/${orderId}/report-${lang.toLowerCase()}.pdf`
+}

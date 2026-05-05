@@ -19,6 +19,7 @@ export const env = createEnv({
     JANA_SETA_API_URL: z.string().url(),
     JANA_SETA_API_KEY: z.string().min(1),
     LVM_GEOSERVER_URL: z.string().url(),
+    ADMIN_EMAIL: z.string().email().optional(),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url().optional(),
@@ -40,6 +41,7 @@ export const env = createEnv({
     JANA_SETA_API_URL: process.env.JANA_SETA_API_URL,
     JANA_SETA_API_KEY: process.env.JANA_SETA_API_KEY,
     LVM_GEOSERVER_URL: process.env.LVM_GEOSERVER_URL,
+    ADMIN_EMAIL: process.env.ADMIN_EMAIL,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   },
   skipValidation: process.env.SKIP_ENV_VALIDATION === 'true',

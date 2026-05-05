@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { getPresignedDownloadUrl } from '@/lib/s3'
 
 export const runtime = 'nodejs'
 
@@ -19,8 +20,17 @@ export async function GET(_req: NextRequest, { params }: RouteParams) {
       language: true,
       reportFileKey: true,
       emailSentAt: true,
+      orderedByEmail: true,
       createdAt: true,
-      building: { select: { address: true, cadastralCode: true } },
+      building: {
+        select: {
+          address: true,
+          cadastralCode: true,
+          energyClass: true,
+          constructionYear: true,
+          series: true,
+        },
+      },
     },
   })
 
@@ -28,5 +38,9 @@ export async function GET(_req: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ error: 'Order not found' }, { status: 404 })
   }
 
-  return NextResponse.json(order)
+  const downloadUrl = order.reportFileKey
+    ? await getPresignedDownloadUrl(order.reportFileKey, 3600)
+    : null
+
+  return NextResponse.json({ ...order, downloadUrl })
 }
