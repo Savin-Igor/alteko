@@ -7,6 +7,7 @@ const config: Config = {
     // Preflight reset is applied globally (Next.js CSS is not route-scoped).
     preflight: false,
   },
+  plugins: [require('@tailwindcss/typography')],
   theme: {
     extend: {
       colors: {
@@ -38,7 +39,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
 }
 
 export default config
