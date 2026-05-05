@@ -27,7 +27,11 @@ interface ScenarioCard {
 
 export default async function FinancingPage() {
   const t = await getTranslations('financing')
-  const scenarios = t.raw('scenarios') as ScenarioCard[]
+  const rawScenarios = t.raw('scenarios') as Record<string, unknown>
+  const scenarios = Object.keys(rawScenarios)
+    .filter((k) => !isNaN(Number(k)))
+    .sort((a, b) => Number(a) - Number(b))
+    .map((k) => rawScenarios[k] as ScenarioCard)
 
   return (
     <div className="min-h-screen flex flex-col">
