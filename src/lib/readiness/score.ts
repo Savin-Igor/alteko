@@ -5,7 +5,14 @@
  * The caller is responsible for persisting the result to BuildingReadinessScore.
  */
 
-import { EnergyClass, DecisionType, CampaignStatus, DataConfidence, LegalConfidence } from '@prisma/client'
+import {
+  EnergyClass,
+  DecisionType,
+  CampaignStatus,
+  DataConfidence,
+  LegalConfidence,
+  BuildingDocumentType,
+} from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 
 // ─── Types ────────────────────────────────────────────────────
@@ -40,13 +47,24 @@ export function computeEnergyScore(energyClass: EnergyClass | null): number | nu
   return ENERGY_CLASS_SCORES[energyClass] ?? null
 }
 
-// ─── Document Readiness Score ─────────────────────────────────
+// ─── Document Readiness Score (issue #105) ────────────────────
+// Uses actual BuildingDocument checklist, not PDF report count.
 
-const DOCUMENT_CHECKLIST_ITEMS = 8
+const DOCUMENT_CHECKLIST: BuildingDocumentType[] = [
+  BuildingDocumentType.ENERGY_CERTIFICATE,
+  BuildingDocumentType.TECHNICAL_PASSPORT,
+  BuildingDocumentType.TECHNICAL_INSPECTION,
+  BuildingDocumentType.OWNER_LIST,
+  BuildingDocumentType.ASSOCIATION_DOCUMENTS,
+  BuildingDocumentType.POWER_OF_ATTORNEY,
+  BuildingDocumentType.OWNER_DECISIONS,
+  BuildingDocumentType.GDPR_CONSENTS,
+]
 
-export function computeDocumentReadinessScore(uploadedDocumentCount: number): number {
-  const clamped = Math.min(uploadedDocumentCount, DOCUMENT_CHECKLIST_ITEMS)
-  return Math.round((clamped / DOCUMENT_CHECKLIST_ITEMS) * 100)
+export function computeDocumentReadinessScore(uploadedTypes: BuildingDocumentType[]): number {
+  const uploadedSet = new Set(uploadedTypes)
+  const completed = DOCUMENT_CHECKLIST.filter((t) => uploadedSet.has(t)).length
+  return Math.round((completed / DOCUMENT_CHECKLIST.length) * 100)
 }
 
 // ─── Owner Decision Readiness Score ──────────────────────────
@@ -79,17 +97,24 @@ export function computeFundingEligibilityScore(eligibilityValues: string[]): num
   return max
 }
 
-// ─── Financial Feasibility Score ─────────────────────────────
-// Simplified heuristic: compare estimated monthly cost per apartment
-// against current average repair fund contribution.
+// ─── Financial Feasibility Score (issue #106) ─────────────────
+// Compare estimated monthly cost per apartment against actual or default
+// repair fund contribution.
+//
+// Fallback: if board hasn't set avgRepairFundEurPerApt, we derive from
+// REPAIR_FUND expense items (if available) or use the Latvia-typical
+// default of €20/month per apartment.
+
+const LATVIA_DEFAULT_REPAIR_FUND_EUR_PER_APT = 20
 
 export function computeFinancialFeasibilityScore(
   monthlyPaymentPerAptEur: number | null,
   avgRepairFundContributionEur: number | null
 ): number | null {
-  if (monthlyPaymentPerAptEur === null || avgRepairFundContributionEur === null) return null
-  if (avgRepairFundContributionEur <= 0) return 50
-  const ratio = monthlyPaymentPerAptEur / avgRepairFundContributionEur
+  if (monthlyPaymentPerAptEur === null) return null
+  const contribution = avgRepairFundContributionEur ?? LATVIA_DEFAULT_REPAIR_FUND_EUR_PER_APT
+  if (contribution <= 0) return 50
+  const ratio = monthlyPaymentPerAptEur / contribution
   if (ratio <= 1.0) return 100
   if (ratio <= 1.5) return 75
   if (ratio <= 2.0) return 50
@@ -97,8 +122,8 @@ export function computeFinancialFeasibilityScore(
   return 0
 }
 
-// ─── Procurement Transparency Score ──────────────────────────
-// Basic heuristic: whether ≥2 independent contractor offers exist.
+// ─── Procurement Transparency Score (issue #107) ──────────────
+// Uses actual offer count from RenovationProject.offerCount.
 
 export function computeProcurementTransparencyScore(contractorOfferCount: number): number {
   if (contractorOfferCount >= 5) return 100
@@ -108,7 +133,8 @@ export function computeProcurementTransparencyScore(contractorOfferCount: number
   return 0
 }
 
-// ─── Data Confidence Status ───────────────────────────────────
+// ─── Data Confidence Status (issue #114) ──────────────────────
+// Now reads boardVerified / professionalVerified from Building record.
 
 export function deriveDataConfidence(
   hasUploadedReports: boolean,
@@ -127,8 +153,13 @@ export async function computeReadinessScore(buildingId: string): Promise<ScoreCo
   const building = await prisma.building.findUniqueOrThrow({
     where: { id: buildingId },
     include: {
-      reports: { select: { id: true }, take: 1 },
-      scenarios: { select: { eligibility: true, monthlyPaymentPerApartment: true } },
+      reports: {
+        select: { id: true },
+        take: 1,
+      },
+      scenarios: {
+        select: { eligibility: true, monthlyPaymentPerApartment: true },
+      },
       decisionCampaigns: {
         where: { status: CampaignStatus.COMPLETED },
         select: { decisionType: true },
@@ -136,7 +167,11 @@ export async function computeReadinessScore(buildingId: string): Promise<ScoreCo
       projects: {
         orderBy: { createdAt: 'desc' },
         take: 1,
-        select: { status: true },
+        select: { status: true, offerCount: true },
+      },
+      // Issue #105: actual document checklist
+      documents: {
+        select: { documentType: true },
       },
     },
   })
@@ -146,33 +181,42 @@ export async function computeReadinessScore(buildingId: string): Promise<ScoreCo
   const eligibilityValues = building.scenarios.map((s) => s.eligibility as string)
   const fundingEligibilityScore = computeFundingEligibilityScore(eligibilityValues)
 
-  // Document readiness: use uploaded reports as proxy for document count
-  const documentCount = building.reports.length
-  const documentReadinessScore = computeDocumentReadinessScore(documentCount)
+  // Issue #105: use actual document types, not report count
+  const uploadedDocumentTypes = building.documents.map((d) => d.documentType)
+  const documentReadinessScore = computeDocumentReadinessScore(uploadedDocumentTypes)
   const documentCompleteness = documentReadinessScore
 
   const passedDecisions = building.decisionCampaigns.map((c) => c.decisionType)
   const ownerDecisionReadinessScore = computeOwnerDecisionScore(passedDecisions)
 
-  // Financial feasibility: use best eligible scenario's monthly payment
+  // Issue #106: use board-set repair fund or Latvia default (never null)
   const bestScenario = building.scenarios.find(
     (s) => s.eligibility === 'ELIGIBLE' || s.eligibility === 'LIKELY_ELIGIBLE'
   )
   const monthlyPayment = bestScenario?.monthlyPaymentPerApartment
     ? Number(bestScenario.monthlyPaymentPerApartment)
     : null
-  const financialFeasibilityScore = computeFinancialFeasibilityScore(monthlyPayment, null)
+  const avgRepairFund = building.avgRepairFundEurPerApt
+    ? Number(building.avgRepairFundEurPerApt)
+    : null
+  const financialFeasibilityScore = computeFinancialFeasibilityScore(monthlyPayment, avgRepairFund)
 
+  // Issue #107: use actual offer count from latest project
   const latestProject = building.projects[0]
   const supplierSelectionStatus = latestProject?.status ?? 'NOT_STARTED'
+  const offerCount = latestProject?.offerCount ?? 0
+  const procurementTransparencyScore = computeProcurementTransparencyScore(offerCount)
 
+  // Issue #114: read actual verification flags from Building
   const hasUploadedReports = building.reports.length > 0
-  const dataConfidenceStatus = deriveDataConfidence(hasUploadedReports, false, false)
+  const dataConfidenceStatus = deriveDataConfidence(
+    hasUploadedReports,
+    building.boardVerified,
+    building.professionalVerified
+  )
 
   const legalConfidenceStatus =
     ownerDecisionReadinessScore === 100 ? LegalConfidence.NEEDS_REVIEW : LegalConfidence.DRAFT
-
-  const procurementTransparencyScore = computeProcurementTransparencyScore(0)
 
   return {
     energyScore,

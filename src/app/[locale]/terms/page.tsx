@@ -55,24 +55,43 @@ export default async function TermsPage({ params }: Props) {
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-3">2. Pakalpojuma apraksts</h2>
             <p className="text-gray-700 leading-relaxed mb-4">
-              ALTEKO sniedz šādus pakalpojumus:
+              ALTEKO ir <strong>Mājas gatavības platforma</strong> (Readiness Platform), kas sniedz šādus pakalpojumus:
             </p>
-            <ul className="list-disc pl-6 text-gray-700 space-y-2">
+            <ul className="list-disc pl-6 text-gray-700 space-y-2 mb-4">
               <li>
-                <strong>Komunālo izdevumu audits</strong> — lietotājs augšupielādē PDF rēķinu
-                no pārvaldnieka, un platforma salīdzina izdevumus ar līdzīgu māju
-                vidējiem rādītājiem (pēc sērijas, rajona un platības).
+                <strong>Mājas gatavības novērtējums (Building Readiness Score)</strong> — automātiska mājas
+                gatavības vērtēšana pēc astoņiem komponentiem (energoefektivitāte, dokumenti,
+                īpašnieku lēmumi, finansiālā dzīvotspēja u.c.) uz publiski pieejamo datu pamata.
               </li>
               <li>
-                <strong>Renovācijas plānošana</strong> — informācija par iespējamajiem
-                ietaupījumiem, Altum subsīdiju iespējām un nepieciešamajiem
-                dokumentiem.
+                <strong>Izmaksu analīze</strong> — PDF rēķina augšupielāde, datu apstrāde ar MI
+                un salīdzinājums ar līdzīgām mājām. Rezultāts ir <em>provizorisks novērtējums</em>,
+                kas izmantojams kā izejas punkts diskusijai ar pārvaldnieku.
               </li>
               <li>
-                <strong>Informatīvie raksti</strong> — emuārs ar publikācijām par komunālajiem
-                izdevumiem un renovāciju Latvijā.
+                <strong>Finansējuma scenāriji</strong> — pieci informācijas scenāriji (SCF 2026-2032,
+                ALTUM remonta aizdevums, komercbanka, pašu uzkrājumi, jauktais). Scenāriji ir
+                <em>provizorisks aprēķins</em> un nav uzskatāmi par finanšu konsultāciju.
+              </li>
+              <li>
+                <strong>Īpašnieku lēmumu kampaņas</strong> — lēmumu sagatavošana un eksports uz
+                BIS Mājas lieta. ALTEKO nesniedz juridisku slēdzienu par lēmumu derīgumu.
+              </li>
+              <li>
+                <strong>Piegādātāju atlases telpa (Tender Room)</strong> — pārredzams piegādātāja
+                atlases process bez veiksmes komisijas.
+              </li>
+              <li>
+                <strong>Informatīvie raksti</strong> — emuārs par komunālajiem izdevumiem,
+                renovācijas finansējumu un mājas pārvaldību Latvijā.
               </li>
             </ul>
+            <p className="text-sm text-gray-500 leading-relaxed">
+              <strong>Svarīgi:</strong> ALTEKO sniegtās novērtējumi un aprēķini ir informatīvi un
+              nesatur juridisku vai finanšu konsultāciju. Lēmumus par renovāciju, aizdevumiem un
+              pieteikumiem pieņem mājas īpašnieki un pilnvarotās personas, pamatojoties uz
+              saviem apsvērumiem un profesionālu speciālistu konsultācijām.
+            </p>
           </section>
 
           <section className="mb-8">

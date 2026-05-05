@@ -46,16 +46,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Project is not accepting bids' }, { status: 409 })
   }
 
-  // v2 (Readiness Platform): no success fee from contractor.
-  // Contractors pay a fixed subscription (Basic / Plus). The 1.5% commission
-  // hardcode was removed because it created a conflict of interest with
-  // ALTUM supplier-selection rules. See docs/business/monetization.md.
-  // RenovationProject.commissionAmount column will be dropped in Sprint 2.
+  // No success fee: contractors pay a fixed subscription (Basic / Plus).
+  // See docs/business/monetization.md.
   await prisma.renovationProject.update({
     where: { id: projectId },
     data: {
       contractValue: priceEur,
       contractorId: contractor.id,
+      offerCount: { increment: 1 },
     },
   })
 

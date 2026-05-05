@@ -219,9 +219,9 @@
       "posts": [
         {
           "href": "/blog/subsidiya-altum-renovaciya-2025",
-          "title": "Субсидия Altum: полное руководство 2025",
-          "tag": "реновация",
-          "mins": 8
+          "title": "Финансирование реновации в Латвии 2026: ALTUM, SCF и другие варианты",
+          "tag": "финансирование",
+          "mins": 7
         },
         {
           "href": "/blog/norma-rashoda-tepla-latviya",
@@ -539,14 +539,16 @@
       "categoriesTitle": "По категориям:",
       "whatToDo": "Что с этим делать?",
       "losingMoneyPrefix": "Ваш дом теряет ",
-      "losingMoneySuffix": ". Реновация устраняет причину — и государство покрывает до 49% затрат.",
+      "losingMoneySuffix": ". Реновация устраняет причину — смотрите сценарии финансирования для вашего дома.",
       "losingMoneyAmount": "~€{amount}/год",
-      "calcRenovation": "Рассчитать реновацию с субсидией Altum →",
-      "howAltum": "Как работает субсидия Altum?",
+      "calcRenovation": "Посмотреть сценарии финансирования →",
+      "howAltum": "Варианты финансирования реновации →",
       "shareTitle": "Соседи тоже переплачивают?",
       "shareSubtitle": "Поделитесь — пусть проверят",
       "shareMessage": "Проверил расходы нашего дома на ALTEKO. Переплачиваем за отопление на {deviation}%. Посмотри: {url}",
-      "shareShortMessage": "Переплачиваем за отопление на {deviation}%"
+      "shareShortMessage": "Переплачиваем за отопление на {deviation}%",
+      "parseConfidenceLow": "Распознавание счёта ИИ могло быть неточным (мало позиций или значительные расхождения). Проверьте данные перед использованием.",
+      "parseConfidenceMedium": "Счёт распознан автоматически. Проверьте основные цифры перед представлением на собрании."
     },
     "marketing": {
       "metadata": {
@@ -710,7 +712,7 @@
   "renovation": {
     "metadata": {
       "title": "Реновация многоквартирного дома — ALTEKO",
-      "description": "Субсидия Altum до 49%, расчёт экономии на отоплении, электронное голосование жителей и маркетплейс подрядчиков."
+      "description": "Сценарии финансирования для многоквартирного дома: ALTUM remonta aizdevums, Социальный климатический фонд 2026-2032, банк, собственный фонд."
     },
     "hero": {
       "titleStart": "Финансирование реновации:",
@@ -798,7 +800,7 @@
       "perMonthPerAptValue": "€{amount}/мес./кв.",
       "financingTitle": "Финансирование",
       "renovationCost": "Стоимость реновации:",
-      "altumSubsidy": "Субсидия Altum ({percent}%):",
+      "altumSubsidy": "Субсидия / грантовая часть ({percent}%):",
       "yourShare": "Ваша доля (на квартиру):",
       "paybackPeriod": "Срок окупаемости:",
       "yearsValue": "{years} лет",
@@ -836,7 +838,7 @@
       "exampleLine": "Например, для квартиры {size} м² — ~€{amount}/мес. экономии",
       "perM2Line": "~€{rate}/м² в месяц (среднегодовой расчёт)",
       "financingTitle": "Финансирование",
-      "subsidyLabel": "Субсидия Altum",
+      "subsidyLabel": "Субсидия / грант",
       "subsidyValue": "до 49% стоимости",
       "paybackLabel": "Срок окупаемости",
       "paybackValue": "{range} лет",
@@ -845,7 +847,7 @@
       "infoNotePrefix": "Это средние данные по похожим домам. Расчёт для ",
       "infoNoteSuffix": " — точнее.",
       "ctaCalculate": "Рассчитать реновацию для {address} →",
-      "howAltum": "Как работает субсидия Altum?",
+      "howAltum": "Варианты финансирования →",
       "sourcesNote": "Источники: Altum, fi-compass 2024, Latvijas Banka DP 3/2025"
     },
     "comparison": {

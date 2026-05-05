@@ -63,47 +63,73 @@ function monthlyAnnuityPayment(
 }
 
 // ─── SCF 2026-2032 ────────────────────────────────────────────
+//
+// Issue #111: eligibility uses energy class as primary criterion (F/G = high
+// energy consumption ≥125 kWh/m²/year for buildings >250 m², per SCF plan).
+// Construction year is a supporting signal, not a gate.
+// Issue #115: SCF reasoning includes EU Commission approval disclaimer.
+
+const SCF_EU_DISCLAIMER_LV =
+  ' Latvijas SCF plāns pašlaik tiek vērtēts Eiropas Komisijā (mai 2026). Precīzi pieteikuma nosacījumi būs zināmi pēc plāna apstiprināšanas un MK noteikumu publicēšanas (paredzams Q4 2026).'
+const SCF_EU_DISCLAIMER_RU =
+  ' План Латвии по SCF на оценке Еврокомиссии (май 2026). Точные условия станут известны после одобрения плана и публикации MK noteikumi (ожидается Q4 2026).'
 
 export function computeScfScenario(building: BuildingInput): ScenarioResult {
   const area = building.totalAreaM2
   const energyClass = building.energyClass
   const year = building.constructionYear
 
-  // Eligibility: pre-1991, energy class D-G, not already renovated
-  const preDate = year !== null && year < 1991
-  const inefficientEnergy = energyClass !== null && ['D', 'E', 'F', 'G'].includes(energyClass)
+  // Primary criterion (issue #111): energy class F or G indicates ≥125 kWh/m²/year,
+  // which is the SCF plan's target category (likumi.lv/ta/id/361681, C1.A.I1).
+  // D/E class may also be eligible depending on final MK noteikumi.
+  const hasLowEnergyClass = energyClass !== null && ['F', 'G'].includes(energyClass)
+  const hasMediumLowEnergyClass = energyClass !== null && ['D', 'E'].includes(energyClass)
   const notRenovated = building.renovationYear === null
+  // Year is a supporting signal (soviet-era buildings are primary target)
+  const sovietEra = year !== null && year < 1991
 
   let eligibility: FinancingEligibility
   let confidence: 'low' | 'medium' | 'high'
   let reasoningLv: string
   let reasoningRu: string
 
-  if (preDate && inefficientEnergy && notRenovated) {
+  if (hasLowEnergyClass && notRenovated) {
+    // F/G class: high confidence eligible (primary SCF target)
     eligibility = FinancingEligibility.LIKELY_ELIGIBLE
     confidence = 'medium'
     reasoningLv =
-      'Māja atbilst provizoriskajiem kritērijiem: uzbūvēta pirms 1991. gada, zema energoefektivitāte, nav renovēta. Precīzi noteikumi tiks apstiprināti MK noteikumos (paredzams 2026. g. 4. ceturksnī).'
+      `Māja ir energoklasē ${energyClass} — tas atbilst SCF primārajam mērķim (ļoti zema energoefektivitāte, nav renovēta).${SCF_EU_DISCLAIMER_LV}`
     reasoningRu =
-      'Дом соответствует предварительным критериям: построен до 1991 г., низкая энергоэффективность, не реновирован. Точные правила утверждаются MK noteikumi (ожидается Q4 2026).'
-  } else if (!preDate || !notRenovated) {
-    eligibility = FinancingEligibility.UNLIKELY
+      `Дом имеет класс энергоэффективности ${energyClass} — это соответствует основной цели SCF (очень низкая энергоэффективность, не реновирован).${SCF_EU_DISCLAIMER_RU}`
+  } else if (hasMediumLowEnergyClass && notRenovated && sovietEra) {
+    // D/E class + pre-1991: possible but lower confidence
+    eligibility = FinancingEligibility.LIKELY_ELIGIBLE
     confidence = 'low'
     reasoningLv =
-      year !== null && year >= 1991
-        ? 'Māja uzbūvēta pēc 1991. gada — SCF primāri paredzēts padomju laikmeta mājām.'
-        : 'Māja jau ir renovēta — SCF programma paredzēta nerenovētām mājām.'
+      `Māja ir energoklasē ${energyClass} un uzbūvēta pirms 1991. gada. Var pretendēt uz SCF atbalstu — precīzāk zināms pēc MK noteikumu publicēšanas.${SCF_EU_DISCLAIMER_LV}`
     reasoningRu =
-      year !== null && year >= 1991
-        ? 'Дом построен после 1991 г. — SCF ориентирован на дома советской постройки.'
-        : 'Дом уже реновирован — программа SCF предназначена для нереновированных домов.'
+      `Дом имеет класс ${energyClass} и построен до 1991 г. Может претендовать на SCF — точнее будет известно после публикации MK noteikumi.${SCF_EU_DISCLAIMER_RU}`
+  } else if (!notRenovated) {
+    eligibility = FinancingEligibility.UNLIKELY
+    confidence = 'medium'
+    reasoningLv =
+      'Māja ir jau renovēta — SCF programma paredzēta nerenovētām mājām ar zemu energoefektivitāti.'
+    reasoningRu =
+      'Дом уже реновирован — программа SCF предназначена для нереновированных домов с низкой энергоэффективностью.'
+  } else if (energyClass !== null && ['A', 'B', 'C'].includes(energyClass)) {
+    eligibility = FinancingEligibility.UNLIKELY
+    confidence = 'medium'
+    reasoningLv =
+      `Māja ir energoklasē ${energyClass} — SCF mērķa grupa ir mājas ar F vai G klasi.`
+    reasoningRu =
+      `Дом имеет класс ${energyClass} — целевая группа SCF — дома класса F или G.`
   } else {
     eligibility = FinancingEligibility.UNKNOWN
     confidence = 'low'
     reasoningLv =
-      'Nepietiek datu provizoriskam novērtējumam. Pasūtiet Gatavības atskaiti pilnam analīzei.'
+      `Nepietiek datu provizoriskam novērtējumam. Pasūtiet Gatavības atskaiti pilnam analīzei.${SCF_EU_DISCLAIMER_LV}`
     reasoningRu =
-      'Недостаточно данных для предварительной оценки. Закажите Отчёт о готовности для полного анализа.'
+      `Недостаточно данных для предварительной оценки. Закажите Отчёт о готовности для полного анализа.${SCF_EU_DISCLAIMER_RU}`
   }
 
   const estimatedCostEur = area ? estimateRenovationCost(area) : null

@@ -76,6 +76,18 @@ export default async function ReportPage({ params, searchParams }: Props) {
           {t('label')} · {report.periodMonth}.{report.periodYear}
         </p>
 
+        {/* Issue #117: show AI parse confidence warning when low or medium */}
+        {report.parseConfidence === 'low' && (
+          <InfoBanner variant="warning">
+            {t('parseConfidenceLow')}
+          </InfoBanner>
+        )}
+        {report.parseConfidence === 'medium' && (
+          <InfoBanner variant="warning">
+            {t('parseConfidenceMedium')}
+          </InfoBanner>
+        )}
+
         <StatCard
           label={t('summaryLabel')}
           value={`${deviation > 0 ? '+' : ''}${deviation}%`}

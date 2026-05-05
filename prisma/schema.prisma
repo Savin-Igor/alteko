@@ -144,6 +144,17 @@ enum ContractorSubscriptionTier {
   PLUS
 }
 
+enum BuildingDocumentType {
+  ENERGY_CERTIFICATE
+  TECHNICAL_PASSPORT
+  TECHNICAL_INSPECTION
+  OWNER_LIST
+  ASSOCIATION_DOCUMENTS
+  POWER_OF_ATTORNEY
+  OWNER_DECISIONS
+  GDPR_CONSENTS
+}
+
 // ─── MODELS ───────────────────────────────────────────────────
 
 model User {
@@ -227,6 +238,14 @@ model Building {
   bvkbCertDate         DateTime? // from BVKB[3]: energy certificate issue date
   primaryEnergyKwhM2   Decimal?  // from BVKB[27]: total primary energy kWh/m²/year
   co2KgM2              Decimal?  // from BVKB[34]: CO2 emissions kg/m²/year
+  // Issue #106: board-set average repair fund contribution per apartment per month
+  avgRepairFundEurPerApt Decimal?
+  // Issue #114: data verification flags set by board/professional action
+  boardVerified        Boolean   @default(false)
+  professionalVerified Boolean   @default(false)
+  // Issue #119: owner list staleness tracking
+  ownerListUpdatedAt   DateTime?
+  ownerListCount       Int?
   createdAt            DateTime  @default(now())
 
   apartments        Apartment[]
@@ -237,6 +256,7 @@ model Building {
   scenarios         FinancingScenario[]
   decisionCampaigns DecisionCampaign[]
   readinessOrders   ReadinessReportOrder[]
+  documents         BuildingDocument[]
 
   @@index([district])
   @@index([series])
@@ -266,12 +286,16 @@ model ExpenseReport {
   buildingId  String
   periodYear  Int
   periodMonth Int
-  rawFileKey  String
-  parsedData  Json?
-  status      ReportStatus @default(PENDING)
-  uploadedBy  String?
-  processedAt DateTime?
-  createdAt   DateTime     @default(now())
+  rawFileKey      String
+  parsedData      Json?
+  status          ReportStatus @default(PENDING)
+  uploadedBy      String?
+  processedAt     DateTime?
+  // Issue #109: retention — raw file deleted after parse; set by cleanup job
+  rawFileDeletedAt DateTime?
+  // Issue #117: AI parse confidence level ('low' | 'medium' | 'high')
+  parseConfidence  String       @default("medium")
+  createdAt       DateTime     @default(now())
 
   building Building      @relation(fields: [buildingId], references: [id])
   uploader User?         @relation(fields: [uploadedBy], references: [id])
@@ -381,11 +405,30 @@ model RenovationProject {
   contractorId        String?
   contractValue       Decimal?
   altumApplicationRef String?
+  // Issue #107: count of received contractor offers (bids) for procurement transparency score
+  offerCount          Int           @default(0)
   createdAt           DateTime      @default(now())
 
   building   Building        @relation(fields: [buildingId], references: [id])
   campaign   VotingCampaign? @relation(fields: [campaignId], references: [id])
   contractor Contractor?     @relation(fields: [contractorId], references: [id])
+}
+
+// Issue #105: building document checklist — tracks which of the 8 required
+// documents have been uploaded, replacing the PDF-report-count proxy.
+model BuildingDocument {
+  id           String              @id @default(uuid())
+  buildingId   String
+  documentType BuildingDocumentType
+  fileKey      String?
+  uploadedAt   DateTime            @default(now())
+  uploadedBy   String?
+  expiresAt    DateTime?
+
+  building Building @relation(fields: [buildingId], references: [id])
+
+  @@unique([buildingId, documentType])
+  @@index([buildingId])
 }
 
 // ─── v2 READINESS PLATFORM MODELS ─────────────────────────────

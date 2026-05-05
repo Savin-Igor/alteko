@@ -42,9 +42,22 @@ export default async function PrivacyPage({ params }: Props) {
 
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-3">1. Datu pārzinis</h2>
+            <p className="text-gray-700 leading-relaxed mb-3">
+              Personas datu pārzinis (VDAR 13. panta 1. punkta a) apakšpunkts):
+            </p>
+            <ul className="list-none pl-0 text-gray-700 space-y-1 mb-3">
+              <li><strong>Nosaukums:</strong> SIA &ldquo;ALTEKO&rdquo;</li>
+              <li><strong>Reģistrācijas numurs:</strong> [jāreģistrē pirms publiskās palaišanas]</li>
+              <li><strong>Juridiskā adrese:</strong> [jānorāda pirms publiskās palaišanas], Rīga, Latvija</li>
+              <li>
+                <strong>Kontaktpersona datu aizsardzības jautājumos:</strong>{' '}
+                <a href="mailto:info@alteko.lv" className="text-primary hover:underline">
+                  info@alteko.lv
+                </a>
+              </li>
+            </ul>
             <p className="text-gray-700 leading-relaxed">
-              Personas datu pārzinis ir ALTEKO platformas operators. Saziņai
-              jautājumos par personas datu apstrādi lūdzam izmantot e-pasta adresi:{' '}
+              Saziņai jautājumos par personas datu apstrādi lūdzam rakstīt uz{' '}
               <a href="mailto:info@alteko.lv" className="text-primary hover:underline">
                 info@alteko.lv
               </a>
@@ -113,7 +126,7 @@ export default async function PrivacyPage({ params }: Props) {
                 vienreizēju saiti, kas tiek nosūtīta uz e-pastu);
               </li>
               <li>
-                informēšanai par renovācijas iespējām, Altum subsīdijām un
+                informēšanai par renovācijas finansējuma iespējām un
                 pakalpojuma būtiskām izmaiņām (tikai pēc skaidri izteiktas
                 lietotāja piekrišanas).
               </li>
@@ -151,8 +164,12 @@ export default async function PrivacyPage({ params }: Props) {
               E-pasta adresi mēs glabājam tik ilgi, cik tas ir nepieciešams
               pakalpojuma sniegšanai vai līdz brīdim, kad lietotājs pieprasa
               dzēst savu kontu. Servera žurnālfailus glabājam ne ilgāk kā 12
-              mēnešus. Augšupielādētos PDF rēķinus glabājam, lai nodrošinātu
-              pakalpojuma vēsturi konkrētam lietotājam.
+              mēnešus. <strong>Augšupielādētos PDF rēķinu oriģinālus dzēšam automātiski
+              pēc to veiksmīgas apstrādes</strong> (parasti dažu minūšu laikā); sistēmā
+              tiek saglabāti tikai strukturētie izdevumu dati (kategorijas un summas).
+              Strukturētos izdevumu datus glabājam, kamēr lietotājs uztur aktīvu kontu
+              vai pieprasīto pakalpojumu vēsturi. Pēc konta dzēšanas dati tiek
+              neatgriezeniski dzēsti 30 dienu laikā.
             </p>
           </section>
 
