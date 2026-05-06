@@ -18,17 +18,7 @@ export function NormaTeplaContent() {
         оценить расходы вашего дома и что считается переплатой.
       </p>
 
-      <div className="bg-warning-light border border-orange-200 rounded-xl p-5 space-y-2">
-        <p className="text-sm font-semibold text-warning">Типичная картина в Латвии</p>
-        <ul className="space-y-1 text-sm text-orange-900">
-          <li>• Средняя переплата за отопление в советских домах: <strong>+23% к норме</strong> (по данным платформы ALTEKO)</li>
-          <li>• Дома класса D–E платят за тепло в 1,5–2 раза больше, чем реновированные</li>
-          <li>• За горячую воду переплата: <strong>+15% в среднем</strong> (по данным платформы ALTEKO)</li>
-          <li>• За уборку — до <strong>+47%</strong> выше медианы (по данным платформы ALTEKO)</li>
-        </ul>
-      </div>
-
-      <h2 className="text-xl font-bold text-gray-900 mt-6">Как считается «норма»</h2>
+<h2 className="text-xl font-bold text-gray-900 mt-6">Как считается «норма»</h2>
       <p>
         Единой официальной нормы потребления тепла на м² в Латвии нет — SPRK регулирует тарифы
         поставщиков, но не контролирует эффективность зданий. Это пространство без надзора:
@@ -64,7 +54,7 @@ export function NormaTeplaContent() {
         ))}
       </div>
       <p className="text-xs text-gray-500">
-        * Внутренние бенчмарки по данным платформы ALTEKO. Зависят от района, года постройки и системы теплоснабжения.
+        * Ориентировочные диапазоны. Реальные значения зависят от района, года постройки и системы теплоснабжения.
       </p>
 
       <h2 className="text-xl font-bold text-gray-900 mt-6">Почему одинаковые дома платят по-разному</h2>
@@ -72,7 +62,7 @@ export function NormaTeplaContent() {
       <ul className="space-y-1 text-sm pl-4 list-disc">
         <li>
           <strong>Система отопления.</strong> ИТП (индивидуальный тепловой пункт) экономит 15–25%
-          по сравнению с централизованным регулированием (отраслевая оценка).
+          по сравнению с централизованным регулированием.
         </li>
         <li>
           <strong>Состояние фасада.</strong> Трещины, отсутствие утепления на торцах, щели
