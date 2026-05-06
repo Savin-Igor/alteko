@@ -59,7 +59,7 @@ services:
     ports:
       - "1025:1025"   # SMTP
       - "8025:8025"   # Web UI
-    restart: unless-stopped
+    restart: "no"
 
   # One-off runner for sync scripts and seeds.
   # Usage: docker compose -f docker-compose.db.yml run --rm scripts npx tsx scripts/sync-vzd.ts
