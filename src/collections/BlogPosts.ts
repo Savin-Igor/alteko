@@ -1,8 +1,28 @@
 import type { CollectionConfig } from 'payload'
-import { lexicalEditor, HeadingFeature, BlocksFeature, BoldFeature, ItalicFeature, LinkFeature, UnorderedListFeature, OrderedListFeature, HorizontalRuleFeature } from '@payloadcms/richtext-lexical'
+import {
+  lexicalEditor,
+  HeadingFeature,
+  BlocksFeature,
+  BoldFeature,
+  ItalicFeature,
+  LinkFeature,
+  UnorderedListFeature,
+  OrderedListFeature,
+  HorizontalRuleFeature,
+  BlockquoteFeature,
+  EXPERIMENTAL_TableFeature,
+  ChecklistFeature,
+  UploadFeature,
+  AlignFeature,
+  InlineCodeFeature,
+} from '@payloadcms/richtext-lexical'
 import { CalloutBlock } from './blocks/CalloutBlock'
 import { StatsTableBlock } from './blocks/StatsTableBlock'
 import { InlineCtaBlock } from './blocks/InlineCtaBlock'
+import { VideoEmbedBlock } from './blocks/VideoEmbedBlock'
+import { FAQBlock } from './blocks/FAQBlock'
+import { AlertBannerBlock } from './blocks/AlertBannerBlock'
+import { ComparisonTableBlock } from './blocks/ComparisonTableBlock'
 
 export const BlogPosts: CollectionConfig = {
   slug: 'blog-posts',
@@ -57,8 +77,22 @@ export const BlogPosts: CollectionConfig = {
           UnorderedListFeature(),
           OrderedListFeature(),
           HorizontalRuleFeature(),
+          BlockquoteFeature(),
+          EXPERIMENTAL_TableFeature(),
+          ChecklistFeature(),
+          UploadFeature({ enabledCollections: ['media'] }),
+          AlignFeature(),
+          InlineCodeFeature(),
           BlocksFeature({
-            blocks: [CalloutBlock, StatsTableBlock, InlineCtaBlock],
+            blocks: [
+              CalloutBlock,
+              StatsTableBlock,
+              InlineCtaBlock,
+              VideoEmbedBlock,
+              FAQBlock,
+              AlertBannerBlock,
+              ComparisonTableBlock,
+            ],
           }),
         ],
       }),
