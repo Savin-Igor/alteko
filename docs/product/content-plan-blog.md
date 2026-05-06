@@ -10,14 +10,35 @@
 
 | Параметр | Значение |
 |----------|---------|
-| Стиль | Полуреалистичная архитектурная иллюстрация |
-| Цветовая палитра | Приглушённые, десатурированные тона — бежевый, серый, светло-синий |
-| Фон | Светло-серый (#F8FAFC) или overcast небо |
-| Люди | Только силуэты без лиц, либо без людей |
+| Стиль | Baltic Architectural Painterly — полуреалистичная живописная иллюстрация. Не фото, не плоский вектор |
+| Цветовая палитра | Приглушённые, десатурированные: холодный серый, slate blue, тёплый бежевый, off-white |
+| Фон | Светло-серый (#F8FAFC) или пасмурное прибалтийское небо |
+| Люди | Полностью отсутствуют — ни фигуры, ни силуэты, ни тени |
+| Текст в изображении | Ноль — никаких подписей, меток, надписей на зданиях или объектах |
+| Детали | Упрощённые формы: окна одинаковые, без индивидуальных деталей фасада |
+| Свет | Рассеянный overcast — без резких теней и бликов |
+| Текстура | Лёгкое «зерно» кисти — отличимо от фото и от вектора |
 | Формат | PNG |
 | Размер | 1200×630 px (16:9, OG-card, hero статьи) |
 | Прозрачный фон | Нет |
-| Консистентность | Все в одной сессии ChatGPT для единого стиля |
+| Консистентность | Все в одной сессии с мастер-промптом ниже |
+
+### Мастер-промпт — вставить первым сообщением в ChatGPT
+
+```
+I will generate a series of blog illustrations in a consistent style.
+Remember this style for all images in this session:
+
+Style: semi-realistic painterly architectural illustration.
+Not a photograph. Not flat vector. Painterly with slight grain texture.
+Color palette: muted, desaturated — cool gray, slate blue, warm beige, off-white.
+Sky when visible: overcast Baltic daylight, soft diffused light, no harsh shadows.
+No people, no human figures, no silhouettes.
+No text, no labels, no signs anywhere in the image — not on buildings, not floating, not on documents.
+Simplified forms: windows uniform, no fine facade details.
+Clean uncluttered composition.
+Format: 1200×630px landscape.
+```
 
 ---
 
@@ -42,12 +63,12 @@
 ### Промпт DALL-E
 
 ```
-Architectural cross-section illustration of a Soviet 9-story panel apartment building
-showing heat loss zones. The panel joints glow orange-red (indicating heat escaping),
-the end walls are darker red, the roof shows heat rising. Interior rooms are warm beige.
-Style: flat architectural diagram with thermal imaging overlay, muted scientific illustration.
-Background: light gray. No people. Clean infographic aesthetic.
-1200x630 format, landscape orientation.
+Semi-realistic painterly illustration of a Soviet 9-story panel apartment building,
+cross-section view. Heat loss zones shown through color: panel joints and end walls
+glow in soft orange-red, roof edge warm, interior rooms cool beige-gray.
+No text, no labels. No people. Muted desaturated palette, painterly grain texture.
+Overcast light. Clean composition, simplified forms.
+1200x630 landscape.
 ```
 
 ---
@@ -67,10 +88,11 @@ Background: light gray. No people. Clean infographic aesthetic.
 ### Промпт DALL-E
 
 ```
-Flat illustration of a renovated Soviet 9-story apartment building in Latvia,
-with a visual split showing financing: left side of building labeled "Valsts 49%"
-with a Latvian flag motif, right side "Iedzīvotāji 51%". Clean architectural style,
-muted blue and green tones, light sky background. No people. Infographic aesthetic.
+Semi-realistic painterly illustration of a renovated Soviet 9-story apartment building in Latvia.
+Building is split vertically down the middle: left half painted in calm state-blue tones,
+right half in warm residential beige. Subtle Latvian flag colors in the sky above each half.
+No text, no labels, no percentages. No people. Muted desaturated palette, painterly grain.
+Overcast Baltic light. Clean composition.
 1200x630 landscape.
 ```
 
@@ -111,11 +133,13 @@ muted blue and green tones, light sky background. No people. Infographic aesthet
 ### Промпт DALL-E
 
 ```
-Vintage Soviet-era technical illustration showing panel building construction process.
-Left: a concrete panel factory with workers (silhouettes) producing large wall panels.
-Right: a crane lifting a concrete panel onto a partially built 9-story apartment building.
-Style: 1960s Soviet technical illustration, warm sepia-beige tones, clean lines,
-educational poster aesthetic. No faces. Light cream background. 1200x630 landscape.
+Semi-realistic painterly illustration of Soviet panel building construction.
+Left side: a large concrete panel factory building, industrial, simplified forms.
+Right side: a tower crane lifting a concrete wall panel onto a partially built
+9-story apartment building. No people. No text, no signs on buildings or crane.
+Muted warm beige-gray palette, overcast light, painterly grain texture.
+Clean composition, simplified industrial forms.
+1200x630 landscape.
 ```
 
 ---
@@ -155,11 +179,14 @@ educational poster aesthetic. No faces. Light cream background. 1200x630 landsca
 ### Промпт DALL-E
 
 ```
-Split illustration: left half shows a dark cramped communal Soviet apartment (kommunalka)
-with multiple doors along a dim corridor, shared kitchen; right half shows a bright clean
-small Soviet panel apartment interior, single window, simple furniture, warm light.
-Style: nostalgic architectural illustration, 1960s Soviet aesthetic, muted warm tones.
-No faces. Caption area at bottom. 1200x630 landscape.
+Semi-realistic painterly illustration, split composition.
+Left half: dark cramped communal apartment corridor — multiple identical closed doors
+along a dim narrow hallway, low ceiling, muted dark gray-brown tones.
+Right half: a small clean Soviet panel apartment interior — single window with daylight,
+simple minimal furniture, warm off-white walls, airy feeling.
+Vertical dividing line between halves. No people. No text, no signs.
+Painterly grain texture, muted warm palette.
+1200x630 landscape.
 ```
 
 ---
@@ -198,11 +225,13 @@ No faces. Caption area at bottom. 1200x630 landscape.
 ### Промпт DALL-E
 
 ```
-Engineering diagram illustration of a 9-story Soviet apartment building with a fire truck
-ladder extending to exactly the 9th floor (labeled "28m"). A dashed 10th floor is shown
-above with a red X through it. Clean technical drawing style, blueprint aesthetic,
-blue lines on cream/white background. Minimal text labels. 1200x630 landscape.
-No people. Educational infographic look.
+Semi-realistic painterly illustration of a 9-story Soviet apartment building seen from the side.
+A fire truck is parked next to it with an extended ladder reaching exactly the top (9th) floor.
+Above the 9th floor, empty space — the building ends there, no 10th floor.
+No people, no firefighters, no text, no labels.
+Muted cool gray-blue palette, overcast Baltic light, painterly grain texture.
+Clean simplified forms, uncluttered background.
+1200x630 landscape.
 ```
 
 ---
@@ -246,12 +275,13 @@ No people. Educational infographic look.
 ### Промпт DALL-E
 
 ```
-Before and after comparison of a Soviet 9-story panel apartment building renovation.
-Left half: deteriorated gray building, crumbling facade, old windows, visible heat loss
-(shown as faint orange glow above roof), winter setting. Right half: same building after
-renovation — clean insulated facade, new double-pane windows, fresh appearance, small trees.
-Same viewing angle, split composition with subtle dividing line. Semi-realistic architectural
-illustration, muted color palette. 1200x630 landscape. No people.
+Semi-realistic painterly illustration, split composition, same viewing angle on both halves.
+Left half: Soviet 9-story panel apartment building before renovation — weathered gray facade,
+old worn windows, faint warm orange glow above the roof suggesting heat escaping, winter setting.
+Right half: same building after renovation — clean smooth insulated facade, uniform new windows,
+small bare trees in front. Subtle vertical dividing line between halves.
+No people. No text, no signs. Muted desaturated palette, painterly grain, overcast light.
+1200x630 landscape.
 ```
 
 ---
@@ -292,11 +322,13 @@ illustration, muted color palette. 1200x630 landscape. No people.
 ### Промпт DALL-E
 
 ```
-Top-view floor plan illustration of a Soviet panel apartment building (series 602 style),
-showing thermal zones. End apartments glow blue (cold, heat loss through end walls),
-central apartments are warm beige/yellow. Blue arrows indicate heat escaping through
-the end wall panels. Thermal diagram style, muted scientific palette, clean lines.
-Labels: "Торец" (end) in blue, "Тепло" (warm) in orange. 1200x630 landscape.
+Semi-realistic painterly illustration of a Soviet panel apartment building seen from above
+at a slight angle. The end apartments on both sides of the building glow cold blue,
+the central apartments are warm beige-yellow. The end walls show faint blue color bleeding
+outward into the surrounding cold air. No arrows, no text, no labels.
+No people. Muted desaturated palette, painterly grain texture, overcast light.
+Clean simplified top-down perspective.
+1200x630 landscape.
 ```
 
 ---
@@ -336,11 +368,12 @@ Labels: "Торец" (end) in blue, "Тепло" (warm) in orange. 1200x630 land
 ### Промпт DALL-E
 
 ```
-Clean infographic illustration of a Latvian utility bill document with annotated line items.
-The largest row "Apkure / Отопление" is highlighted in red with a radiator icon.
-Other rows (hot water, cold water, maintenance, elevator) in neutral gray.
-Percentage bars next to each item show relative size. Style: modern flat infographic,
-white background, clean typography aesthetic (no actual text — just visual shapes).
+Semi-realistic painterly illustration of a utility bill document lying on a table.
+The document shows horizontal colored bars of different widths — no text, no numbers,
+just color blocks representing line items. The widest bar is deep red-orange (heating),
+others progressively shorter in cool gray tones.
+No text anywhere in the image. No people. Off-white paper texture, warm table surface.
+Muted desaturated palette, painterly grain, soft diffused light.
 1200x630 landscape.
 ```
 
@@ -382,11 +415,13 @@ white background, clean typography aesthetic (no actual text — just visual sha
 ### Промпт DALL-E
 
 ```
-Illustration of a classic Soviet apartment building entrance hallway (podval/podyezd).
-The lower half of walls painted dark olive green or Soviet blue, the upper half whitewashed.
-Old metal mailboxes on the wall, concrete stairs, single bare lightbulb overhead.
-Slightly nostalgic but not gloomy. Semi-realistic architectural illustration, warm muted tones.
-No people. 1200x630 landscape.
+Semi-realistic painterly illustration of a Soviet apartment building entrance hallway.
+Lower half of walls painted dark olive green, upper half off-white.
+Concrete stairs leading upward, old metal mailboxes mounted on the wall,
+single bare overhead lightbulb casting soft warm glow.
+No people. No text, no inscriptions on mailboxes or walls.
+Slightly nostalgic feeling, muted warm tones, painterly grain texture, soft light.
+1200x630 landscape.
 ```
 
 ---
@@ -432,9 +467,19 @@ No people. 1200x630 landscape.
 ## Инструкция по генерации изображений
 
 1. Открыть ChatGPT с DALL-E 3
-2. В начале сессии написать: *"Я буду генерировать серию иллюстраций в едином стиле. Запомни: полуреалистичная архитектурная иллюстрация, приглушённые тона, без людей или силуэты, светлый фон."*
-3. Генерировать все 9 изображений в одной сессии
-4. Сохранять под именами из столбца «Файл»
-5. Положить в `public/articles/`
+2. Первым сообщением вставить мастер-промпт из раздела «Визуальный стиль» выше
+3. Генерировать все 9 изображений в **одной сессии** — это гарантирует единый стиль
+4. Если результат не соответствует стилю — добавить к промпту: *"Same style as previous images in this session"*
+5. Сохранять под именами из столбца «Файл»
+6. Положить в `public/articles/`
 
 После загрузки файлов — обновить компоненты статей для отображения hero-изображения.
+
+### Типичные причины глитчей и как их избежать
+
+| Проблема | Причина | Решение |
+|---------|---------|---------|
+| Кривые буквы на изображении | Промпт содержал текстовые метки | Все метки убраны из промптов |
+| Деформированные лица | Были люди или силуэты | Люди полностью исключены |
+| Фотоартефакты (размытие, двоение) | Стиль был «photo-realistic» | Стиль «painterly» устойчивее |
+| Разнобой между картинками | Разные сессии или разные стили | Одна сессия + мастер-промпт |
