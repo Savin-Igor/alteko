@@ -56,11 +56,11 @@ export function Seriya119Content() {
       <ul className="space-y-2 text-sm pl-4 list-disc">
         <li>
           <strong>Стыки панелей.</strong> Горизонтальные и вертикальные швы между панелями
-          со временем теряют герметичность. Через них уходит до 15% тепла.
+          со временем теряют герметичность. Через них уходит значительная часть тепла.
         </li>
         <li>
           <strong>Торцевые стены.</strong> Они тоньше фасадных и хуже утеплены. Квартиры
-          на торцах платят за отопление на 20–30% больше среднего по дому.
+          на торцах платят за отопление на 20–30% больше среднего по дому (отраслевая оценка, по данным платформы ALTEKO).
         </li>
         <li>
           <strong>Крыша.</strong> Чердачное перекрытие в серии 119 не имеет эффективного
@@ -122,7 +122,7 @@ export function Seriya119Content() {
           { label: 'Экономия на отоплении', value: '−50–60%' },
           { label: 'Средняя экономия в месяц', value: '€100–150/квартира' },
           { label: 'Рост стоимости квартиры', value: '+10–11%' },
-          { label: 'Субсидия Altum', value: 'до 49%' },
+          { label: 'Субсидия Altum', value: 'до 50%' },
         ].map((item) => (
           <div key={item.label} className="card text-center">
             <p className="text-lg font-bold text-primary">{item.value}</p>
@@ -131,7 +131,7 @@ export function Seriya119Content() {
         ))}
       </div>
       <p className="text-sm text-gray-500">
-        Источники: Altum, Latvijas Banka DP 3/2025, fi-compass 2024.
+        Источники: Altum (fi-compass, ноябрь 2024), Latvijas Banka DP 3/2025.
         Реальные значения зависят от состояния конкретного дома.
       </p>
 

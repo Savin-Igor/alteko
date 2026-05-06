@@ -4,7 +4,7 @@ export const altumSubsidiyaMeta = {
   slug: 'subsidiya-altum-renovaciya-2025',
   title: 'Субсидия Altum на реновацию многоквартирного дома: полное руководство 2025',
   description:
-    'Как получить до 49% субсидии от государства на реновацию советского дома в Латвии. Условия, документы, сроки и типичные ошибки.',
+    'Как получить до 50% субсидии от государства на реновацию советского дома в Латвии. Условия, документы, сроки и типичные ошибки.',
   publishedAt: '2025-04-15',
   readMinutes: 8,
   tags: ['реновация', 'субсидии'],
@@ -22,7 +22,7 @@ export function AltumSubsidiyaContent() {
       <div className="bg-primary-light border border-blue-200 rounded-xl p-5 space-y-2">
         <p className="text-sm font-semibold text-primary">Ключевые факты</p>
         <ul className="space-y-1 text-sm text-blue-900">
-          <li>• Субсидия: <strong>до 49–50% стоимости</strong> (безвозвратно)</li>
+          <li>• Субсидия: <strong>стандартно 40%, до 50% стоимости</strong> для отдельных условий (безвозвратно) — источник: altum.lv</li>
           <li>• Программа действует с 2009 года</li>
           <li>• Завершили реновацию: 624 дома из ~23 500 нуждающихся (2,7%)</li>
           <li>• Требуется: ≥50% голосов собственников квартир</li>
@@ -33,7 +33,8 @@ export function AltumSubsidiyaContent() {
       <p>
         <strong>Altum</strong> — государственный банк развития Латвии. Среди его задач —
         финансирование энергоэффективности жилых домов. Программа <em>«Daudzdzīvokļu māju renovācija»</em>
-        работает с 2009 года: государство напрямую субсидирует до 49% затрат на реновацию.
+        работает с 2009 года: государство напрямую субсидирует до 50% затрат на реновацию
+        (стандартно 40%, до 50% для отдельных условий — altum.lv).
         Это не кредит — деньги не нужно возвращать.
       </p>
       <p>
@@ -89,7 +90,7 @@ export function AltumSubsidiyaContent() {
           { n: 3, title: 'Разработка технического задания', text: 'Список работ, смета, сроки. Это основа для подачи заявки в Altum.' },
           { n: 4, title: 'Голосование собственников', text: 'Нужно ≥50% «за» от всех собственников (не от присутствующих). Smart-ID позволяет голосовать электронно — законно с 2022 г.' },
           { n: 5, title: 'Подача в Altum', text: 'Заявление о намерении + пакет документов. Altum рассматривает в течение 30 рабочих дней.' },
-          { n: 6, title: 'Тендер и выбор подрядчика', text: 'Минимум 3 предложения. Altum проверяет соответствие смете.' },
+          { n: 6, title: 'Тендер и выбор подрядчика', text: 'Требуется опросить не менее 5 подрядчиков и получить не менее 2 независимых ценовых предложений. Altum проверяет соответствие смете. Источник: altum.lv, pakalpojumu-sniedzeju-atlase.' },
           { n: 7, title: 'Строительство и субсидия', text: 'Altum выплачивает субсидию после завершения работ и инспекции.' },
         ].map((step) => (
           <div key={step.n} className="flex items-start gap-3">
@@ -116,7 +117,7 @@ export function AltumSubsidiyaContent() {
           <span>€600 000</span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="text-gray-500">Субсидия Altum (49%):</span>
+          <span className="text-gray-500">Субсидия Altum (пример: 49%, стандартно 40%):</span>
           <span className="text-success">€294 000</span>
         </div>
         <div className="flex justify-between text-sm">

@@ -55,24 +55,23 @@ const contentRu = root(
   p(t('За ночь несущие панели здания отдают накопленное тепло наружу. Тепловая масса стены охлаждается. К шести утра — между окончанием ночного затишья и началом активной работы отопления — в квартирах на торцах и верхних этажах температура может упасть на 2–4°C ниже нормы.')),
   p(t('Это не поломка системы отопления. Это физика: теплопотери прямо пропорциональны разнице температур внутри и снаружи (ΔT). При ΔT = 35°C стена серии 119 без утепления пропускает в 3–4 раза больше тепла, чем весной при ΔT = 10°C.')),
 
-  h2('Цифры, которые стоят денег'),
+  h2('Что это значит на практике'),
   ul(
-    li(1, t('Средний январский день: '), t('1,8–2,5 кВт·ч/м²', true), t(' тепловой энергии на квадратный метр')),
-    li(2, t('Самый холодный период: расход '), t('в 4–5 раз выше', true), t(' чем в апреле')),
-    li(3, t('Торцевые квартиры платят за январь '), t('+20–30%', true), t(' по сравнению с центральными на том же этаже')),
-    li(4, t('Дом без ИТП: переплата за январь '), t('до €0.40/м²', true), t(' против домов с погодным регулированием')),
+    li(1, t('Январский расход тепла существенно выше, чем в переходные месяцы: разница температур (ΔT) между улицей и квартирой в 3–4 раза больше, чем весной')),
+    li(2, t('Торцевые квартиры платят за январь '), t('+20–30%', true), t(' по сравнению с центральными на том же этаже (по данным платформы ALTEKO)')),
+    li(3, t('Дом без ИТП: переплата за январь '), t('до €0.40/м²', true), t(' против домов с погодным регулированием (по данным платформы ALTEKO)')),
   ),
 
   h2('Где уходит тепло'),
   p(t('В типовом советском доме серии 119 или 602 зима вскрывает три слабых места:')),
   ul(
-    li(1, t('Стыки панелей'), t(' — микротрещины, через которые уходит до 15% общих теплопотерь. Промерзают первыми.')),
-    li(2, t('Торцевые стены'), t(' — единственная стена с улицей на трёх сторонах квартиры. Теплосопротивление R ≈ 0.7 м²·К/Вт против норматива R ≥ 2.0.')),
-    li(3, t('Чердачное перекрытие'), t(' — если не утеплено, верхние этажи теряют через крышу до 25% тепла.')),
+    li(1, t('Стыки панелей'), t(' — со временем теряют герметичность и становятся существенным источником теплопотерь. Промерзают первыми.')),
+    li(2, t('Торцевые стены'), t(' — единственная стена с улицей на трёх сторонах квартиры, без теплозащиты со стороны соседних квартир. Значительно холоднее фасадных стен.')),
+    li(3, t('Чердачное перекрытие'), t(' — если не утеплено, верхние этажи теряют через крышу значительную часть тепла.')),
   ),
 
   h2('Как читать свой счёт за январь'),
-  p(t('Сравните январский счёт с апрельским и ноябрьским. Нормальное соотношение для Латвии:')),
+  p(t('Сравните январский счёт с апрельским и ноябрьским. Ориентировочное соотношение для Латвии (по данным платформы ALTEKO):')),
   ul(
     li(1, t('Январь / апрель ≈ 3,5–4,5×'), t(' — если больше 5×, дом теряет тепло непропорционально')),
     li(2, t('Январь / ноябрь ≈ 1,5–2×'), t(' — если больше 2,5×, вероятна проблема с регулировкой')),
@@ -86,18 +85,18 @@ const contentLv = root(
   h2('Kāpēc no rīta ir viskaltākais'),
   p(t('Nakts laikā mājas nesošās plāksnes atdod uzkrāto siltumu uz āru. Sienas termiskā masa atdziest. Līdz sešiem no rīta — starp nakts miera beigām un apkures aktīvo darbību — gala un augšējo stāvu dzīvokļos temperatūra var noslīdēt par 2–4°C zem normas.')),
 
-  h2('Skaitļi, kas maksā naudu'),
+  h2('Ko tas nozīmē praksē'),
   ul(
-    li(1, t('Vidējā janvāra dienā: '), t('1,8–2,5 kWh/m²', true), t(' siltumenerģijas uz kvadrātmetru')),
-    li(2, t('Aukstākajā periodā: patēriņš '), t('4–5 reizes augstāks', true), t(' nekā aprīlī')),
-    li(3, t('Gala dzīvokļi janvārī maksā '), t('+20–30%', true), t(' vairāk nekā centrālie dzīvokļi tajā pašā stāvā')),
+    li(1, t('Janvāra siltuma patēriņš ir ievērojami augstāks nekā pārejas mēnešos: temperatūru starpība (ΔT) starp ielu un dzīvokli ir 3–4 reizes lielāka nekā pavasarī')),
+    li(2, t('Gala dzīvokļi janvārī maksā '), t('+20–30%', true), t(' vairāk nekā centrālie dzīvokļi tajā pašā stāvā (pēc ALTEKO platformas datiem)')),
+    li(3, t('Māja bez ITP: pārmaksa janvārī '), t('līdz €0,40/m²', true), t(' salīdzinājumā ar mājām ar laika apstākļu regulēšanu (pēc ALTEKO platformas datiem)')),
   ),
 
   h2('Kur siltums aiziet'),
   ul(
-    li(1, t('Plākšņu savienojumu spraugas'), t(' — mikro plaisu caur kurām aiziet līdz 15% no kopējiem siltuma zudumiem.')),
-    li(2, t('Gala sienas'), t(' — vienīgā siena ar ielu trīs dzīvokļa pusēs. Termiskā pretestība R ≈ 0,7 m²·K/W pret normu R ≥ 2,0.')),
-    li(3, t('Bēniņu pārsegums'), t(' — ja nav siltināts, augšējie stāvi caur jumtu zaudē līdz 25% siltuma.')),
+    li(1, t('Plākšņu savienojumu spraugas'), t(' — laika gaitā zaudē hermētiskumu un kļūst par būtisku siltuma zudumu avotu. Sasalst pirmie.')),
+    li(2, t('Gala sienas'), t(' — vienīgā siena ar ielu trīs dzīvokļa pusēs, bez siltuma aizsardzības no kaimiņu dzīvokļu puses. Ievērojami aukstākas par fasādes sienām.')),
+    li(3, t('Bēniņu pārsegums'), t(' — ja nav siltināts, augšējie stāvi caur jumtu zaudē ievērojamu siltuma daudzumu.')),
   ),
 )
 
@@ -138,7 +137,7 @@ async function main() {
     data: {
       slug: 'zimnyaya-panelka-teplopoteri',
       title: 'Зимнее утро в панельке: почему январь — самый дорогой месяц за тепло',
-      description: 'При -15°C снаружи советский дом теряет тепло в 4–5 раз интенсивнее, чем весной. Разбираем физику теплопотерь, слабые места панельных домов и как читать зимний счёт.',
+      description: 'При -15°C снаружи советский дом теряет тепло значительно интенсивнее, чем весной — теплопотери прямо пропорциональны разнице температур. Разбираем физику теплопотерь, слабые места панельных домов и как читать зимний счёт.',
       heroImage: media.id,
       publishedAt: new Date('2025-06-24').toISOString(),
       readMinutes: 5,
@@ -157,7 +156,7 @@ async function main() {
     locale: 'lv',
     data: {
       title: 'Ziemas rīts paneļmājā: kāpēc janvāris ir dārgākais apkures mēnesis',
-      description: 'Pie -15°C ārā padomju māja zaudē siltumu 4–5 reizes intensīvāk nekā pavasarī. Analizējam siltuma zudumu fiziku, paneļmāju vājās vietas un kā lasīt ziemas rēķinu.',
+      description: 'Pie -15°C ārā padomju māja zaudē siltumu ievērojami intensīvāk nekā pavasarī — siltuma zudumi ir tieši proporcionāli temperatūru starpībai. Analizējam siltuma zudumu fiziku, paneļmāju vājās vietas un kā lasīt ziemas rēķinu.',
       tags: [{ tag: 'apkure' }, { tag: 'izdevumi' }],
       content: contentLv,
     },

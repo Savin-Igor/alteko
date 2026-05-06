@@ -23,10 +23,10 @@ export function ZhiznDoPosleRenovaciiContent() {
       </p>
       <div className="grid grid-cols-2 gap-3 my-4">
         {[
-          { label: 'Экономия на отоплении', value: '−50–60%' },
+          { label: 'Экономия на отоплении', value: 'в среднем ~62%' },
           { label: 'Экономия в месяц на квартиру', value: '€100–150' },
           { label: 'Рост стоимости квартиры', value: '+10–11%' },
-          { label: 'Снижение выброса CO₂', value: '−24 000 т/год*' },
+          { label: 'Снижение выброса CO₂', value: '−24 403 т/год*' },
         ].map((item) => (
           <div key={item.label} className="card text-center">
             <p className="text-lg font-bold text-primary">{item.value}</p>
@@ -35,10 +35,10 @@ export function ZhiznDoPosleRenovaciiContent() {
         ))}
       </div>
       <p className="text-xs text-gray-400">
-        * Совокупно по 624 домам программы ERDF 2014–2020. Источник: fi-compass.eu, ALTUM, декабрь 2024.
+        * Совокупно по 624 домам программы ERDF 2014–2020. Источник: fi-compass.eu, ALTUM, ноябрь 2024.
       </p>
 
-      <h2 className="text-xl font-bold text-gray-900 mt-6">Данные по 624 домам: −60% на отоплении</h2>
+      <h2 className="text-xl font-bold text-gray-900 mt-6">Данные по 624 домам: в среднем ~62% экономии</h2>
       <p>
         За период европейского финансирования 2014–2020 в Латвии было реновировано 624 многоквартирных
         дома при поддержке ALTUM и ERDF. Средний результат по портфелю:
@@ -46,23 +46,26 @@ export function ZhiznDoPosleRenovaciiContent() {
       <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 space-y-2 my-4">
         <div className="grid grid-cols-3 gap-3 text-sm">
           <div>
-            <p className="text-gray-500 text-xs">До реновации</p>
-            <p className="font-bold text-xl text-danger">128</p>
+            <p className="text-gray-500 text-xs">До реновации (базовый показатель)</p>
+            <p className="font-bold text-xl text-danger">~152</p>
             <p className="text-xs text-gray-500">kWh/м²/год</p>
           </div>
           <div className="flex items-center justify-center text-2xl text-gray-300">→</div>
           <div>
-            <p className="text-gray-500 text-xs">После реновации</p>
-            <p className="font-bold text-xl text-success">54</p>
+            <p className="text-gray-500 text-xs">После реновации (среднее)</p>
+            <p className="font-bold text-xl text-success">~57</p>
             <p className="text-xs text-gray-500">kWh/м²/год</p>
           </div>
         </div>
         <p className="text-sm text-center text-gray-500 pt-2 border-t border-gray-100">
-          Среднее снижение теплопотребления: <strong className="text-gray-900">−58%</strong>
+          Среднее снижение теплопотребления: <strong className="text-gray-900">~62%</strong>
+        </p>
+        <p className="text-xs text-center text-gray-400">
+          Лучший результат по портфелю: дом в Сигулде — 159 → 45,63 kWh/м²/год (−71%), экономия €5,80/м²/год
         </p>
       </div>
       <p className="text-sm text-gray-500">
-        Источник: fi-compass.eu, интервью с ALTUM, декабрь 2024. Значения усредненные по портфелю;
+        Источник: fi-compass.eu, ALTUM, ноябрь 2024. Значения усредненные по портфелю;
         реальный результат зависит от конкретного дома и объёма работ.
       </p>
 
