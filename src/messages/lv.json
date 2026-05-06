@@ -548,7 +548,12 @@
       "shareMessage": "Pārbaudīju mūsu mājas izdevumus ALTEKO. Pārmaksājam par apkuri {deviation}%. Apskaties: {url}",
       "shareShortMessage": "Pārmaksājam par apkuri {deviation}%",
       "parseConfidenceLow": "MI veiktā rēķina atpazīšana varētu būt neprecīza (maz pozīciju vai ievērojamas novirzes). Pārbaudiet datus pirms izmantošanas.",
-      "parseConfidenceMedium": "Rēķins atpazīts automātiski. Pārbaudiet galvenos skaitļus pirms iesniegšanas sapulcē."
+      "parseConfidenceMedium": "Rēķins atpazīts automātiski. Pārbaudiet galvenos skaitļus pirms iesniegšanas sapulcē.",
+      "questionsHeading": "Jautājumi apsaimniekotājam",
+      "questionsHint": "Uzdodiet šos jautājumus sapulcē vai rakstiski apsaimniekotājam.",
+      "nextStepHeading": "Nākamais solis",
+      "nextStepText": "Pārbaudiet mājas gatavību pilnā apjomā — dokumentus, lēmumus un finansējuma scenārijus.",
+      "nextStepCta": "Skatīt mājas gatavību →"
     },
     "marketing": {
       "metadata": {

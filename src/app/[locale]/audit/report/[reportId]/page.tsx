@@ -4,6 +4,7 @@ import { Link } from '@/i18n/navigation'
 import { prisma } from '@/lib/prisma'
 import { compareWithBenchmark } from '@/lib/benchmarks/compare'
 import { detectAnomalies } from '@/lib/benchmarks/anomaly'
+import { generateQuestions } from '@/lib/audit/question-generator'
 import { EmailGateForm } from './EmailGateForm'
 import { UnlockPersist } from '@/components/UnlockPersist'
 import { PageHeader, CategoryRow, StatCard, InfoBanner } from '@/components/ui'
@@ -15,12 +16,12 @@ function deviationVariant(pct: number): 'danger' | 'warning' | 'success' {
 }
 
 interface Props {
-  params: Promise<{ reportId: string }>
+  params: Promise<{ locale: string; reportId: string }>
   searchParams: Promise<{ unlocked?: string }>
 }
 
 export default async function ReportPage({ params, searchParams }: Props) {
-  const { reportId } = await params
+  const { locale, reportId } = await params
   const { unlocked } = await searchParams
 
   const report = await prisma.expenseReport.findUnique({
@@ -60,6 +61,8 @@ export default async function ReportPage({ params, searchParams }: Props) {
   const shareWaText = t('shareMessage', { deviation, url: `${appUrl}/b/${report.buildingId}` })
   const shareTgText = t('shareShortMessage', { deviation })
   const shareTgUrl = `${appUrl}/b/${report.buildingId}`
+
+  const questions = generateQuestions(anomalies, locale)
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -153,6 +156,20 @@ export default async function ReportPage({ params, searchParams }: Props) {
               </div>
             </div>
 
+            {questions.length > 0 && (
+              <div className="card space-y-3">
+                <p className="text-sm font-medium text-gray-700">{t('questionsHeading')}</p>
+                <p className="text-xs text-gray-500">{t('questionsHint')}</p>
+                <ol className="space-y-2 text-sm text-gray-700 list-decimal list-inside">
+                  {questions.map((question, i) => (
+                    <li key={i} className="leading-snug">
+                      {question}
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            )}
+
             <div className="card space-y-3 bg-primary-light border-blue-200">
               <p className="text-sm font-medium text-gray-700">{t('whatToDo')}</p>
               {annualOverpay > 0 && (
@@ -170,6 +187,17 @@ export default async function ReportPage({ params, searchParams }: Props) {
               </Link>
               <Link href="/blog/subsidiya-altum-renovaciya-2025" className="text-xs text-primary text-center block hover:underline">
                 {t('howAltum')}
+              </Link>
+            </div>
+
+            <div className="card space-y-3 border-gray-200">
+              <p className="text-sm font-medium text-gray-700">{t('nextStepHeading')}</p>
+              <p className="text-sm text-gray-600">{t('nextStepText')}</p>
+              <Link
+                href={`/building/${report.building.cadastralCode}`}
+                className="btn-secondary text-center block"
+              >
+                {t('nextStepCta')}
               </Link>
             </div>
 
