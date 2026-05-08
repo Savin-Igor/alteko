@@ -19,7 +19,11 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data
+      # Named volume keeps Postgres data out of the project tree so the
+      # Next.js build does not hit EACCES when scanning the workspace.
+      # Migration from the legacy ./data/postgres bind-mount is documented
+      # in docs/technical/local-development.md.
+      - alteko_postgres_data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
     healthcheck:
@@ -38,7 +42,8 @@ services:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
     volumes:
-      - ./data/minio:/data
+      # See alteko_postgres_data above — same reason.
+      - alteko_minio_data:/data
     ports:
       - "9100:9000"   # S3 API  (9000 taken on host — use localhost:9100)
       - "9101:9001"   # Web console (http://localhost:9101)
@@ -75,6 +80,8 @@ services:
     restart: "no"
 
   # One-off runner for sync scripts and seeds.
+  # Note: the project root is bind-mounted at /app, but the workspace
+  # never contains the database — that lives in the named volume above.
   # Usage: docker compose -f docker-compose.db.yml run --rm scripts npx tsx scripts/sync-vzd.ts
   scripts:
     build:
@@ -98,3 +105,8 @@ services:
         condition: service_healthy
     profiles:
       - scripts
+
+# Named volumes — wipe with `make db-nuke` (drops all local DB and MinIO data).
+volumes:
+  alteko_postgres_data:
+  alteko_minio_data:
