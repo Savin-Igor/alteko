@@ -10,6 +10,7 @@ import { ReadinessOverview } from '@/components/dashboard/ReadinessOverview'
 import { FinancingMini } from '@/components/dashboard/FinancingMini'
 import { OwnerListStatus } from '@/components/dashboard/OwnerListStatus'
 import { DocumentChecklist } from '@/components/dashboard/DocumentChecklist'
+import { CampaignList } from '@/components/dashboard/CampaignList'
 import {
   getActiveBuilding,
   listUserBuildings,
@@ -81,6 +82,19 @@ export default async function DashboardPage({ params, searchParams }: Props) {
               uploadedAt: true,
               expiresAt: true,
             },
+          },
+          decisionCampaigns: {
+            select: {
+              id: true,
+              title: true,
+              decisionType: true,
+              status: true,
+              deadline: true,
+              intentionsYesCount: true,
+              intentionsNoCount: true,
+              intentionsAbstainCount: true,
+            },
+            orderBy: { createdAt: 'desc' },
           },
         },
       })
@@ -191,7 +205,22 @@ export default async function DashboardPage({ params, searchParams }: Props) {
               }
             />
 
-            <DashboardSectionPlaceholder title={tValdes('sections.campaigns')} />
+            <CampaignList
+              buildingId={active.id}
+              locale={locale}
+              campaigns={
+                buildingDetails?.decisionCampaigns.map((c) => ({
+                  id: c.id,
+                  title: c.title,
+                  decisionType: c.decisionType,
+                  status: c.status,
+                  deadline: c.deadline,
+                  intentionsYesCount: c.intentionsYesCount,
+                  intentionsNoCount: c.intentionsNoCount,
+                  intentionsAbstainCount: c.intentionsAbstainCount,
+                })) ?? []
+              }
+            />
 
             <FinancingMini
               locale={locale}
@@ -226,11 +255,3 @@ export default async function DashboardPage({ params, searchParams }: Props) {
   )
 }
 
-function DashboardSectionPlaceholder({ title }: { title: string }) {
-  return (
-    <section className="card">
-      <h2 className="font-medium text-gray-900">{title}</h2>
-      <p className="text-sm text-gray-400 mt-2">…</p>
-    </section>
-  )
-}

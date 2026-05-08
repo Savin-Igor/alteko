@@ -465,6 +465,22 @@
         "POWER_OF_ATTORNEY": "Pilnvara",
         "OWNER_DECISIONS": "Īpašnieku lēmumi",
         "GDPR_CONSENTS": "VDAR piekrišanas"
+      },
+      "campaigns": {
+        "heading": "Lēmumu kampaņas",
+        "empty": "Vēl nav neviena lēmuma kampaņa. Sāciet ar kādu no sagatavotajiem šabloniem.",
+        "newCampaign": "+ Jauna kampaņa",
+        "loadingTemplates": "Ielādē šablonus…",
+        "errorLoadTemplates": "Šablonus ielādēt neizdevās",
+        "errorCreate": "Kampaņu izveidot neizdevās",
+        "intentionsSummary": "Par {yes} · Pret {no} · Atturas {abstain}",
+        "deadline": "termiņš {date}",
+        "status": {
+          "DRAFT": "Melnraksti",
+          "ACTIVE": "Aktīvas",
+          "COMPLETED": "Pabeigtas",
+          "CANCELLED": "Atceltas"
+        }
       }
     },
     "tabs": {

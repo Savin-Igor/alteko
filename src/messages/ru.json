@@ -465,6 +465,22 @@
         "POWER_OF_ATTORNEY": "Доверенность",
         "OWNER_DECISIONS": "Решения собственников",
         "GDPR_CONSENTS": "Согласия GDPR"
+      },
+      "campaigns": {
+        "heading": "Кампании решений",
+        "empty": "Кампаний решений пока нет. Начните с одного из готовых шаблонов.",
+        "newCampaign": "+ Новая кампания",
+        "loadingTemplates": "Загружаем шаблоны…",
+        "errorLoadTemplates": "Не удалось загрузить шаблоны",
+        "errorCreate": "Не удалось создать кампанию",
+        "intentionsSummary": "За {yes} · Против {no} · Воздержались {abstain}",
+        "deadline": "срок {date}",
+        "status": {
+          "DRAFT": "Черновики",
+          "ACTIVE": "Активные",
+          "COMPLETED": "Завершённые",
+          "CANCELLED": "Отменённые"
+        }
       }
     },
     "tabs": {
