@@ -78,6 +78,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
           JANA_SETA_API_URL: ${{ secrets.JANA_SETA_API_URL }}
           JANA_SETA_API_KEY: ${{ secrets.JANA_SETA_API_KEY }}
           LVM_GEOSERVER_URL: ${{ secrets.LVM_GEOSERVER_URL }}
@@ -91,7 +92,7 @@ jobs:
           host: ${{ secrets.HETZNER_HOST }}
           username: ${{ secrets.HETZNER_USER }}
           key: ${{ secrets.HETZNER_SSH_KEY }}
-          envs: IMAGE_TAG,GITHUB_REPOSITORY,POSTGRES_PASSWORD,NEXTAUTH_SECRET,OPENAI_API_KEY,RESEND_API_KEY,ADMIN_EMAIL,JANA_SETA_API_URL,JANA_SETA_API_KEY,LVM_GEOSERVER_URL,S3_ENDPOINT,S3_REGION,S3_BUCKET,S3_ACCESS_KEY_ID,S3_SECRET_ACCESS_KEY,GHCR_TOKEN
+          envs: IMAGE_TAG,GITHUB_REPOSITORY,POSTGRES_PASSWORD,NEXTAUTH_SECRET,OPENAI_API_KEY,RESEND_API_KEY,ADMIN_EMAIL,PAYLOAD_SECRET,JANA_SETA_API_URL,JANA_SETA_API_KEY,LVM_GEOSERVER_URL,S3_ENDPOINT,S3_REGION,S3_BUCKET,S3_ACCESS_KEY_ID,S3_SECRET_ACCESS_KEY,GHCR_TOKEN
           command_timeout: 20m
           script: |
             set -euo pipefail
@@ -107,9 +108,12 @@ jobs:
             POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 
             NODE_ENV=production
+            NEXT_PUBLIC_APP_URL=https://alteko.lv
             NEXTAUTH_URL=https://alteko.lv
             NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
-            PAYLOAD_SECRET=${NEXTAUTH_SECRET}
+            # PAYLOAD_SECRET falls back to NEXTAUTH_SECRET if the dedicated secret
+            # is not set yet — keeps first deploy unblocked, but rotate ASAP.
+            PAYLOAD_SECRET=${PAYLOAD_SECRET:-${NEXTAUTH_SECRET}}
 
             OPENAI_API_KEY=${OPENAI_API_KEY}
 
