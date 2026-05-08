@@ -2,6 +2,17 @@
 
 > Production deploy — отдельный документ: `docs/DEPLOY.md`. Локальный порт = 3000, prod = 3020.
 
+## Требования
+
+- **Node.js 22 LTS** (см. `.nvmrc`). Node 20 EOL с апреля 2026, Node 24 имеет известную несовместимость с Payload + tsx (issue #151 исправлен через postinstall-патч, но 22 проще).
+- **Docker** + Docker Compose
+- **npm** (lockfile = `package-lock.json`, не используем pnpm/yarn)
+
+```bash
+nvm use   # читает .nvmrc и переключает на 22
+npm ci    # postinstall автоматически фиксит payload/loadEnv.js (см. scripts/patch-payload-loadenv.cjs)
+```
+
 ## Быстрый старт
 
 **Первый раз (один раз на машине):**
