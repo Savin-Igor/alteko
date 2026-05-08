@@ -49,6 +49,8 @@
 - [tech-stack.md](technical/tech-stack.md) — стек
 - [address-search.md](technical/address-search.md) — Jāņa sēta + LVM WFS
 - [local-development.md](technical/local-development.md) — локальная разработка
+- [adr/](technical/adr/) — Architecture Decision Records (зафиксированные технические решения)
+  - [0001-s3-provider.md](technical/adr/0001-s3-provider.md) — Hetzner Object Storage для production файлов
 
 ### Справочник
 - **[readiness-glossary.md](reference/readiness-glossary.md)** — **обязательный**: LV/RU/EN термины новой концепции
