@@ -34,7 +34,11 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <html lang={locale}>
-      <body className="min-h-screen bg-white">
+      {/* suppressHydrationWarning silences the mismatch caused by browser
+          extensions (Grammarly adds data-new-gr-c-s-check-loaded /
+          data-gr-ext-installed to <body> before React hydrates). It only
+          suppresses one level — child components still flag real mismatches. */}
+      <body className="min-h-screen bg-white" suppressHydrationWarning>
         <NextIntlClientProvider messages={messages}>
           {children}
         </NextIntlClientProvider>
