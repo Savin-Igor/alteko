@@ -401,6 +401,88 @@
     "classLabel": "Класс {class}"
   },
   "dashboard": {
+    "valdes": {
+      "title": "Кабинет правления",
+      "sections": {
+        "nextBestAction": "Следующий шаг",
+        "readiness": "Оценка готовности дома",
+        "documents": "Контрольный список документов",
+        "campaigns": "Кампании решений",
+        "financing": "Сценарии финансирования",
+        "ownerList": "Список собственников"
+      },
+      "nextBestAction": {
+        "label": "Следующий шаг",
+        "fallback": "Загрузите первые данные, чтобы начать оценку готовности.",
+        "cta": "Открыть карточку дома"
+      },
+      "readiness": {
+        "heading": "Оценка готовности",
+        "viewFullCard": "Открыть полную карточку дома →",
+        "empty": "Данных для оценки пока нет — загрузите первый счёт или документы."
+      },
+      "financing": {
+        "heading": "Сценарии финансирования",
+        "viewAll": "Все сценарии →",
+        "empty": "Сценарии ещё не рассчитаны.",
+        "subsidyShort": "Субсидия до {percent}%",
+        "monthlyShort": "≈ €{amount}/мес. за квартиру"
+      },
+      "ownerList": {
+        "heading": "Список собственников",
+        "updatedAt": "Обновлён {date}",
+        "ownerCount": "{count} записей",
+        "neverUploaded": "Список ещё не загружен.",
+        "staleWarning": "Списку {days} дней — Altum и BIS принимают не старше 6 месяцев.",
+        "staleNeverUploaded": "Без актуального списка нельзя запустить голосование и экспорт в BIS.",
+        "uploadCta": "Загрузить список"
+      },
+      "documents": {
+        "heading": "Контрольный список документов",
+        "subheading": "Восемь документов, которые требуются для подачи в Altum и SCF.",
+        "upload": "Загрузить",
+        "replace": "Заменить",
+        "submit": "Сохранить",
+        "uploading": "Загружаем…",
+        "cancel": "Отмена",
+        "expiryLabel": "Действителен до",
+        "expires": "действителен до {date}",
+        "errorNoFile": "Выберите файл",
+        "errorTooLarge": "Файл больше 25 МБ",
+        "errorGeneric": "Загрузка не удалась",
+        "status": {
+          "uploaded": "Загружено {date}",
+          "expired": "Срок истёк (загружено {date})",
+          "missing": "Отсутствует"
+        }
+      },
+      "documentTypes": {
+        "ENERGY_CERTIFICATE": "Энергосертификат",
+        "TECHNICAL_PASSPORT": "Технический паспорт",
+        "TECHNICAL_INSPECTION": "Заключение технического осмотра",
+        "OWNER_LIST": "Список собственников",
+        "ASSOCIATION_DOCUMENTS": "Документы товарищества",
+        "POWER_OF_ATTORNEY": "Доверенность",
+        "OWNER_DECISIONS": "Решения собственников",
+        "GDPR_CONSENTS": "Согласия GDPR"
+      },
+      "campaigns": {
+        "heading": "Кампании решений",
+        "empty": "Кампаний решений пока нет. Начните с одного из готовых шаблонов.",
+        "newCampaign": "+ Новая кампания",
+        "loadingTemplates": "Загружаем шаблоны…",
+        "errorLoadTemplates": "Не удалось загрузить шаблоны",
+        "errorCreate": "Не удалось создать кампанию",
+        "intentionsSummary": "За {yes} · Против {no} · Воздержались {abstain}",
+        "deadline": "срок {date}",
+        "status": {
+          "DRAFT": "Черновики",
+          "ACTIVE": "Активные",
+          "COMPLETED": "Завершённые",
+          "CANCELLED": "Отменённые"
+        }
+      }
+    },
     "tabs": {
       "myBuildings": "Мои дома",
       "projects": "Проекты",

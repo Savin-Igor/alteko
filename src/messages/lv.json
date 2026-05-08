@@ -401,6 +401,88 @@
     "classLabel": "Klase {class}"
   },
   "dashboard": {
+    "valdes": {
+      "title": "Valdes darba telpa",
+      "sections": {
+        "nextBestAction": "Nākamais solis",
+        "readiness": "Mājas gatavības novērtējums",
+        "documents": "Dokumentu kontrolsaraksts",
+        "campaigns": "Lēmumu kampaņas",
+        "financing": "Finansējuma scenāriji",
+        "ownerList": "Īpašnieku saraksts"
+      },
+      "nextBestAction": {
+        "label": "Nākamais solis",
+        "fallback": "Augšupielādējiet pirmos datus, lai sāktu gatavības novērtējumu.",
+        "cta": "Atvērt mājas kartīti"
+      },
+      "readiness": {
+        "heading": "Gatavības novērtējums",
+        "viewFullCard": "Skatīt pilnu mājas kartīti →",
+        "empty": "Vēl nav datu novērtējumam — augšupielādējiet pirmo rēķinu vai dokumentus."
+      },
+      "financing": {
+        "heading": "Finansējuma scenāriji",
+        "viewAll": "Visi scenāriji →",
+        "empty": "Scenāriji vēl nav aprēķināti.",
+        "subsidyShort": "Subsīdija līdz {percent}%",
+        "monthlyShort": "≈ €{amount}/mēn. par dzīvokli"
+      },
+      "ownerList": {
+        "heading": "Īpašnieku saraksts",
+        "updatedAt": "Atjaunināts {date}",
+        "ownerCount": "{count} ieraksti",
+        "neverUploaded": "Saraksts vēl nav augšupielādēts.",
+        "staleWarning": "Sarakstam ir {days} dienas — Altum un BIS prasa ne vecāku par 6 mēnešiem.",
+        "staleNeverUploaded": "Bez aktuāla saraksta nevar uzsākt īpašnieku balsošanu un BIS eksportu.",
+        "uploadCta": "Augšupielādēt sarakstu"
+      },
+      "documents": {
+        "heading": "Dokumentu kontrolsaraksts",
+        "subheading": "Astoņi dokumenti, kas nepieciešami Altum un SCF pieteikumam.",
+        "upload": "Augšupielādēt",
+        "replace": "Aizstāt",
+        "submit": "Saglabāt",
+        "uploading": "Augšupielādējam…",
+        "cancel": "Atcelt",
+        "expiryLabel": "Derīgs līdz",
+        "expires": "derīgs līdz {date}",
+        "errorNoFile": "Izvēlieties failu",
+        "errorTooLarge": "Fails pārsniedz 25 MB",
+        "errorGeneric": "Augšupielāde neizdevās",
+        "status": {
+          "uploaded": "Augšupielādēts {date}",
+          "expired": "Derīgums beidzies (augšupielādēts {date})",
+          "missing": "Trūkst"
+        }
+      },
+      "documentTypes": {
+        "ENERGY_CERTIFICATE": "Energosertifikāts",
+        "TECHNICAL_PASSPORT": "Tehniskā pase",
+        "TECHNICAL_INSPECTION": "Tehniskās apsekošanas atzinums",
+        "OWNER_LIST": "Īpašnieku saraksts",
+        "ASSOCIATION_DOCUMENTS": "Biedrības dokumenti",
+        "POWER_OF_ATTORNEY": "Pilnvara",
+        "OWNER_DECISIONS": "Īpašnieku lēmumi",
+        "GDPR_CONSENTS": "VDAR piekrišanas"
+      },
+      "campaigns": {
+        "heading": "Lēmumu kampaņas",
+        "empty": "Vēl nav neviena lēmuma kampaņa. Sāciet ar kādu no sagatavotajiem šabloniem.",
+        "newCampaign": "+ Jauna kampaņa",
+        "loadingTemplates": "Ielādē šablonus…",
+        "errorLoadTemplates": "Šablonus ielādēt neizdevās",
+        "errorCreate": "Kampaņu izveidot neizdevās",
+        "intentionsSummary": "Par {yes} · Pret {no} · Atturas {abstain}",
+        "deadline": "termiņš {date}",
+        "status": {
+          "DRAFT": "Melnraksti",
+          "ACTIVE": "Aktīvas",
+          "COMPLETED": "Pabeigtas",
+          "CANCELLED": "Atceltas"
+        }
+      }
+    },
     "tabs": {
       "myBuildings": "Manas mājas",
       "projects": "Projekti",

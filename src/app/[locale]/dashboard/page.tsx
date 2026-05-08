@@ -4,56 +4,108 @@ import { Link } from '@/i18n/navigation'
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
 import { PageHeader, EmptyState } from '@/components/ui'
+import { BuildingSwitcher } from '@/components/dashboard/BuildingSwitcher'
+import { NextBestActionBanner } from '@/components/dashboard/NextBestActionBanner'
+import { ReadinessOverview } from '@/components/dashboard/ReadinessOverview'
+import { FinancingMini } from '@/components/dashboard/FinancingMini'
+import { OwnerListStatus } from '@/components/dashboard/OwnerListStatus'
+import { DocumentChecklist } from '@/components/dashboard/DocumentChecklist'
+import { CampaignList } from '@/components/dashboard/CampaignList'
+import {
+  getActiveBuilding,
+  listUserBuildings,
+} from '@/lib/dashboard/getActiveBuilding'
 
-export default async function DashboardPage() {
+const BOARD_ROLES = new Set(['BOARD_MEMBER', 'ASSOCIATION_ADMIN', 'PLATFORM_ADMIN'])
+
+interface Props {
+  params: Promise<{ locale: string }>
+  searchParams: Promise<{ building?: string }>
+}
+
+export default async function DashboardPage({ params, searchParams }: Props) {
+  const { locale } = await params
   const session = await auth()
   if (!session?.user?.id) redirect('/auth/signin')
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { role: true, preferredLanguage: true },
+    select: { role: true },
   })
-
-  if (user?.role !== 'ASSOCIATION_ADMIN' && user?.role !== 'PLATFORM_ADMIN') {
+  if (!user || !BOARD_ROLES.has(user.role)) {
     redirect('/')
   }
 
-  const t = await getTranslations('dashboard.main')
+  const t = await getTranslations('dashboard')
+  const tValdes = await getTranslations('dashboard.valdes')
   const tTabs = await getTranslations('dashboard.tabs')
 
-  const reports = await prisma.expenseReport.findMany({
-    where: { uploadedBy: session.user.id, status: 'PROCESSED' },
-    include: {
-      building: {
+  const { building: requestedCadastralCode } = await searchParams
+
+  const buildings = await listUserBuildings(session.user.id)
+  const active = await getActiveBuilding(session.user.id, requestedCadastralCode)
+
+  const buildingDetails = active
+    ? await prisma.building.findUnique({
+        where: { id: active.id },
         select: {
           id: true,
-          address: true,
-          cadastralCode: true,
-          series: true,
-          energyClass: true,
+          ownerListUpdatedAt: true,
+          ownerListCount: true,
+          readinessScore: {
+            select: {
+              energyScore: true,
+              fundingEligibilityScore: true,
+              documentReadinessScore: true,
+              ownerDecisionReadinessScore: true,
+              financialFeasibilityScore: true,
+              procurementTransparencyScore: true,
+              legalConfidenceStatus: true,
+              dataConfidenceStatus: true,
+              nextBestAction: true,
+              nextBestActionRu: true,
+              computedAt: true,
+            },
+          },
+          scenarios: {
+            select: {
+              scenarioType: true,
+              windowStatus: true,
+              estimatedSubsidyPercent: true,
+              monthlyPaymentPerApartment: true,
+            },
+            orderBy: { scenarioType: 'asc' },
+          },
+          documents: {
+            select: {
+              documentType: true,
+              uploadedAt: true,
+              expiresAt: true,
+            },
+          },
+          decisionCampaigns: {
+            select: {
+              id: true,
+              title: true,
+              decisionType: true,
+              status: true,
+              deadline: true,
+              intentionsYesCount: true,
+              intentionsNoCount: true,
+              intentionsAbstainCount: true,
+            },
+            orderBy: { createdAt: 'desc' },
+          },
         },
-      },
-      items: {
-        where: { category: 'HEATING' },
-        select: { amountPerM2: true },
-      },
-    },
-    orderBy: [{ periodYear: 'desc' }, { periodMonth: 'desc' }],
-    take: 24,
-  })
-
-  const buildingMap = new Map<string, typeof reports[0]['building']>()
-  for (const r of reports) {
-    if (!buildingMap.has(r.buildingId)) buildingMap.set(r.buildingId, r.building)
-  }
-  const buildings = Array.from(buildingMap.values())
+      })
+    : null
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <PageHeader variant="admin" />
 
       <nav className="bg-white border-b border-gray-100">
-        <div className="max-w-2xl mx-auto px-4 flex gap-1">
+        <div className="max-w-3xl mx-auto px-4 flex gap-1">
           <Link
             href="/dashboard"
             className="px-4 py-3 text-sm font-medium text-primary border-b-2 border-primary -mb-px"
@@ -75,94 +127,131 @@ export default async function DashboardPage() {
         </div>
       </nav>
 
-      <main className="flex-1 px-4 py-6 max-w-2xl mx-auto w-full space-y-6">
-        <h1 className="text-xl font-semibold text-gray-900">{t('heading')}</h1>
-
-        {buildings.length === 0 ? (
+      <main className="flex-1 px-4 py-6 max-w-3xl mx-auto w-full space-y-6">
+        {!active ? (
           <EmptyState
-            title={t('emptyTitle')}
-            description={t('emptyDescription')}
-            action={{ label: t('emptyAction'), href: '/' }}
+            title={t('main.emptyTitle')}
+            description={t('main.emptyDescription')}
+            action={{ label: t('main.emptyAction'), href: '/' }}
           />
         ) : (
-          <div className="space-y-4">
-            {buildings.map((building) => {
-              const buildingReports = reports
-                .filter((r) => r.buildingId === building.id)
-                .slice(0, 12)
+          <>
+            <header className="flex items-start justify-between gap-4">
+              <div>
+                <h1 className="text-xl font-semibold text-gray-900">{tValdes('title')}</h1>
+                <p className="text-sm text-gray-500 mt-1">
+                  {[
+                    active.series ? t('main.seriesPrefix', { series: active.series }) : null,
+                    active.energyClass ? t('main.classLabel', { class: active.energyClass }) : null,
+                  ]
+                    .filter(Boolean)
+                    .join(' · ') || active.address}
+                </p>
+              </div>
+              <BuildingSwitcher buildings={buildings} active={active} />
+            </header>
 
-              const latestHeating = buildingReports[0]?.items[0]
-              const heatingVal = latestHeating ? Number(latestHeating.amountPerM2).toFixed(2) : null
+            <NextBestActionBanner
+              cadastralCode={active.cadastralCode}
+              locale={locale}
+              nextBestAction={
+                buildingDetails?.readinessScore?.nextBestAction ?? null
+              }
+              nextBestActionRu={
+                buildingDetails?.readinessScore?.nextBestActionRu ?? null
+              }
+            />
 
-              const trendData = buildingReports.slice(0, 6).reverse()
-              const maxVal = Math.max(...trendData.map((r) => Number(r.items[0]?.amountPerM2 ?? 0)), 0)
+            <ReadinessOverview
+              cadastralCode={active.cadastralCode}
+              locale={locale}
+              data={
+                buildingDetails?.readinessScore
+                  ? {
+                      energyScore:
+                        buildingDetails.readinessScore.energyScore,
+                      fundingEligibilityScore:
+                        buildingDetails.readinessScore.fundingEligibilityScore,
+                      documentReadinessScore:
+                        buildingDetails.readinessScore.documentReadinessScore,
+                      ownerDecisionReadinessScore:
+                        buildingDetails.readinessScore
+                          .ownerDecisionReadinessScore,
+                      financialFeasibilityScore:
+                        buildingDetails.readinessScore
+                          .financialFeasibilityScore,
+                      procurementTransparencyScore:
+                        buildingDetails.readinessScore
+                          .procurementTransparencyScore,
+                      legalConfidenceStatus:
+                        buildingDetails.readinessScore.legalConfidenceStatus,
+                      dataConfidenceStatus:
+                        buildingDetails.readinessScore.dataConfidenceStatus,
+                      computedAt: buildingDetails.readinessScore.computedAt,
+                    }
+                  : null
+              }
+            />
 
-              return (
-                <div key={building.id} className="card space-y-3">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h2 className="font-medium text-gray-900">{building.address}</h2>
-                      <p className="text-sm text-gray-500">
-                        {[
-                          building.series ? t('seriesPrefix', { series: building.series }) : null,
-                          building.energyClass ? t('classLabel', { class: building.energyClass }) : null,
-                        ].filter(Boolean).join(' · ')}
-                      </p>
-                    </div>
-                    <span className="text-xs text-gray-400 flex-shrink-0">{t('reportsCount', { count: buildingReports.length })}</span>
-                  </div>
+            <DocumentChecklist
+              cadastralCode={active.cadastralCode}
+              locale={locale}
+              documents={
+                buildingDetails?.documents.map((d) => ({
+                  documentType: d.documentType,
+                  uploadedAt: d.uploadedAt,
+                  expiresAt: d.expiresAt,
+                })) ?? []
+              }
+            />
 
-                  {heatingVal && (
-                    <div className="bg-gray-50 rounded-lg px-4 py-2">
-                      <p className="text-xs text-gray-500">{t('latestHeating')}</p>
-                      <p className="text-lg font-semibold text-gray-900">{t('perM2', { value: heatingVal })}</p>
-                    </div>
-                  )}
+            <CampaignList
+              buildingId={active.id}
+              locale={locale}
+              campaigns={
+                buildingDetails?.decisionCampaigns.map((c) => ({
+                  id: c.id,
+                  title: c.title,
+                  decisionType: c.decisionType,
+                  status: c.status,
+                  deadline: c.deadline,
+                  intentionsYesCount: c.intentionsYesCount,
+                  intentionsNoCount: c.intentionsNoCount,
+                  intentionsAbstainCount: c.intentionsAbstainCount,
+                })) ?? []
+              }
+            />
 
-                  {trendData.length > 1 && (
-                    <div className="space-y-1">
-                      <p className="text-xs text-gray-500">{t('trendLabel')}</p>
-                      <div className="flex gap-1 items-end h-10">
-                        {trendData.map((r, i) => {
-                          const val = Number(r.items[0]?.amountPerM2 ?? 0)
-                          const heightPct = maxVal > 0 ? (val / maxVal) * 100 : 50
-                          return (
-                            <div
-                              key={i}
-                              className="flex-1 bg-primary opacity-70 rounded-sm min-w-0"
-                              style={{ height: `${heightPct}%` }}
-                              title={`${r.periodMonth}.${r.periodYear}: €${val.toFixed(2)}`}
-                            />
-                          )
-                        })}
-                      </div>
-                      <div className="flex justify-between text-xs text-gray-400">
-                        <span>{trendData[0]?.periodMonth}.{trendData[0]?.periodYear}</span>
-                        <span>{trendData.at(-1)?.periodMonth}.{trendData.at(-1)?.periodYear}</span>
-                      </div>
-                    </div>
-                  )}
+            <FinancingMini
+              locale={locale}
+              scenarios={
+                buildingDetails?.scenarios.map((s) => ({
+                  scenarioType: s.scenarioType,
+                  windowStatus: s.windowStatus as 'OPEN' | 'EXPECTED' | 'CLOSED' | 'UNKNOWN',
+                  estimatedSubsidyPercent:
+                    s.estimatedSubsidyPercent !== null
+                      ? Number(s.estimatedSubsidyPercent)
+                      : null,
+                  monthlyPaymentPerApartment:
+                    s.monthlyPaymentPerApartment !== null
+                      ? Number(s.monthlyPaymentPerApartment)
+                      : null,
+                })) ?? []
+              }
+            />
 
-                  <div className="flex gap-2">
-                    <Link
-                      href={`/building/${building.cadastralCode}`}
-                      className="flex-1 text-center py-3 min-h-[48px] border border-gray-200 rounded-lg text-sm text-gray-700 hover:bg-gray-50 flex items-center justify-center transition-colors"
-                    >
-                      {t('buildingCard')}
-                    </Link>
-                    <Link
-                      href={`/dashboard/voting?buildingId=${building.id}`}
-                      className="flex-1 text-center py-3 min-h-[48px] border border-primary rounded-lg text-sm text-primary hover:bg-primary-light flex items-center justify-center transition-colors"
-                    >
-                      {t('votingLink')}
-                    </Link>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
+            <OwnerListStatus
+              buildingId={active.id}
+              locale={locale}
+              ownerListUpdatedAt={
+                buildingDetails?.ownerListUpdatedAt ?? null
+              }
+              ownerListCount={buildingDetails?.ownerListCount ?? null}
+            />
+          </>
         )}
       </main>
     </div>
   )
 }
+
