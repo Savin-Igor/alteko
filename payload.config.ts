@@ -3,6 +3,7 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { mcpPlugin } from '@payloadcms/plugin-mcp'
+import sharp from 'sharp'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { Users } from './src/collections/Users'
@@ -57,6 +58,7 @@ export default buildConfig({
     fallback: true,
   },
   secret: process.env.PAYLOAD_SECRET || '',
+  sharp,
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
