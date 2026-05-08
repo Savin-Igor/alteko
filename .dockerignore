@@ -1,0 +1,47 @@
+# Build output
+.next
+.swc
+
+# Dependencies
+node_modules
+
+# Local Docker volumes (Postgres data, MinIO data) — must NEVER end up in
+# the production image. These dirs are owned by container users and cause
+# permission errors during build context scan.
+data
+backups
+tmp
+
+# Env files — secrets must come from runtime env, not baked in
+.env
+.env.local
+.env.production
+.env.*.local
+
+# Local tooling
+.git
+.github
+.idea
+.vscode
+.claude
+.firecrawl
+.playwright-mcp
+.mcp.json
+
+# Markdown / docs not needed at runtime
+docs
+backups
+*.md
+!README.md
+v2.md
+plans.md
+
+# CI artifacts
+*.log
+*.tsbuildinfo
+
+# Test / dev assets
+*.png
+*.jpg
+*.jpeg
+media

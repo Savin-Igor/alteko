@@ -160,3 +160,23 @@ make db-rebuild
 **`DATABASE_URL` не указывает на контейнер** — скрипты внутри Docker подключаются через `db:5432` (service name), хост подключается через `localhost:5433`. В `.env.local` нужно `localhost:5433`.
 
 **Изменения в `schema.prisma` не применились** — запустить `make push` или перезапустить через `make dev` (push запускается автоматически).
+
+**`npm run build` падает с `EACCES: permission denied, scandir 'data/postgres'`** — Next.js 15 при `output: 'standalone'` запускает file-tracing, который рекурсивно читает корень проекта. Каталог `data/postgres` принадлежит контейнеру Postgres (uid 70, mode 0700) и недоступен хост-пользователю.
+
+Варианты решения (любой подходит):
+
+1. **Остановить контейнер перед сборкой:**
+   ```bash
+   docker compose -f docker-compose.db.yml down
+   npm run build
+   docker compose -f docker-compose.db.yml up -d
+   ```
+2. **Сделать каталог проходимым (нужен sudo):**
+   ```bash
+   sudo chmod a+rX data/postgres
+   ```
+   Это не открывает чтение содержимого, но даёт scandir вернуть листинг (он останется пустым для не-владельца).
+3. **Перенести данные за пределы проекта (рекомендуется для CI):**
+   измените том в `docker-compose.db.yml` на абсолютный путь, например `/var/lib/alteko-postgres:/var/lib/postgresql/data`, и пересоздайте контейнер с миграцией данных.
+
+Production-сборка через Docker не затронута — `.dockerignore` исключает `data/`, `backups/`, `tmp/` из build context.
