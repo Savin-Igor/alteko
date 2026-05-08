@@ -69,11 +69,13 @@ export default async function BlogPage({ params }: Props) {
           {posts.map((post) => {
             const tags = (post.tags as Array<{ tag: string }> ?? []).map((item) => item.tag)
             const publishedAt = new Date(post.publishedAt as string)
+            const slugLv = (post as unknown as { slugLv?: string | null }).slugLv
+            const linkSlug = locale === 'lv' && slugLv ? slugLv : (post.slug as string)
 
             return (
               <Link
                 key={post.slug as string}
-                href={`/blog/${post.slug}`}
+                href={`/blog/${linkSlug}`}
                 className="card block hover:border-gray-300 transition-colors group"
               >
                 <div className="flex items-start gap-4">
