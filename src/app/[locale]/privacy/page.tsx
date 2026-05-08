@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { Link } from '@/i18n/navigation'
 import { SiteFooter } from '@/components/ui/SiteFooter'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 import { routing } from '@/i18n/routing'

@@ -58,7 +58,7 @@ function CancelledState({ t }: { t: ReturnType<typeof useTranslations> }) {
 }
 
 function PendingState({ order, t }: { order: OrderData; t: ReturnType<typeof useTranslations> }) {
-  const [refreshCount, setRefreshCount] = useState(0)
+  const [, setRefreshCount] = useState(0)
   const [stopped, setStopped] = useState(false)
   const ref = shortRef(order.id)
 
