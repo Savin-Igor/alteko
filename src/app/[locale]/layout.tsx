@@ -3,7 +3,10 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
+import { localizedAlternates } from '@/lib/seo'
 import type { Metadata } from 'next'
+
+const SITE_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://alteko.lv'
 
 interface MetadataParams {
   params: Promise<{ locale: string }>
@@ -12,9 +15,30 @@ interface MetadataParams {
 export async function generateMetadata({ params }: MetadataParams): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'metadata' })
+  const title = t('title')
+  const description = t('description')
+  const ogLocale = locale === 'lv' ? 'lv_LV' : 'ru_LV'
+  const altLocale = locale === 'lv' ? 'ru_LV' : 'lv_LV'
+
   return {
-    title: t('title'),
-    description: t('description'),
+    metadataBase: new URL(SITE_URL),
+    title,
+    description,
+    applicationName: 'ALTEKO',
+    alternates: localizedAlternates({ path: '/', locale }),
+    openGraph: {
+      title,
+      description,
+      siteName: 'ALTEKO',
+      type: 'website',
+      locale: ogLocale,
+      alternateLocale: altLocale,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
   }
 }
 

@@ -3,16 +3,23 @@ import { Link } from '@/i18n/navigation'
 import { SiteFooter } from '@/components/ui/SiteFooter'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 import { routing } from '@/i18n/routing'
+import { localizedAlternates } from '@/lib/seo'
 import { notFound } from 'next/navigation'
-
-export const metadata: Metadata = {
-  title: 'Lietošanas noteikumi — ALTEKO',
-  description:
-    'ALTEKO platformas lietošanas noteikumi: pakalpojuma apraksts, lietotāja saistības, atbildības ierobežojumi un strīdu risināšanas kārtība.',
-}
 
 interface Props {
   params: Promise<{ locale: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params
+  const isRu = locale === 'ru'
+  return {
+    title: isRu ? 'Условия использования — ALTEKO' : 'Lietošanas noteikumi — ALTEKO',
+    description: isRu
+      ? 'Условия использования платформы ALTEKO: описание сервиса, обязательства пользователя, ограничения ответственности и порядок разрешения споров.'
+      : 'ALTEKO platformas lietošanas noteikumi: pakalpojuma apraksts, lietotāja saistības, atbildības ierobežojumi un strīdu risināšanas kārtība.',
+    alternates: localizedAlternates({ path: '/terms', locale }),
+  }
 }
 
 export default async function TermsPage({ params }: Props) {

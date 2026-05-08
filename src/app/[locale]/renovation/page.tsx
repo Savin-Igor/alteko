@@ -5,6 +5,7 @@ import { FunnelFlow, STEP_ICONS } from '@/components/ui/FunnelFlow'
 import { InfoBanner } from '@/components/ui/InfoBanner'
 import { SiteFooter } from '@/components/ui/SiteFooter'
 import { SiteHeader } from '@/components/ui/SiteHeader'
+import { localizedAlternates } from '@/lib/seo'
 
 interface MetadataParams {
   params: Promise<{ locale: string }>
@@ -16,6 +17,7 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
   return {
     title: t('title'),
     description: t('description'),
+    alternates: localizedAlternates({ path: '/renovation', locale }),
   }
 }
 

@@ -8,6 +8,7 @@ import { SiteFooter } from '@/components/ui/SiteFooter'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 import { BlogCoverIcon } from '@/components/ui/BlogCoverIcon'
 import { routing } from '@/i18n/routing'
+import { localizedAlternates } from '@/lib/seo'
 
 interface Props {
   params: Promise<{ locale: string }>
@@ -16,7 +17,11 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'blog.metadata' })
-  return { title: t('title'), description: t('description') }
+  return {
+    title: t('title'),
+    description: t('description'),
+    alternates: localizedAlternates({ path: '/blog', locale }),
+  }
 }
 
 const TAG_COLORS: Record<string, string> = {
@@ -64,11 +69,13 @@ export default async function BlogPage({ params }: Props) {
           {posts.map((post) => {
             const tags = (post.tags as Array<{ tag: string }> ?? []).map((item) => item.tag)
             const publishedAt = new Date(post.publishedAt as string)
+            const slugLv = (post as unknown as { slugLv?: string | null }).slugLv
+            const linkSlug = locale === 'lv' && slugLv ? slugLv : (post.slug as string)
 
             return (
               <Link
                 key={post.slug as string}
-                href={`/blog/${post.slug}`}
+                href={`/blog/${linkSlug}`}
                 className="card block hover:border-gray-300 transition-colors group"
               >
                 <div className="flex items-start gap-4">

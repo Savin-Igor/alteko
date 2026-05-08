@@ -2,16 +2,23 @@ import type { Metadata } from 'next'
 import { SiteFooter } from '@/components/ui/SiteFooter'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 import { routing } from '@/i18n/routing'
+import { localizedAlternates } from '@/lib/seo'
 import { notFound } from 'next/navigation'
-
-export const metadata: Metadata = {
-  title: 'Privātuma politika — ALTEKO',
-  description:
-    'ALTEKO platformas privātuma politika: kādus personas datus mēs apkopojam, kādiem mērķiem un kādas ir lietotāja tiesības saskaņā ar VDAR.',
-}
 
 interface Props {
   params: Promise<{ locale: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params
+  const isRu = locale === 'ru'
+  return {
+    title: isRu ? 'Политика конфиденциальности — ALTEKO' : 'Privātuma politika — ALTEKO',
+    description: isRu
+      ? 'Политика конфиденциальности платформы ALTEKO: какие персональные данные мы собираем, для каких целей и каковы права пользователя согласно GDPR.'
+      : 'ALTEKO platformas privātuma politika: kādus personas datus mēs apkopojam, kādiem mērķiem un kādas ir lietotāja tiesības saskaņā ar VDAR.',
+    alternates: localizedAlternates({ path: '/privacy', locale }),
+  }
 }
 
 export default async function PrivacyPage({ params }: Props) {

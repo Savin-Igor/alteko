@@ -50,7 +50,18 @@ export const BlogPosts: CollectionConfig = {
       required: true,
       unique: true,
       admin: {
-        description: 'URL identifier — shared across LV and RU. Example: seriya-119-latviya',
+        description:
+          'Default URL identifier (used on /ru/blog/{slug} and as the LV fallback). Example: seriya-119-latviya',
+      },
+      index: true,
+    },
+    {
+      name: 'slugLv',
+      type: 'text',
+      unique: true,
+      admin: {
+        description:
+          'Latvian-friendly URL identifier (used on /blog/{slugLv}). If empty, the default slug is used. Example: serija-119-latvija',
       },
       index: true,
     },

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
+import { localizedAlternates } from '@/lib/seo'
 import { AuditMarketingContent } from './AuditMarketingContent'
 
 interface Props {
@@ -12,6 +13,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: t('title'),
     description: t('description'),
+    alternates: localizedAlternates({ path: '/audit', locale }),
   }
 }
 

@@ -2,19 +2,34 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
-import { getPayload } from 'payload'
+import { getPayload, type Where } from 'payload'
 import config from '@payload-config'
 import { Link } from '@/i18n/navigation'
 import { SiteFooter } from '@/components/ui/SiteFooter'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 import { LexicalContent } from '@/components/blog/LexicalContent'
 import { routing } from '@/i18n/routing'
+import { localizedAlternates } from '@/lib/seo'
 
 // Payload CMS blog post fields — partial typing for dynamic collection
 interface PayloadBlogPost {
   meta?: { title?: string; description?: string }
   heroImage?: { url?: string; alt?: string; width?: number; height?: number } | null
+  slugLv?: string | null
   [key: string]: unknown
+}
+
+/**
+ * Match a request slug against either the locale-specific slugLv (LV side)
+ * or the default slug (used on RU and as LV fallback).
+ */
+function buildSlugWhere(slug: string, locale: string): Where {
+  if (locale === 'lv') {
+    return {
+      or: [{ slugLv: { equals: slug } }, { slug: { equals: slug } }],
+    }
+  }
+  return { slug: { equals: slug } }
 }
 
 interface Props {
@@ -27,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { docs } = await payload.find({
     collection: 'blog-posts',
     locale: locale as 'lv' | 'ru',
-    where: { slug: { equals: slug } },
+    where: buildSlugWhere(slug, locale),
     limit: 1,
     depth: 1,
   })
@@ -37,10 +52,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const typedPost = post as unknown as PayloadBlogPost
   const meta = typedPost.meta
   const heroImage = typedPost.heroImage
+  const canonicalSlug =
+    locale === 'lv' && typedPost.slugLv ? typedPost.slugLv : (post.slug as string)
 
   return {
     title: meta?.title ?? `${post.title} — ALTEKO`,
     description: meta?.description ?? (post.description as string),
+    alternates: localizedAlternates({ path: `/blog/${canonicalSlug}`, locale }),
     openGraph: heroImage?.url
       ? { images: [{ url: heroImage.url as string }] }
       : undefined,
@@ -61,7 +79,7 @@ export default async function BlogArticlePage({ params }: Props) {
     locale: locale as 'lv' | 'ru',
     where: {
       and: [
-        { slug: { equals: slug } },
+        buildSlugWhere(slug, locale),
         { published: { equals: true } },
       ],
     },
@@ -78,7 +96,7 @@ export default async function BlogArticlePage({ params }: Props) {
     where: {
       and: [
         { published: { equals: true } },
-        { slug: { not_equals: slug } },
+        { slug: { not_equals: post.slug as string } },
       ],
     },
     sort: '-publishedAt',
@@ -154,12 +172,17 @@ export default async function BlogArticlePage({ params }: Props) {
               {t('readMore')}
             </p>
             <div className="space-y-3">
-              {others.map((a) => (
-                <Link key={a.slug as string} href={`/blog/${a.slug}`} className="card block hover:border-gray-300 transition-colors group">
-                  <p className="text-sm font-medium text-gray-900 group-hover:text-primary transition-colors">{a.title as string}</p>
-                  <p className="text-xs text-gray-400 mt-1">{a.readMinutes as number} {t('readMin')}</p>
-                </Link>
-              ))}
+              {others.map((a) => {
+                const aTyped = a as unknown as PayloadBlogPost
+                const linkSlug =
+                  locale === 'lv' && aTyped.slugLv ? aTyped.slugLv : (a.slug as string)
+                return (
+                  <Link key={a.slug as string} href={`/blog/${linkSlug}`} className="card block hover:border-gray-300 transition-colors group">
+                    <p className="text-sm font-medium text-gray-900 group-hover:text-primary transition-colors">{a.title as string}</p>
+                    <p className="text-xs text-gray-400 mt-1">{a.readMinutes as number} {t('readMin')}</p>
+                  </Link>
+                )
+              })}
             </div>
           </div>
         )}

@@ -6,7 +6,7 @@ import { Link, usePathname } from '@/i18n/navigation'
 import { LangToggle } from './LangToggle'
 
 const NAV: Array<{ href: string; key: 'audit' | 'renovation' | 'blog' }> = [
-  { href: '/',           key: 'audit' },
+  { href: '/audit',      key: 'audit' },
   { href: '/renovation', key: 'renovation' },
   { href: '/blog',       key: 'blog' },
 ]
