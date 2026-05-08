@@ -5,6 +5,10 @@ import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
 import { PageHeader, EmptyState } from '@/components/ui'
 import { BuildingSwitcher } from '@/components/dashboard/BuildingSwitcher'
+import { NextBestActionBanner } from '@/components/dashboard/NextBestActionBanner'
+import { ReadinessOverview } from '@/components/dashboard/ReadinessOverview'
+import { FinancingMini } from '@/components/dashboard/FinancingMini'
+import { OwnerListStatus } from '@/components/dashboard/OwnerListStatus'
 import {
   getActiveBuilding,
   listUserBuildings,
@@ -13,10 +17,12 @@ import {
 const BOARD_ROLES = new Set(['BOARD_MEMBER', 'ASSOCIATION_ADMIN', 'PLATFORM_ADMIN'])
 
 interface Props {
+  params: Promise<{ locale: string }>
   searchParams: Promise<{ building?: string }>
 }
 
-export default async function DashboardPage({ searchParams }: Props) {
+export default async function DashboardPage({ params, searchParams }: Props) {
+  const { locale } = await params
   const session = await auth()
   if (!session?.user?.id) redirect('/auth/signin')
 
@@ -36,6 +42,41 @@ export default async function DashboardPage({ searchParams }: Props) {
 
   const buildings = await listUserBuildings(session.user.id)
   const active = await getActiveBuilding(session.user.id, requestedCadastralCode)
+
+  const buildingDetails = active
+    ? await prisma.building.findUnique({
+        where: { id: active.id },
+        select: {
+          id: true,
+          ownerListUpdatedAt: true,
+          ownerListCount: true,
+          readinessScore: {
+            select: {
+              energyScore: true,
+              fundingEligibilityScore: true,
+              documentReadinessScore: true,
+              ownerDecisionReadinessScore: true,
+              financialFeasibilityScore: true,
+              procurementTransparencyScore: true,
+              legalConfidenceStatus: true,
+              dataConfidenceStatus: true,
+              nextBestAction: true,
+              nextBestActionRu: true,
+              computedAt: true,
+            },
+          },
+          scenarios: {
+            select: {
+              scenarioType: true,
+              windowStatus: true,
+              estimatedSubsidyPercent: true,
+              monthlyPaymentPerApartment: true,
+            },
+            orderBy: { scenarioType: 'asc' },
+          },
+        },
+      })
+    : null
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -88,13 +129,77 @@ export default async function DashboardPage({ searchParams }: Props) {
               <BuildingSwitcher buildings={buildings} active={active} />
             </header>
 
-            {/* Sections — populated incrementally in follow-up commits */}
-            <DashboardSectionPlaceholder title={tValdes('sections.nextBestAction')} />
-            <DashboardSectionPlaceholder title={tValdes('sections.readiness')} />
+            <NextBestActionBanner
+              cadastralCode={active.cadastralCode}
+              locale={locale}
+              nextBestAction={
+                buildingDetails?.readinessScore?.nextBestAction ?? null
+              }
+              nextBestActionRu={
+                buildingDetails?.readinessScore?.nextBestActionRu ?? null
+              }
+            />
+
+            <ReadinessOverview
+              cadastralCode={active.cadastralCode}
+              locale={locale}
+              data={
+                buildingDetails?.readinessScore
+                  ? {
+                      energyScore:
+                        buildingDetails.readinessScore.energyScore,
+                      fundingEligibilityScore:
+                        buildingDetails.readinessScore.fundingEligibilityScore,
+                      documentReadinessScore:
+                        buildingDetails.readinessScore.documentReadinessScore,
+                      ownerDecisionReadinessScore:
+                        buildingDetails.readinessScore
+                          .ownerDecisionReadinessScore,
+                      financialFeasibilityScore:
+                        buildingDetails.readinessScore
+                          .financialFeasibilityScore,
+                      procurementTransparencyScore:
+                        buildingDetails.readinessScore
+                          .procurementTransparencyScore,
+                      legalConfidenceStatus:
+                        buildingDetails.readinessScore.legalConfidenceStatus,
+                      dataConfidenceStatus:
+                        buildingDetails.readinessScore.dataConfidenceStatus,
+                      computedAt: buildingDetails.readinessScore.computedAt,
+                    }
+                  : null
+              }
+            />
+
             <DashboardSectionPlaceholder title={tValdes('sections.documents')} />
             <DashboardSectionPlaceholder title={tValdes('sections.campaigns')} />
-            <DashboardSectionPlaceholder title={tValdes('sections.financing')} />
-            <DashboardSectionPlaceholder title={tValdes('sections.ownerList')} />
+
+            <FinancingMini
+              locale={locale}
+              scenarios={
+                buildingDetails?.scenarios.map((s) => ({
+                  scenarioType: s.scenarioType,
+                  windowStatus: s.windowStatus as 'OPEN' | 'EXPECTED' | 'CLOSED' | 'UNKNOWN',
+                  estimatedSubsidyPercent:
+                    s.estimatedSubsidyPercent !== null
+                      ? Number(s.estimatedSubsidyPercent)
+                      : null,
+                  monthlyPaymentPerApartment:
+                    s.monthlyPaymentPerApartment !== null
+                      ? Number(s.monthlyPaymentPerApartment)
+                      : null,
+                })) ?? []
+              }
+            />
+
+            <OwnerListStatus
+              buildingId={active.id}
+              locale={locale}
+              ownerListUpdatedAt={
+                buildingDetails?.ownerListUpdatedAt ?? null
+              }
+              ownerListCount={buildingDetails?.ownerListCount ?? null}
+            />
           </>
         )}
       </main>

@@ -410,6 +410,32 @@
         "campaigns": "Lēmumu kampaņas",
         "financing": "Finansējuma scenāriji",
         "ownerList": "Īpašnieku saraksts"
+      },
+      "nextBestAction": {
+        "label": "Nākamais solis",
+        "fallback": "Augšupielādējiet pirmos datus, lai sāktu gatavības novērtējumu.",
+        "cta": "Atvērt mājas kartīti"
+      },
+      "readiness": {
+        "heading": "Gatavības novērtējums",
+        "viewFullCard": "Skatīt pilnu mājas kartīti →",
+        "empty": "Vēl nav datu novērtējumam — augšupielādējiet pirmo rēķinu vai dokumentus."
+      },
+      "financing": {
+        "heading": "Finansējuma scenāriji",
+        "viewAll": "Visi scenāriji →",
+        "empty": "Scenāriji vēl nav aprēķināti.",
+        "subsidyShort": "Subsīdija līdz {percent}%",
+        "monthlyShort": "≈ €{amount}/mēn. par dzīvokli"
+      },
+      "ownerList": {
+        "heading": "Īpašnieku saraksts",
+        "updatedAt": "Atjaunināts {date}",
+        "ownerCount": "{count} ieraksti",
+        "neverUploaded": "Saraksts vēl nav augšupielādēts.",
+        "staleWarning": "Sarakstam ir {days} dienas — Altum un BIS prasa ne vecāku par 6 mēnešiem.",
+        "staleNeverUploaded": "Bez aktuāla saraksta nevar uzsākt īpašnieku balsošanu un BIS eksportu.",
+        "uploadCta": "Augšupielādēt sarakstu"
       }
     },
     "tabs": {
