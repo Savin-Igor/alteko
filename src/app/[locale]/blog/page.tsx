@@ -8,6 +8,7 @@ import { SiteFooter } from '@/components/ui/SiteFooter'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 import { BlogCoverIcon } from '@/components/ui/BlogCoverIcon'
 import { routing } from '@/i18n/routing'
+import { localizedAlternates } from '@/lib/seo'
 
 interface Props {
   params: Promise<{ locale: string }>
@@ -16,7 +17,11 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'blog.metadata' })
-  return { title: t('title'), description: t('description') }
+  return {
+    title: t('title'),
+    description: t('description'),
+    alternates: localizedAlternates({ path: '/blog', locale }),
+  }
 }
 
 const TAG_COLORS: Record<string, string> = {

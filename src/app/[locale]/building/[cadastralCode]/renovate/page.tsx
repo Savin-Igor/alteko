@@ -5,6 +5,7 @@ import { Link } from '@/i18n/navigation'
 import { prisma } from '@/lib/prisma'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 import { ProgressBar, InfoBanner } from '@/components/ui'
+import { localizedAlternates, noIndexRobots } from '@/lib/seo'
 
 interface Props {
   params: Promise<{ locale: string; cadastralCode: string }>
@@ -26,6 +27,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: t('title', { address }),
     description: t('description'),
+    alternates: localizedAlternates({
+      path: `/building/${cadastralCode}/renovate`,
+      locale,
+    }),
+    robots: noIndexRobots,
   }
 }
 

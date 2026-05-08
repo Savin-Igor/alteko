@@ -7,8 +7,21 @@ function url(path: string) {
   return `${BASE}${path}`
 }
 
-// Static pages present in both locales
-const STATIC_PAGES = ['', '/renovation', '/blog', '/contractors/register']
+// Static pages present in both locales (publicly indexable).
+// Process flows (/audit/upload, /audit/preview, /audit/report/*),
+// auth, dashboards, /b/[token], /voting/*, /readiness-report/order/*
+// are intentionally excluded from sitemap.xml (private / per-token).
+const STATIC_PAGES = [
+  '',
+  '/audit',
+  '/renovation',
+  '/financing',
+  '/contractors',
+  '/contractors/register',
+  '/blog',
+  '/privacy',
+  '/terms',
+]
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = []

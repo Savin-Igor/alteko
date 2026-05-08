@@ -5,6 +5,7 @@ import { SiteHeader } from '@/components/ui/SiteHeader'
 import { SiteFooter } from '@/components/ui/SiteFooter'
 import { InfoBanner } from '@/components/ui/InfoBanner'
 import { Badge } from '@/components/ui'
+import { localizedAlternates } from '@/lib/seo'
 
 interface MetadataParams {
   params: Promise<{ locale: string }>
@@ -13,7 +14,11 @@ interface MetadataParams {
 export async function generateMetadata({ params }: MetadataParams): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'financing.metadata' })
-  return { title: t('title'), description: t('description') }
+  return {
+    title: t('title'),
+    description: t('description'),
+    alternates: localizedAlternates({ path: '/financing', locale }),
+  }
 }
 
 interface ScenarioCard {

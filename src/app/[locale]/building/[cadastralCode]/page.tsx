@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
@@ -9,6 +10,7 @@ import { SiteHeader } from '@/components/ui/SiteHeader'
 import { SiteFooter } from '@/components/ui/SiteFooter'
 import { Badge } from '@/components/ui'
 import { ReadinessScoreCard } from '@/components/readiness/ReadinessScoreCard'
+import { localizedAlternates } from '@/lib/seo'
 import {
   computeEnergyScore,
   computeFundingEligibilityScore,
@@ -34,6 +36,37 @@ const WINDOW_STATUS_BADGE: Record<string, 'pending' | 'active' | 'done' | 'cance
 interface Props {
   params: Promise<{ locale: string; cadastralCode: string }>
   searchParams: Promise<{ address?: string }>
+}
+
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
+  const { locale, cadastralCode } = await params
+  const { address: fallbackAddress } = await searchParams
+  const isRu = locale === 'ru'
+
+  let address: string | null = null
+  try {
+    const building = await prisma.building.findUnique({
+      where: { cadastralCode },
+      select: { address: true },
+    })
+    address = building?.address ?? null
+  } catch {
+    // DB unavailable — fall back to query string
+  }
+
+  const display = address ?? fallbackAddress ?? cadastralCode
+  const title = isRu
+    ? `${display} — карточка дома | ALTEKO`
+    : `${display} — mājas kartīte | ALTEKO`
+  const description = isRu
+    ? `Готовность дома, сценарии финансирования и следующий шаг для ${display}. Бесплатный публичный отчёт ALTEKO.`
+    : `Mājas gatavība, finansējuma scenāriji un nākamais solis adresei ${display}. Bezmaksas publiskais ALTEKO pārskats.`
+
+  return {
+    title,
+    description,
+    alternates: localizedAlternates({ path: `/building/${cadastralCode}`, locale }),
+  }
 }
 
 export default async function BuildingPage({ params, searchParams }: Props) {

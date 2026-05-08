@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
+import { localizedAlternates } from '@/lib/seo'
 import type { Metadata } from 'next'
 
 const SITE_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://alteko.lv'
@@ -24,6 +25,7 @@ export async function generateMetadata({ params }: MetadataParams): Promise<Meta
     title,
     description,
     applicationName: 'ALTEKO',
+    alternates: localizedAlternates({ path: '/', locale }),
     openGraph: {
       title,
       description,

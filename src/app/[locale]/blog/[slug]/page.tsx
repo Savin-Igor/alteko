@@ -9,6 +9,7 @@ import { SiteFooter } from '@/components/ui/SiteFooter'
 import { SiteHeader } from '@/components/ui/SiteHeader'
 import { LexicalContent } from '@/components/blog/LexicalContent'
 import { routing } from '@/i18n/routing'
+import { localizedAlternates } from '@/lib/seo'
 
 // Payload CMS blog post fields — partial typing for dynamic collection
 interface PayloadBlogPost {
@@ -41,6 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: meta?.title ?? `${post.title} — ALTEKO`,
     description: meta?.description ?? (post.description as string),
+    alternates: localizedAlternates({ path: `/blog/${slug}`, locale }),
     openGraph: heroImage?.url
       ? { images: [{ url: heroImage.url as string }] }
       : undefined,
