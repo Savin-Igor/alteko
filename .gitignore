@@ -36,6 +36,8 @@ tmp/
 .playwright-mcp/
 .claude/worktrees/
 .claude/agent-memory/
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
 .firecrawl/
 
 # Screenshots and local review artifacts
