@@ -1,6 +1,6 @@
 .PHONY: \
   dev dev-setup dev-fresh \
-  db-up db-down db-rebuild \
+  db-up db-down db-rebuild db-nuke \
   up down restart logs shell \
   migrate migrate-deploy push studio backup \
   build build-scripts \
@@ -48,6 +48,11 @@ db-down: ## Stop local PostgreSQL container
 
 db-rebuild: ## Rebuild scripts Docker image (after Dockerfile.scripts changes)
 	$(DC) build scripts
+
+db-nuke: ## Drop containers + delete local Postgres/MinIO named volumes (DESTRUCTIVE)
+	$(DC) down -v
+	@echo "Volumes alteko_postgres_data and alteko_minio_data removed."
+	@echo "Run 'make dev-setup' to recreate the schema and seed."
 
 push: ## Apply schema to local DB without migrations (dev only)
 	$(EXEC) sh -c "npx prisma generate && npx prisma db push"
