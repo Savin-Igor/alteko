@@ -70,7 +70,13 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
   const safeTitle = campaign.title.replace(/[^a-z0-9]/gi, '-').toLowerCase().slice(0, 40)
   const filename = `decision-${safeTitle}-${lang.toLowerCase()}.pdf`
 
-  return new NextResponse(pdfBuffer, {
+  // Copy Buffer into a fresh Uint8Array<ArrayBuffer> so TypeScript's narrowed
+  // BodyInit / BlobPart types accept it. Newer @types/node uses
+  // Uint8Array<ArrayBufferLike>, which the DOM lib's stricter BlobPart no longer
+  // assignable to ArrayBufferView<ArrayBuffer>.
+  const body = new Blob([new Uint8Array(pdfBuffer)], { type: 'application/pdf' })
+
+  return new NextResponse(body, {
     status: 200,
     headers: {
       'Content-Type': 'application/pdf',

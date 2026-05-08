@@ -9,11 +9,11 @@
 import OpenAI from 'openai'
 import type { EnergyClass } from '@prisma/client'
 import type { ScoreComponents } from '@/lib/readiness/score'
+import { env } from '@/env'
 
 let _client: OpenAI | null = null
 function getClient(): OpenAI {
   if (!_client) {
-    const { env } = require('@/env') as { env: { OPENAI_API_KEY: string } }
     _client = new OpenAI({ apiKey: env.OPENAI_API_KEY })
   }
   return _client
