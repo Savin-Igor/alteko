@@ -401,6 +401,17 @@
     "classLabel": "Класс {class}"
   },
   "dashboard": {
+    "valdes": {
+      "title": "Кабинет правления",
+      "sections": {
+        "nextBestAction": "Следующий шаг",
+        "readiness": "Оценка готовности дома",
+        "documents": "Контрольный список документов",
+        "campaigns": "Кампании решений",
+        "financing": "Сценарии финансирования",
+        "ownerList": "Список собственников"
+      }
+    },
     "tabs": {
       "myBuildings": "Мои дома",
       "projects": "Проекты",

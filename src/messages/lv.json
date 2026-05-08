@@ -401,6 +401,17 @@
     "classLabel": "Klase {class}"
   },
   "dashboard": {
+    "valdes": {
+      "title": "Valdes darba telpa",
+      "sections": {
+        "nextBestAction": "Nākamais solis",
+        "readiness": "Mājas gatavības novērtējums",
+        "documents": "Dokumentu kontrolsaraksts",
+        "campaigns": "Lēmumu kampaņas",
+        "financing": "Finansējuma scenāriji",
+        "ownerList": "Īpašnieku saraksts"
+      }
+    },
     "tabs": {
       "myBuildings": "Manas mājas",
       "projects": "Projekti",
