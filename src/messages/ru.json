@@ -436,6 +436,35 @@
         "staleWarning": "Списку {days} дней — Altum и BIS принимают не старше 6 месяцев.",
         "staleNeverUploaded": "Без актуального списка нельзя запустить голосование и экспорт в BIS.",
         "uploadCta": "Загрузить список"
+      },
+      "documents": {
+        "heading": "Контрольный список документов",
+        "subheading": "Восемь документов, которые требуются для подачи в Altum и SCF.",
+        "upload": "Загрузить",
+        "replace": "Заменить",
+        "submit": "Сохранить",
+        "uploading": "Загружаем…",
+        "cancel": "Отмена",
+        "expiryLabel": "Действителен до",
+        "expires": "действителен до {date}",
+        "errorNoFile": "Выберите файл",
+        "errorTooLarge": "Файл больше 25 МБ",
+        "errorGeneric": "Загрузка не удалась",
+        "status": {
+          "uploaded": "Загружено {date}",
+          "expired": "Срок истёк (загружено {date})",
+          "missing": "Отсутствует"
+        }
+      },
+      "documentTypes": {
+        "ENERGY_CERTIFICATE": "Энергосертификат",
+        "TECHNICAL_PASSPORT": "Технический паспорт",
+        "TECHNICAL_INSPECTION": "Заключение технического осмотра",
+        "OWNER_LIST": "Список собственников",
+        "ASSOCIATION_DOCUMENTS": "Документы товарищества",
+        "POWER_OF_ATTORNEY": "Доверенность",
+        "OWNER_DECISIONS": "Решения собственников",
+        "GDPR_CONSENTS": "Согласия GDPR"
       }
     },
     "tabs": {

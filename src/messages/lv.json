@@ -436,6 +436,35 @@
         "staleWarning": "Sarakstam ir {days} dienas — Altum un BIS prasa ne vecāku par 6 mēnešiem.",
         "staleNeverUploaded": "Bez aktuāla saraksta nevar uzsākt īpašnieku balsošanu un BIS eksportu.",
         "uploadCta": "Augšupielādēt sarakstu"
+      },
+      "documents": {
+        "heading": "Dokumentu kontrolsaraksts",
+        "subheading": "Astoņi dokumenti, kas nepieciešami Altum un SCF pieteikumam.",
+        "upload": "Augšupielādēt",
+        "replace": "Aizstāt",
+        "submit": "Saglabāt",
+        "uploading": "Augšupielādējam…",
+        "cancel": "Atcelt",
+        "expiryLabel": "Derīgs līdz",
+        "expires": "derīgs līdz {date}",
+        "errorNoFile": "Izvēlieties failu",
+        "errorTooLarge": "Fails pārsniedz 25 MB",
+        "errorGeneric": "Augšupielāde neizdevās",
+        "status": {
+          "uploaded": "Augšupielādēts {date}",
+          "expired": "Derīgums beidzies (augšupielādēts {date})",
+          "missing": "Trūkst"
+        }
+      },
+      "documentTypes": {
+        "ENERGY_CERTIFICATE": "Energosertifikāts",
+        "TECHNICAL_PASSPORT": "Tehniskā pase",
+        "TECHNICAL_INSPECTION": "Tehniskās apsekošanas atzinums",
+        "OWNER_LIST": "Īpašnieku saraksts",
+        "ASSOCIATION_DOCUMENTS": "Biedrības dokumenti",
+        "POWER_OF_ATTORNEY": "Pilnvara",
+        "OWNER_DECISIONS": "Īpašnieku lēmumi",
+        "GDPR_CONSENTS": "VDAR piekrišanas"
       }
     },
     "tabs": {

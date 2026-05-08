@@ -9,6 +9,7 @@ import { NextBestActionBanner } from '@/components/dashboard/NextBestActionBanne
 import { ReadinessOverview } from '@/components/dashboard/ReadinessOverview'
 import { FinancingMini } from '@/components/dashboard/FinancingMini'
 import { OwnerListStatus } from '@/components/dashboard/OwnerListStatus'
+import { DocumentChecklist } from '@/components/dashboard/DocumentChecklist'
 import {
   getActiveBuilding,
   listUserBuildings,
@@ -73,6 +74,13 @@ export default async function DashboardPage({ params, searchParams }: Props) {
               monthlyPaymentPerApartment: true,
             },
             orderBy: { scenarioType: 'asc' },
+          },
+          documents: {
+            select: {
+              documentType: true,
+              uploadedAt: true,
+              expiresAt: true,
+            },
           },
         },
       })
@@ -171,7 +179,18 @@ export default async function DashboardPage({ params, searchParams }: Props) {
               }
             />
 
-            <DashboardSectionPlaceholder title={tValdes('sections.documents')} />
+            <DocumentChecklist
+              cadastralCode={active.cadastralCode}
+              locale={locale}
+              documents={
+                buildingDetails?.documents.map((d) => ({
+                  documentType: d.documentType,
+                  uploadedAt: d.uploadedAt,
+                  expiresAt: d.expiresAt,
+                })) ?? []
+              }
+            />
+
             <DashboardSectionPlaceholder title={tValdes('sections.campaigns')} />
 
             <FinancingMini
