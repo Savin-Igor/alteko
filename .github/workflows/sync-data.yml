@@ -3,16 +3,19 @@ name: Sync Open Data
 # Syncs Latvian government open datasets into PostgreSQL.
 # All sources are CC-BY-4.0 and free to bulk-download from data.gov.lv.
 #
-# Schedule:
-#   Weekly (Mon 03:00 UTC): Building.ZIP, BVKB energy certs, VAR addresses
-#   Monthly (12th 04:00 UTC): Apartment transaction prices (tg_darjumi)
-#   Manual: apartment transactions full historical backfill, cadastral values
+# CURRENTLY MANUAL ONLY (workflow_dispatch). The cron schedule was disabled
+# because the production Postgres lives on the internal Docker network at
+# /opt/alteko and is not reachable from GitHub-hosted runners. Re-enabling
+# scheduled syncs requires either (a) exposing prod DB on a non-default port
+# with strong creds, or (b) refactoring this workflow to SSH into the server
+# and run the script inside the running app container. See follow-up TODO.
+#
+# Workflow_dispatch still runs the scripts against whatever DATABASE_URL
+# secret is set — useful for local one-offs against a tunnel.
+#
+# TODO(infra): re-enable scheduled syncs by running scripts on the server
+# via appleboy/ssh-action and `docker compose exec app npx tsx scripts/...`.
 on:
-  schedule:
-    # Weekly — building metadata, energy certs, address register
-    - cron: '0 3 * * 1'
-    # Monthly on 12th — apartment transaction prices (VZD publishes on 10th)
-    - cron: '0 4 12 * *'
   workflow_dispatch:
     inputs:
       job:
@@ -31,8 +34,8 @@ jobs:
     name: Weekly — buildings, addresses, energy certs
     runs-on: ubuntu-latest
     if: >
-      github.event_name == 'schedule' && github.event.schedule == '0 3 * * 1' ||
-      github.event_name == 'workflow_dispatch' && (inputs.job == 'all-weekly' || inputs.job == 'buildings' || inputs.job == 'addresses' || inputs.job == 'energy-certs')
+      github.event_name == 'workflow_dispatch' &&
+      (inputs.job == 'all-weekly' || inputs.job == 'buildings' || inputs.job == 'addresses' || inputs.job == 'energy-certs')
 
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -58,22 +61,17 @@ jobs:
         run: npx prisma migrate deploy
 
       - name: Sync VAR building addresses
-        if: >
-          inputs.job == 'all-weekly' || inputs.job == 'addresses' ||
-          github.event_name == 'schedule'
+        if: inputs.job == 'all-weekly' || inputs.job == 'addresses'
         run: npx tsx scripts/sync-vzd.ts
 
       - name: Sync BVKB energy certificates
-        if: >
-          inputs.job == 'all-weekly' || inputs.job == 'energy-certs' ||
-          github.event_name == 'schedule'
+        if: inputs.job == 'all-weekly' || inputs.job == 'energy-certs'
         run: npx tsx scripts/sync-bvkb.ts
 
   monthly-transactions:
     name: Monthly — apartment transaction prices
     runs-on: ubuntu-latest
     if: >
-      github.event_name == 'schedule' && github.event.schedule == '0 4 12 * *' ||
       github.event_name == 'workflow_dispatch' && inputs.job == 'transactions'
 
     env:

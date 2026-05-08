@@ -1,30 +1,49 @@
-# Production compose — uses pre-built image from GHCR.
-# For local dev use: docker compose -f docker-compose.db.yml up -d
+# Production compose for ALTEKO on the shared Hetzner VPS.
+# Deploy path: /opt/alteko/
+# Secrets:     /opt/alteko/.env  (rewritten from GitHub Secrets on every deploy)
 #
-# Required env vars on VPS:
-#   IMAGE_TAG       — git SHA from CI (defaults to "latest")
-#   GITHUB_REPOSITORY — e.g. savin-igor/alteko (set by GitHub Actions)
-#   POSTGRES_USER, POSTGRES_PASSWORD — strong credentials for production
+# Reverse proxy: host nginx (80/443, Certbot SSL) → 127.0.0.1:3020 → app:3000
+#
+# Port allocation on the shared server:
+#   3010 — MezaData
+#   3020 — ALTEKO          ← this project
+#   3030+ — future projects
+#
+# Data lives on the Hetzner Volume (/mnt/data) so it survives server rebuild.
+#
+# First-time server setup: see docs/DEPLOY.md and issue #137.
+#
+# After each deploy (CI does this automatically):
+#   docker compose pull app
+#   docker compose up -d --no-deps --remove-orphans app
 
 services:
   app:
     image: ghcr.io/${GITHUB_REPOSITORY:-savin-igor/alteko}:${IMAGE_TAG:-latest}
     restart: unless-stopped
+    init: true
     ports:
-      - "3000:3000"
-    env_file: .env.production
+      - "127.0.0.1:3020:3000"
+    env_file: .env
     depends_on:
       db:
         condition: service_healthy
-    # Migrations run on every start — prisma migrate deploy is idempotent
+    # Migrations run on every start — prisma migrate deploy is idempotent.
     entrypoint: ["/docker-entrypoint.sh"]
     command: ["node", "server.js"]
+    # /api/health does a SELECT 1 against Postgres and returns 503 when DB is
+    # unreachable, so this check covers liveness + readiness in one probe.
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/ || exit 1"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/api/health || exit 1"]
       interval: 30s
       timeout: 10s
-      start_period: 20s
+      start_period: 30s
       retries: 3
+    # Keep the app within a known memory budget. The shared VPS has 4 GB total
+    # split across MezaData + ALTEKO + system. 768 MB is enough for steady-state
+    # Next.js SSR; raise to 1g if 502s appear during peak SSR.
+    mem_limit: 768m
+    cpus: 1.0
 
   db:
     image: postgres:16-alpine
@@ -32,13 +51,16 @@ services:
     environment:
       POSTGRES_DB: alteko
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      # Bind mount: data visible on host, survives docker removal
-      - ./data/postgres:/var/lib/postgresql/data
-    # No port exposure in production — only app talks to db on internal network
+      # Hetzner Volume bind — survives docker prune and server rebuild.
+      # First-time setup creates this dir owned by uid 70 (alpine postgres).
+      - /mnt/data/alteko/postgres:/var/lib/postgresql/data
+    # No port exposure — only the app talks to db on the internal network.
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
-      interval: 5s
+      interval: 10s
       timeout: 5s
       retries: 5
+    mem_limit: 512m
+    cpus: 0.5

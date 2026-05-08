@@ -157,6 +157,9 @@ docs/
 | E-voting | ALTEKO готовит решения и экспортирует в BIS Mājas lieta. Не дублировать BIS-функции напрямую |
 | Smart-ID/eParaksts | Используются для подписи **решений собственников**, не для входа на платформу (вход — magic link) |
 | Маркетплейс | **Piegādātāju atlases telpa** без success fee. Подрядчики платят фиксированную подписку |
+| Deploy trigger | `git tag v*` → GitHub Actions → GHCR → SSH в Hetzner. Push в main = только CI. Подробно: `docs/DEPLOY.md` |
+| Port allocation на VPS | ALTEKO = `127.0.0.1:3020`. MezaData = 3010. Локально = 3000 |
+| Server data path | `/mnt/data/alteko/{postgres,uploads,backups}` (Hetzner Volume). Локально = `./data/postgres` |
 
 ---
 

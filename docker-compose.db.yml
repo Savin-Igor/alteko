@@ -1,3 +1,16 @@
+# LOCAL DEVELOPMENT compose — Postgres + MinIO + Mailhog + scripts runner.
+#
+# This file is for local dev only. Production uses docker-compose.yml at the
+# repo root, which pulls a pre-built image from GHCR and bind-mounts to
+# /mnt/data/alteko/*. See docs/DEPLOY.md.
+#
+# Usage:
+#   make dev          — daily: bring up db, sync schema, run npm dev on host
+#   make dev-setup    — first time: + seed
+#   make dev-fresh    — wipe .next, push schema, run dev
+#
+# Local app port: 3000 (host). Production port on the shared VPS: 3020.
+
 services:
   db:
     image: postgres:16-alpine

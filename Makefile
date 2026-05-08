@@ -4,11 +4,11 @@
   up down restart logs shell \
   migrate migrate-deploy push studio backup \
   build build-scripts \
-  check clean \
+  check clean clean-tmp \
   seed seed-buildings seed-series assign-series seed-benchmarks seed-blog \
   sync-buildings sync-vzd sync-bvkb sync-transactions \
   cron-weekly cron-monthly \
-  deploy help
+  release deploy help
 
 DC       = docker compose -f docker-compose.db.yml
 DC_PROD  = docker compose
@@ -144,11 +144,20 @@ logs: ## Stream app logs
 shell: ## Open a shell in the running app container
 	$(DC_PROD) exec app sh
 
-deploy: ## SSH deploy: pull latest image and restart app  [DEPLOY_HOST=user@host]
+release: ## Cut a tag-driven release: make release v=0.1.0 (triggers GitHub Actions deploy)
+	@test -n "$(v)" || (echo "Usage: make release v=0.1.0" && exit 1)
+	@echo "$(v)" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9.]+)?$$' \
+	  || (echo "v must be semver like 0.1.0 or 0.1.0-rc.1" && exit 1)
+	@echo "Tagging v$(v)..."
+	git tag -a v$(v) -m "Release v$(v)"
+	@echo "Pushing tag — GitHub Actions deploy.yml will fire."
+	git push origin v$(v)
+
+deploy: ## Manual SSH deploy of latest image (skips CI). Use only for hotfix.  [DEPLOY_HOST=user@host]
 	@test -n "$(DEPLOY_HOST)" || (echo "DEPLOY_HOST not set. Usage: make deploy DEPLOY_HOST=user@host" && exit 1)
 	ssh $(DEPLOY_HOST) 'cd /opt/alteko && \
 	  docker compose pull app && \
-	  docker compose up -d app && \
+	  docker compose up -d --no-deps app && \
 	  docker image prune -f'
 
 ##@ Help

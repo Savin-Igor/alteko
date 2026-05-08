@@ -1,12 +1,18 @@
 name: CI
 
 # CI runs on every PR and push to main.
-# Deploy is handled separately in deploy.yml (push to main only).
+# Production deploy is tag-driven (see deploy.yml — push a tag matching v*).
 on:
   pull_request:
     branches: [main]
   push:
     branches: [main]
+
+# Cancel in-flight runs on the same ref when a new commit lands. PR runs
+# can also be cancelled by re-pushing.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   ci:
