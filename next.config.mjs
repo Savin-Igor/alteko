@@ -11,6 +11,13 @@ const config = {
   outputFileTracingExcludes: {
     '*': ['data/**'],
   },
+  // Next.js 15 standalone tracing misses some internal modules referenced
+  // dynamically (e.g. next/dist/lib/metadata/metadata-constants), causing
+  // production crashes with "Cannot find module ...". Force-include the
+  // whole next/dist/lib tree to side-step the trace gap.
+  outputFileTracingIncludes: {
+    '*': ['./node_modules/next/dist/lib/**/*'],
+  },
   webpack(webpackConfig, { webpack }) {
     if (!webpackConfig.resolve) webpackConfig.resolve = {}
 
