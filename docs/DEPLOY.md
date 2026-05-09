@@ -91,8 +91,7 @@ Container entrypoint (`scripts/docker-entrypoint.sh`) при каждом ста
 | `OPENAI_API_KEY` | ключ OpenAI |
 | `RESEND_API_KEY` | ключ Resend (домен alteko.lv должен быть verified — см. issue #139) |
 | `ADMIN_EMAIL` | куда падают уведомления о новых заявках |
-| `JANA_SETA_API_URL`, `JANA_SETA_API_KEY` | геокодер |
-| `LVM_GEOSERVER_URL` | WFS endpoint LVM |
+| `LVM_GEOSERVER_URL` | WFS endpoint LVM (cadastral lookup, бесплатный) |
 | `S3_ENDPOINT` | Hetzner Object Storage endpoint, например `https://fsn1.your-objectstorage.com` (Falkenstein) или `https://hel1.your-objectstorage.com` (Helsinki). См. ADR `docs/technical/adr/0001-s3-provider.md` |
 | `S3_REGION` | `fsn1` или `hel1` |
 | `S3_BUCKET` | имя bucket, по умолчанию `alteko-uploads`. Для документов и медиа используются отдельные bucket'ы (см. ADR) |
