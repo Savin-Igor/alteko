@@ -98,6 +98,13 @@ jobs:
             set -euo pipefail
             cd /opt/alteko
 
+            # Docker registry refs must be lowercase. github.repository is
+            # typically the canonical "Owner/Name" form and may contain
+            # uppercase letters (e.g. "Savin-Igor/alteko") which docker
+            # compose pull rejects with "invalid reference format". Force
+            # lowercase here so the image:tag reference always validates.
+            GITHUB_REPOSITORY=$(echo "${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]')
+
             # ── Write .env from secrets ───────────────────────────────────
             # The file is rewritten on every deploy. Never edit manually on the server.
             umask 077
