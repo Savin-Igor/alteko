@@ -4,6 +4,9 @@ WORKDIR /app
 
 FROM base AS deps
 COPY package.json package-lock.json* ./
+# Postinstall hook needs the patch script available before `npm ci`
+# resolves dependencies (the hook runs at the end of install).
+COPY scripts/patch-payload-loadenv.cjs ./scripts/patch-payload-loadenv.cjs
 # --legacy-peer-deps: @payloadcms/plugin-mcp ships a contradictory peer
 # constraint on @modelcontextprotocol/sdk (deps: 1.27.1, peer: 1.26.0).
 # npm 10 strict mode rejects this. Until Payload fixes upstream, fall
