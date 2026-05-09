@@ -33,12 +33,13 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-# Prisma CLI needed for migrate deploy in entrypoint. Pull in the full
-# @prisma/* tree (engines, client, schema-engine binaries) plus the CLI
-# package and shim, so `prisma migrate deploy` can resolve every runtime
-# dep without dragging the rest of node_modules in.
+# Prisma CLI needed for migrate deploy in entrypoint. The prisma binary
+# in .bin is a self-contained bundle that loads sibling .wasm files, so
+# we copy the full .bin directory plus the @prisma/* tree (engines,
+# client, schema-engine) and the prisma CLI package. Cheaper than
+# dragging full node_modules; reliable enough for `prisma migrate deploy`.
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-COPY --from=builder /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
+COPY --from=builder /app/node_modules/.bin ./node_modules/.bin
 COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
 
 # Entrypoint: runs prisma migrate deploy, then exec CMD
