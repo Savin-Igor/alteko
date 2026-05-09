@@ -4,7 +4,12 @@ WORKDIR /app
 
 FROM base AS deps
 COPY package.json package-lock.json* ./
-RUN npm ci
+# --legacy-peer-deps: @payloadcms/plugin-mcp ships a contradictory peer
+# constraint on @modelcontextprotocol/sdk (deps: 1.27.1, peer: 1.26.0).
+# npm 10 strict mode rejects this. Until Payload fixes upstream, fall
+# back to the npm 6-era resolver, which matches what local `npm install`
+# does and what the CI green path expects.
+RUN npm ci --legacy-peer-deps
 
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
