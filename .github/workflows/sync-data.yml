@@ -3,20 +3,19 @@ name: Sync Open Data
 # Syncs Latvian government open datasets into PostgreSQL.
 # All sources are CC-BY-4.0 and free to bulk-download from data.gov.lv.
 #
-# CURRENTLY MANUAL ONLY (workflow_dispatch). The cron schedule was disabled
-# because the production Postgres lives on the internal Docker network at
-# /opt/alteko and is not reachable from GitHub-hosted runners. Re-enabling
-# scheduled syncs requires either (a) exposing prod DB on a non-default port
-# with strong creds, or (b) refactoring this workflow to SSH into the server
-# and run the script inside the running app container. See follow-up TODO.
+# Scheduled syncs run via SSH into the VPS and execute scripts inside the
+# running app container (the DB is on the internal Docker network, not
+# reachable directly from GitHub-hosted runners).
 #
-# Workflow_dispatch still runs the scripts against whatever DATABASE_URL
-# secret is set — useful for local one-offs against a tunnel.
-#
-# TODO(infra): re-enable scheduled syncs by running scripts on the server
-# via appleboy/ssh-action and `docker compose exec app npx tsx scripts/...`.
+# Manual one-off runs (workflow_dispatch) still work against whatever
+# DATABASE_URL secret is set — useful for local development against a tunnel.
 on:
   workflow_dispatch:
+  schedule:
+    # Weekly on Sunday at 03:00 UTC — buildings, addresses, energy certificates
+    - cron: '0 3 * * 0'
+    # Monthly on the 1st at 04:00 UTC — apartment transaction prices
+    - cron: '0 4 1 * *'
     inputs:
       job:
         description: 'Which sync job to run'
@@ -100,3 +99,43 @@ jobs:
 
       - name: Sync apartment transactions
         run: npx tsx scripts/sync-transactions.ts
+
+  # ── Scheduled sync via SSH (cron-triggered only) ──────────────────────────
+  weekly-sync-ssh:
+    name: Weekly SSH — buildings, addresses, energy certs
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' && github.event.schedule == '0 3 * * 0'
+
+    steps:
+      - uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HETZNER_HOST }}
+          username: ${{ secrets.HETZNER_USER }}
+          key: ${{ secrets.HETZNER_SSH_KEY }}
+          command_timeout: 30m
+          script: |
+            set -euo pipefail
+            cd /opt/alteko
+            echo "Starting weekly data sync inside app container..."
+            docker compose exec -T app npx tsx scripts/sync-vzd.ts
+            docker compose exec -T app npx tsx scripts/sync-bvkb.ts
+            echo "Weekly sync complete."
+
+  monthly-transactions-ssh:
+    name: Monthly SSH — apartment transactions
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' && github.event.schedule == '0 4 1 * *'
+
+    steps:
+      - uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HETZNER_HOST }}
+          username: ${{ secrets.HETZNER_USER }}
+          key: ${{ secrets.HETZNER_SSH_KEY }}
+          command_timeout: 60m
+          script: |
+            set -euo pipefail
+            cd /opt/alteko
+            echo "Starting monthly transactions sync inside app container..."
+            docker compose exec -T app npx tsx scripts/sync-transactions.ts
+            echo "Monthly transactions sync complete."
