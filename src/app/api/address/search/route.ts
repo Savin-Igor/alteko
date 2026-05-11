@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { IS_STUB, STUB_ADDRESS_SUGGESTIONS } from '@/lib/stubs'
+import { checkRateLimit, getClientIp, rateLimitExceeded } from '@/lib/rate-limit'
 
 export const runtime = 'nodejs'
 
@@ -29,6 +30,9 @@ function formatAddress(addr: NominatimAddress): string {
 }
 
 export async function GET(req: NextRequest) {
+  const { allowed } = checkRateLimit(getClientIp(req))
+  if (!allowed) return rateLimitExceeded()
+
   const query = req.nextUrl.searchParams.get('q')?.trim()
   const city = req.nextUrl.searchParams.get('city')?.trim()
   if (!query || query.length < 3) return NextResponse.json([])

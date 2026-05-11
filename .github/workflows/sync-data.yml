@@ -11,11 +11,6 @@ name: Sync Open Data
 # DATABASE_URL secret is set — useful for local development against a tunnel.
 on:
   workflow_dispatch:
-  schedule:
-    # Weekly on Sunday at 03:00 UTC — buildings, addresses, energy certificates
-    - cron: '0 3 * * 0'
-    # Monthly on the 1st at 04:00 UTC — apartment transaction prices
-    - cron: '0 4 1 * *'
     inputs:
       job:
         description: 'Which sync job to run'
@@ -27,6 +22,11 @@ on:
           - buildings
           - addresses
           - energy-certs
+  schedule:
+    # Weekly on Sunday at 03:00 UTC — buildings, addresses, energy certificates
+    - cron: '0 3 * * 0'
+    # Monthly on the 1st at 04:00 UTC — apartment transaction prices
+    - cron: '0 4 1 * *'
 
 jobs:
   weekly-sync:
