@@ -14,6 +14,7 @@ import {
   deleteFile,
   getPresignedDownloadUrl,
 } from '@/lib/s3'
+import { checkRateLimit, getClientIp, rateLimitExceeded } from '@/lib/rate-limit'
 import { BuildingDocumentType } from '@prisma/client'
 
 export const runtime = 'nodejs'
@@ -61,6 +62,9 @@ async function authorizeBoard() {
 }
 
 export async function GET(_req: NextRequest, { params }: RouteParams) {
+  const { allowed } = checkRateLimit(getClientIp(_req))
+  if (!allowed) return rateLimitExceeded()
+
   const auth = await authorizeBoard()
   if ('error' in auth) return auth.error
 
