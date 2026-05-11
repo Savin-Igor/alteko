@@ -27,6 +27,7 @@ GitHub Actions (.github/workflows/deploy.yml)
 Hetzner VPS  /opt/alteko/
     ├── app (Docker, Next.js + Payload)  — port 3020 на хосте → 3000 в контейнере
     ├── db (Docker, postgres:16-alpine) — данные в /mnt/data/alteko/postgres
+    ├── minio  (MinIO S3, internal) — port 3021 на хосте → 9000 в контейнере
     └── nginx (host)                     — reverse proxy, HTTPS via Certbot
 ```
 
@@ -57,6 +58,7 @@ Container entrypoint (`scripts/docker-entrypoint.sh`) при каждом ста
 | `/mnt/data/alteko/postgres` | PostgreSQL data (Hetzner Volume — переживает rebuild сервера) |
 | `/mnt/data/alteko/uploads` | Payload media (если самохост; иначе S3) |
 | `/mnt/data/alteko/backups` | `pg_dump` дампы перед каждым deploy (последние 10, gzip) |
+| `/mnt/data/alteko/minio` | MinIO object storage (S3-совместимый) |
 
 ### Port allocation на VPS
 
@@ -64,6 +66,7 @@ Container entrypoint (`scripts/docker-entrypoint.sh`) при каждом ста
 |------|--------|
 | 3010 | MezaData |
 | 3020 | **ALTEKO** |
+| 3021 | ALTEKO MinIO (внутренний, SSH-tunnel) |
 | 3030+ | будущие проекты |
 
 ### nginx vhost
@@ -92,10 +95,12 @@ Container entrypoint (`scripts/docker-entrypoint.sh`) при каждом ста
 | `RESEND_API_KEY` | ключ Resend (домен alteko.lv должен быть verified — см. issue #139) |
 | `ADMIN_EMAIL` | куда падают уведомления о новых заявках |
 | `LVM_GEOSERVER_URL` | WFS endpoint LVM (cadastral lookup, бесплатный) |
-| `S3_ENDPOINT` | Hetzner Object Storage endpoint, например `https://fsn1.your-objectstorage.com` (Falkenstein) или `https://hel1.your-objectstorage.com` (Helsinki). См. ADR `docs/technical/adr/0001-s3-provider.md` |
-| `S3_REGION` | `fsn1` или `hel1` |
-| `S3_BUCKET` | имя bucket, по умолчанию `alteko-uploads`. Для документов и медиа используются отдельные bucket'ы (см. ADR) |
-| `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY` | ключи Hetzner Object Storage |
+| `S3_ENDPOINT` | `http://minio:9000` (MinIO внутри docker-compose) |
+| `S3_REGION` | `us-east-1` (MinIO требует непустое значение; фактически не используется) |
+| `S3_BUCKET` | `alteko-uploads` (основной bucket; остальные создаются через `minio-init`) |
+| `S3_ACCESS_KEY_ID` | MinIO root credentials (генерировать: `openssl rand -hex 16`) |
+| `S3_SECRET_ACCESS_KEY` | MinIO root credentials (генерировать: `openssl rand -hex 32`) |
+| `SENTRY_DSN` | DSN Sentry (опционально; если не задан — мониторинг отключён) |
 
 `DATABASE_URL` **не** secret — он собирается в deploy-скрипте:
 ```

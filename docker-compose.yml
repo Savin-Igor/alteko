@@ -25,8 +25,16 @@ services:
     ports:
       - "127.0.0.1:3020:3000"
     env_file: .env
+    environment:
+      # Next.js standalone server defaults to binding on localhost (127.0.0.1),
+      # which inside the container resolves to ::1 (IPv6). Docker's wget-based
+      # healthcheck connects via IPv4, so it hits "Connection refused".
+      # Binding on 0.0.0.0 makes the server accept connections on all interfaces.
+      HOSTNAME: "0.0.0.0"
     depends_on:
       db:
+        condition: service_healthy
+      minio:
         condition: service_healthy
     # Migrations run on every start — prisma migrate deploy is idempotent.
     entrypoint: ["/docker-entrypoint.sh"]
@@ -64,3 +72,38 @@ services:
       retries: 5
     mem_limit: 512m
     cpus: 0.5
+
+  minio:
+    image: minio/minio:RELEASE.2024-11-07T00-52-20Z
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    ports:
+      # Internal only — no public console exposure.
+      # Access console via SSH tunnel: ssh -L 9001:localhost:9001 palpalych
+      - "127.0.0.1:3021:9000"
+    env_file: .env
+    volumes:
+      # Hetzner Volume bind — Ceph-backed, survives docker prune and server rebuild.
+      - /mnt/data/alteko/minio:/data
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:9000/minio/health/live || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    mem_limit: 256m
+    cpus: 0.5
+
+  minio-init:
+    image: minio/mc:RELEASE.2024-11-09T19-22-20Z
+    restart: on-failure
+    depends_on:
+      minio:
+        condition: service_healthy
+    env_file: .env
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - |
+        mc alias set local http://minio:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD &&
+        mc mb --ignore-existing local/alteko-documents local/alteko-uploads local/alteko-reports local/alteko-media

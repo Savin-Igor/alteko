@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Дата | 2026-05-09 |
-| Статус | **Принято** |
+| Статус | **Superseded by ADR-0002** (2026-05-11) |
 | Автор | ALTEKO team |
 | Связанные | #139 (provisioning), #147 (pre-flight), `docs/technical/architecture.md` |
 
