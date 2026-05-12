@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 
 const CONSENT_KEY = 'alteko-cookie-consent'
 
@@ -35,9 +36,9 @@ export function CookieConsent() {
         <p className="text-sm text-gray-600">
           Mēs izmantojam obligātās sīkdatnes, lai nodrošinātu platformas darbību
           (autentifikācija, sesijas). Neobligātās analītikas sīkdatnes netiek izmantotas.{' '}
-          <a href="/privacy" className="underline hover:text-gray-900">
+          <Link href="/privacy" className="underline hover:text-gray-900">
             Privātuma politika
-          </a>
+          </Link>
         </p>
         <div className="flex shrink-0 gap-2">
           <button
