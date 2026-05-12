@@ -69,6 +69,18 @@ jobs:
     environment: production
 
     steps:
+      # Copy docker-compose.yml so the server always has the latest version.
+      # Required for new services (e.g. minio) to be picked up on first deploy.
+      - uses: actions/checkout@v4
+
+      - uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HETZNER_HOST }}
+          username: ${{ secrets.HETZNER_USER }}
+          key: ${{ secrets.HETZNER_SSH_KEY }}
+          source: "docker-compose.yml"
+          target: "/opt/alteko/"
+
       - uses: appleboy/ssh-action@v1
         env:
           IMAGE_TAG: ${{ needs.build.outputs.version }}
