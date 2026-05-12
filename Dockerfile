@@ -46,6 +46,17 @@ COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modul
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.bin ./node_modules/.bin
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
+# tsx: TypeScript runner for maintenance scripts (seed, backfill, etc.)
+# The standalone node_modules already includes all Payload/Next.js runtime deps;
+# tsx just needs its own package to transpile .ts files on the fly.
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/tsx ./node_modules/tsx
+
+# Seed and maintenance scripts (TypeScript sources + Payload config).
+# Allows: docker compose exec app npx tsx scripts/<name>.ts
+COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
+COPY --from=builder --chown=nextjs:nodejs /app/src ./src
+COPY --from=builder --chown=nextjs:nodejs /app/payload.config.ts ./
+COPY --from=builder --chown=nextjs:nodejs /app/tsconfig.json ./
 
 # Entrypoint: runs prisma migrate deploy, then exec CMD
 COPY scripts/docker-entrypoint.sh /docker-entrypoint.sh
