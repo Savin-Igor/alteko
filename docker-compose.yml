@@ -25,11 +25,12 @@ services:
     ports:
       - "127.0.0.1:3020:3000"
     env_file: .env
+    # Next.js standalone server binds to process.env.HOSTNAME. Docker sets
+    # HOSTNAME to the container ID by default, so the app listens on the
+    # bridge interface (172.17.x.x) and is unreachable on loopback.
+    # Override to 0.0.0.0 so it binds to every interface — required for
+    # the wget-based healthcheck below to reach localhost:3000.
     environment:
-      # Next.js standalone server defaults to binding on localhost (127.0.0.1),
-      # which inside the container resolves to ::1 (IPv6). Docker's wget-based
-      # healthcheck connects via IPv4, so it hits "Connection refused".
-      # Binding on 0.0.0.0 makes the server accept connections on all interfaces.
       HOSTNAME: "0.0.0.0"
     depends_on:
       db:
@@ -39,13 +40,6 @@ services:
     # Migrations run on every start — prisma migrate deploy is idempotent.
     entrypoint: ["/docker-entrypoint.sh"]
     command: ["node", "server.js"]
-    # Next.js standalone server binds to process.env.HOSTNAME. Docker sets
-    # HOSTNAME to the container ID by default, so the app listens on the
-    # bridge interface (172.17.x.x) and is unreachable on loopback.
-    # Override to 0.0.0.0 so it binds to every interface — required for
-    # the wget-based healthcheck below to reach localhost:3000.
-    environment:
-      HOSTNAME: "0.0.0.0"
     # /api/health does a SELECT 1 against Postgres and returns 503 when DB is
     # unreachable, so this check covers liveness + readiness in one probe.
     healthcheck:
