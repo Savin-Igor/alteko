@@ -47,9 +47,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modul
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.bin ./node_modules/.bin
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
 # tsx: TypeScript runner for maintenance scripts (seed, backfill, etc.)
-# The standalone node_modules already includes all Payload/Next.js runtime deps;
-# tsx just needs its own package to transpile .ts files on the fly.
+# tsx@4 has two deps: esbuild (already in standalone node_modules via Next.js)
+# and get-tsconfig (not in standalone). Copy both tsx and get-tsconfig.
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/tsx ./node_modules/tsx
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/get-tsconfig ./node_modules/get-tsconfig
 
 # Seed and maintenance scripts (TypeScript sources + Payload config).
 # Allows: docker compose exec app npx tsx scripts/<name>.ts
