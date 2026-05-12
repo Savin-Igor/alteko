@@ -1,0 +1,54 @@
+name: Seed
+
+# Manual seed runner — executes seed scripts inside the running app container on the VPS.
+# The app container has access to Payload CMS, database, and S3 configured via .env.
+#
+# Usage:
+#   gh workflow run seed.yml -f job=blog-all
+on:
+  workflow_dispatch:
+    inputs:
+      job:
+        description: 'Which seed job to run'
+        required: true
+        type: choice
+        options:
+          - blog-all
+          - blog-articles
+          - blog-readiness
+
+jobs:
+  seed-ssh:
+    name: Seed via SSH
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HETZNER_HOST }}
+          username: ${{ secrets.HETZNER_USER }}
+          key: ${{ secrets.HETZNER_SSH_KEY }}
+          command_timeout: 30m
+          script: |
+            set -euo pipefail
+            cd /opt/alteko
+
+            run_seed() {
+              local script="$1"
+              echo "==> Running ${script}..."
+              docker compose exec -T app npx tsx "scripts/${script}"
+              echo "==> ${script} done."
+            }
+
+            case "${{ inputs.job }}" in
+              blog-all)
+                run_seed "seed-blog-articles.ts"
+                run_seed "seed-blog-readiness-pack.ts"
+                ;;
+              blog-articles)
+                run_seed "seed-blog-articles.ts"
+                ;;
+              blog-readiness)
+                run_seed "seed-blog-readiness-pack.ts"
+                ;;
+            esac
