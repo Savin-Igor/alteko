@@ -78,6 +78,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
           LVM_GEOSERVER_URL: ${{ secrets.LVM_GEOSERVER_URL }}
           S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
@@ -90,7 +91,7 @@ jobs:
           host: ${{ secrets.HETZNER_HOST }}
           username: ${{ secrets.HETZNER_USER }}
           key: ${{ secrets.HETZNER_SSH_KEY }}
-          envs: IMAGE_TAG,GITHUB_REPOSITORY,POSTGRES_PASSWORD,NEXTAUTH_SECRET,OPENAI_API_KEY,RESEND_API_KEY,ADMIN_EMAIL,PAYLOAD_SECRET,LVM_GEOSERVER_URL,S3_ENDPOINT,S3_REGION,S3_BUCKET,S3_ACCESS_KEY_ID,S3_SECRET_ACCESS_KEY,GHCR_TOKEN
+          envs: IMAGE_TAG,GITHUB_REPOSITORY,POSTGRES_PASSWORD,NEXTAUTH_SECRET,OPENAI_API_KEY,RESEND_API_KEY,ADMIN_EMAIL,PAYLOAD_SECRET,LVM_GEOSERVER_URL,S3_ENDPOINT,S3_REGION,S3_BUCKET,S3_ACCESS_KEY_ID,S3_SECRET_ACCESS_KEY,GHCR_TOKEN,SENTRY_DSN
           command_timeout: 20m
           script: |
             set -euo pipefail
@@ -136,6 +137,9 @@ jobs:
             S3_BUCKET=${S3_BUCKET}
             S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID}
             S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
+            MINIO_ROOT_USER=${S3_ACCESS_KEY_ID}
+            MINIO_ROOT_PASSWORD=${S3_SECRET_ACCESS_KEY}
+            SENTRY_DSN=${SENTRY_DSN:-}
 
             APP_VERSION=${IMAGE_TAG}
             IMAGE_TAG=${IMAGE_TAG}
@@ -159,6 +163,9 @@ jobs:
             else
               echo "DB not running yet — skipping pre-deploy backup (first deploy)"
             fi
+
+            # ── Ensure MinIO data directory exists (first-deploy setup) ──
+            mkdir -p /mnt/data/alteko/minio
 
             # ── Pull and restart ──────────────────────────────────────────
             docker compose pull app
@@ -188,3 +195,18 @@ jobs:
             # ── Cleanup ───────────────────────────────────────────────────
             docker image prune -f
             echo "Deployed ALTEKO ${IMAGE_TAG}"
+
+            # ── Smoke tests — verify key public pages return 200 ─────────────────
+            echo "Running smoke tests..."
+            smoke_ok=1
+            for path in "/" "/ru" "/api/health" "/sitemap.xml" "/robots.txt"; do
+              if ! curl -fsS --max-time 10 "https://alteko.lv${path}" > /dev/null 2>&1; then
+                echo "SMOKE FAIL: https://alteko.lv${path} did not return 200"
+                smoke_ok=0
+              fi
+            done
+            if [ "${smoke_ok}" = "0" ]; then
+              echo "===== SOME SMOKE TESTS FAILED — manual verification recommended ====="
+            else
+              echo "All smoke tests passed."
+            fi

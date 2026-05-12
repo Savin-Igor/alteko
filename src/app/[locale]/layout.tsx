@@ -4,6 +4,7 @@ import { getMessages, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { localizedAlternates } from '@/lib/seo'
+import { CookieConsent } from '@/components/cookie-consent'
 import type { Metadata } from 'next'
 
 const SITE_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://alteko.lv'
@@ -66,6 +67,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <NextIntlClientProvider messages={messages}>
           {children}
         </NextIntlClientProvider>
+        <CookieConsent />
       </body>
     </html>
   )

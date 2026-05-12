@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { env } from '@/env'
 import { prisma } from '@/lib/prisma'
 import { IS_STUB, stubBuildingForAddress } from '@/lib/stubs'
+import { checkRateLimit, getClientIp, rateLimitExceeded } from '@/lib/rate-limit'
 import type { EnergyClass } from '@prisma/client'
 
 export const runtime = 'nodejs'
@@ -36,6 +37,9 @@ async function fetchCadastralCode(lat: number, lon: number): Promise<string | nu
 }
 
 export async function GET(req: NextRequest) {
+  const { allowed } = checkRateLimit(getClientIp(req))
+  if (!allowed) return rateLimitExceeded()
+
   const lat = parseFloat(req.nextUrl.searchParams.get('lat') ?? '')
   const lon = parseFloat(req.nextUrl.searchParams.get('lon') ?? '')
   const address = req.nextUrl.searchParams.get('address') ?? ''

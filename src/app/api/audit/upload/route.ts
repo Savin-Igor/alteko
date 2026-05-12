@@ -4,12 +4,16 @@ import { uploadFile, buildReportKey } from '@/lib/s3'
 import { auth } from '@/auth'
 import { IS_STUB } from '@/lib/stubs'
 import { issueParseToken } from '@/lib/auth/parse-token'
+import { checkRateLimit, getClientIp, rateLimitExceeded } from '@/lib/rate-limit'
 
 export const runtime = 'nodejs'
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024
 
 export async function POST(req: NextRequest) {
+  const { allowed } = checkRateLimit(getClientIp(req), 10, 60_000)
+  if (!allowed) return rateLimitExceeded()
+
   const session = await auth()
   // uploadedBy is nullable — anonymous uploads allowed; email gate links later
   const userId = session?.user?.id ?? null
