@@ -49,6 +49,7 @@ jobs:
               echo "==> Running ${script}..."
               docker run --rm \
                 --env-file .env \
+                --env NODE_ENV=development \
                 --network alteko_default \
                 "${IMAGE}:seeder" \
                 "scripts/${script}"
@@ -56,18 +57,6 @@ jobs:
             }
 
             docker pull "${IMAGE}:seeder"
-
-            # Run Payload migrations before seeding.
-            # In production mode Payload does not auto-migrate, so tables must
-            # be explicitly created/updated before the seed scripts can query them.
-            echo "==> Running Payload migrations..."
-            docker run --rm \
-              --env-file .env \
-              --network alteko_default \
-              --entrypoint npx \
-              "${IMAGE}:seeder" \
-              payload migrate
-            echo "==> Payload migrations done."
 
             case "${{ inputs.job }}" in
               blog-all)
