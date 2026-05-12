@@ -75,7 +75,7 @@ services:
     cpus: 0.5
 
   minio:
-    image: minio/minio:RELEASE.2024-11-07T00-52-20Z
+    image: minio/minio:latest
     restart: unless-stopped
     command: server /data --console-address ":9001"
     ports:
@@ -96,7 +96,7 @@ services:
     cpus: 0.5
 
   minio-init:
-    image: minio/mc:RELEASE.2024-11-09T19-22-20Z
+    image: minio/mc:latest
     restart: on-failure
     depends_on:
       minio:
