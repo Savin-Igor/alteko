@@ -21,6 +21,16 @@ ENV SKIP_ENV_VALIDATION=true
 RUN npx prisma generate
 RUN npm run build
 
+# seeder: full node_modules + source for running TypeScript maintenance scripts.
+# Does NOT run the Next.js server. Used by the seed.yml workflow:
+#   docker run --rm --env-file .env --network alteko_default <image>:seeder scripts/seed-blog-articles.ts
+FROM base AS seeder
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+ENV SKIP_ENV_VALIDATION=true
+RUN npx prisma generate
+ENTRYPOINT ["npx", "tsx"]
+
 FROM base AS runner
 ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
@@ -46,22 +56,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modul
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.bin ./node_modules/.bin
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
-# tsx: TypeScript runner for maintenance scripts (seed, backfill, etc.)
-# tsx@4 deps not present in the Next.js standalone output:
-#   tsx, esbuild, @esbuild/linux-x64, get-tsconfig, resolve-pkg-maps
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/tsx ./node_modules/tsx
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/esbuild ./node_modules/esbuild
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@esbuild ./node_modules/@esbuild
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/get-tsconfig ./node_modules/get-tsconfig
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/resolve-pkg-maps ./node_modules/resolve-pkg-maps
-
-# Seed and maintenance scripts (TypeScript sources + Payload config).
-# Allows: docker compose exec app npx tsx scripts/<name>.ts
-COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
-COPY --from=builder --chown=nextjs:nodejs /app/src ./src
-COPY --from=builder --chown=nextjs:nodejs /app/payload.config.ts ./
-COPY --from=builder --chown=nextjs:nodejs /app/tsconfig.json ./
-
 # Entrypoint: runs prisma migrate deploy, then exec CMD
 COPY scripts/docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh

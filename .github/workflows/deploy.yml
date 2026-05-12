@@ -61,6 +61,16 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      # Build and push the seeder image (full node_modules + source for maintenance scripts).
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          target: seeder
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:seeder
+          cache-from: type=gha
+
   # ── 2. Deploy to Hetzner VPS ───────────────────────────────────────────────
   deploy:
     name: Deploy to Hetzner

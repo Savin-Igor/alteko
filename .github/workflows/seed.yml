@@ -1,7 +1,8 @@
 name: Seed
 
-# Manual seed runner — executes seed scripts inside the running app container on the VPS.
-# The app container has access to Payload CMS, database, and S3 configured via .env.
+# Manual seed runner — uses the seeder Docker image (full node_modules + source)
+# to execute TypeScript maintenance scripts on the VPS.
+# The seeder container joins the alteko Docker network so it can reach db and minio.
 #
 # Usage:
 #   gh workflow run seed.yml -f job=blog-all
@@ -17,6 +18,10 @@ on:
           - blog-articles
           - blog-readiness
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
   seed-ssh:
     name: Seed via SSH
@@ -24,21 +29,33 @@ jobs:
 
     steps:
       - uses: appleboy/ssh-action@v1
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           host: ${{ secrets.HETZNER_HOST }}
           username: ${{ secrets.HETZNER_USER }}
           key: ${{ secrets.HETZNER_SSH_KEY }}
+          envs: GHCR_TOKEN
           command_timeout: 30m
           script: |
             set -euo pipefail
             cd /opt/alteko
 
+            IMAGE=$(echo "ghcr.io/${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+            echo "${GHCR_TOKEN}" | docker login ghcr.io -u github-actions --password-stdin
+
             run_seed() {
               local script="$1"
               echo "==> Running ${script}..."
-              docker compose exec -T app npx tsx "scripts/${script}"
+              docker run --rm \
+                --env-file .env \
+                --network alteko_default \
+                "${IMAGE}:seeder" \
+                "scripts/${script}"
               echo "==> ${script} done."
             }
+
+            docker pull "${IMAGE}:seeder"
 
             case "${{ inputs.job }}" in
               blog-all)
